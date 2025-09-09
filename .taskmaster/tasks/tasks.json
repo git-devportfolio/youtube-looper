@@ -1,0 +1,369 @@
+{
+  "master": {
+    "tasks": [
+      {
+        "id": 1,
+        "title": "Initialisation du projet Angular avec structure de base",
+        "description": "Créer un nouveau projet Angular 19.2 avec les configurations de base et l'architecture standalone components",
+        "details": "Utiliser Angular CLI pour créer le projet avec 'ng new youtube-looper --routing --style=scss --standalone'. Configurer angular.json pour utiliser SCSS par défaut. Nettoyer les fichiers générés par défaut et créer la structure de dossiers selon les conventions du projet : src/app/features/, src/app/shared/, src/app/core/. Configurer TypeScript en mode strict. Installer les dépendances nécessaires.",
+        "testStrategy": "Vérifier que 'ng serve' démarre sans erreur, que le projet utilise Angular 19.2, que la structure de dossiers est correcte et que SCSS est configuré par défaut.",
+        "priority": "high",
+        "dependencies": [],
+        "status": "done",
+        "subtasks": []
+      },
+      {
+        "id": 2,
+        "title": "Intégration de l'API YouTube IFrame Player",
+        "description": "Configurer l'API YouTube IFrame Player et créer un service Angular pour gérer l'intégration",
+        "details": "Créer un service YouTubePlayerService utilisant l'API YouTube IFrame Player. Charger dynamiquement le script YouTube API dans index.html ou via le service. Implémenter les méthodes de base : loadVideo(), playVideo(), pauseVideo(), getCurrentTime(), getDuration(). Utiliser les signals Angular pour gérer l'état du lecteur. Gérer les événements onReady, onStateChange. Ajouter la gestion d'erreurs pour les vidéos privées/indisponibles.",
+        "testStrategy": "Tester le chargement d'une vidéo YouTube valide, vérifier que les contrôles natifs fonctionnent, tester avec une URL invalide pour confirmer la gestion d'erreur.",
+        "priority": "high",
+        "dependencies": [
+          1
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Charger dynamiquement l'API YouTube IFrame Player",
+            "description": "Implémenter le chargement dynamique du script YouTube API et initialiser l'environnement d'intégration",
+            "dependencies": [],
+            "details": "Créer une méthode loadYouTubeAPI() qui injecte dynamiquement le script https://www.youtube.com/iframe_api dans le document. Utiliser un Promise pour gérer l'état de chargement et éviter les multiples chargements. Implémenter une variable globale onYouTubeIframeAPIReady pour capturer la callback d'initialisation. Gérer les erreurs de chargement du script et les timeouts.",
+            "status": "pending",
+            "testStrategy": "Vérifier que le script YouTube API se charge correctement, tester les scénarios d'erreur de réseau, valider qu'une seule instance du script est chargée même avec multiples appels"
+          },
+          {
+            "id": 2,
+            "title": "Créer le service YouTubePlayerService avec architecture signals",
+            "description": "Développer le service principal avec la gestion d'état basée sur les signals Angular",
+            "dependencies": [
+              "2.1"
+            ],
+            "details": "Créer YouTubePlayerService injectable avec signals pour : playerState (unloaded/loading/ready/playing/paused/error), currentVideo (videoId, title, duration), playerInstance. Implémenter le pattern de service avec computed signals pour les états dérivés. Utiliser takeUntilDestroyed pour la gestion automatique des subscriptions. Initialiser le service avec la méthode d'injection moderne inject().",
+            "status": "pending",
+            "testStrategy": "Tester l'initialisation du service, vérifier les states des signals, valider la gestion mémoire avec takeUntilDestroyed"
+          },
+          {
+            "id": 3,
+            "title": "Implémenter les méthodes de contrôle vidéo de base",
+            "description": "Développer les méthodes fondamentales de contrôle du lecteur YouTube",
+            "dependencies": [
+              "2.2"
+            ],
+            "details": "Implémenter loadVideo(videoId: string) avec extraction d'ID depuis URL complète, playVideo(), pauseVideo(), getCurrentTime(), getDuration(), seekTo(seconds: number). Chaque méthode doit vérifier l'état du player avant exécution. Utiliser des Promises pour les opérations asynchrones. Intégrer la mise à jour des signals correspondants après chaque opération.",
+            "status": "pending",
+            "testStrategy": "Tester chaque méthode individuellement, vérifier les retours d'erreur pour player non initialisé, valider la synchronisation des signals avec l'état réel du player"
+          },
+          {
+            "id": 4,
+            "title": "Gérer les événements YouTube Player (onReady, onStateChange)",
+            "description": "Implémenter la gestion des événements natifs du lecteur YouTube et synchroniser avec les signals",
+            "dependencies": [
+              "2.3"
+            ],
+            "details": "Créer les callbacks onPlayerReady() et onPlayerStateChange() pour capturer les événements YouTube. Mapper les états YouTube (YT.PlayerState) vers les signals internes. Émettre des events personnalisés pour les composants externes. Implémenter onPlayerError() pour capturer les erreurs de lecture. Synchroniser automatiquement currentTime via interval quand en lecture.",
+            "status": "pending",
+            "testStrategy": "Tester les transitions d'état (loading->ready->playing->paused), vérifier la synchronisation temps réel, valider la capture d'événements d'erreur"
+          },
+          {
+            "id": 5,
+            "title": "Implémenter la gestion d'erreurs pour vidéos indisponibles",
+            "description": "Développer un système robuste de gestion des erreurs pour les cas d'échec de chargement vidéo",
+            "dependencies": [
+              "2.4"
+            ],
+            "details": "Créer un enum YouTubeError pour typer les erreurs (VIDEO_NOT_FOUND, PRIVATE_VIDEO, REGION_BLOCKED, etc.). Implémenter handlePlayerError() avec mapping des codes d'erreur YouTube vers messages utilisateur français. Utiliser un signal errorState pour exposer l'état d'erreur aux composants. Ajouter retry mechanism avec backoff exponentiel pour erreurs réseau. Logger les erreurs pour debug.",
+            "status": "pending",
+            "testStrategy": "Tester avec vidéo inexistante, vidéo privée, vidéo géo-bloquée, vérifier les messages d'erreur français, valider le système de retry"
+          },
+          {
+            "id": 6,
+            "title": "Chargement dynamique du script YouTube IFrame API",
+            "description": "Configurer le chargement dynamique du script YouTube IFrame API dans l'application Angular",
+            "dependencies": [],
+            "details": "Créer une fonction utilitaire pour charger dynamiquement le script YouTube IFrame API (https://www.youtube.com/iframe_api). Implémenter une vérification pour éviter le double chargement. Gérer la promesse de chargement avec resolve/reject. Ajouter la fonction dans un service ou directement dans YouTubePlayerService. S'assurer que window.onYouTubeIframeAPIReady est correctement configurée.",
+            "status": "pending",
+            "testStrategy": "Vérifier que le script se charge une seule fois, tester que l'API est disponible après chargement, valider le callback onYouTubeIframeAPIReady"
+          },
+          {
+            "id": 7,
+            "title": "Création du service YouTubePlayerService avec signals",
+            "description": "Développer le service principal pour encapsuler l'API YouTube IFrame Player avec la gestion d'état par signals",
+            "dependencies": [
+              "2.6"
+            ],
+            "details": "Créer YouTubePlayerService injectable avec providedIn: 'root'. Définir les signals : playerState (loading, ready, playing, paused, error), videoId, currentTime, duration, isLoaded. Créer les interfaces TypeScript pour les événements YouTube. Implémenter la méthode initializePlayer() qui instancie YT.Player. Utiliser takeUntilDestroyed pour la gestion du cycle de vie. Ajouter les types YouTube dans un fichier de déclarations.",
+            "status": "pending",
+            "testStrategy": "Vérifier l'injection du service, tester l'initialisation du player, valider que les signals se mettent à jour correctement"
+          },
+          {
+            "id": 8,
+            "title": "Implémentation des méthodes de contrôle vidéo de base",
+            "description": "Ajouter les méthodes essentielles pour contrôler la lecture vidéo via l'API YouTube",
+            "dependencies": [
+              "2.7"
+            ],
+            "details": "Implémenter dans YouTubePlayerService les méthodes : loadVideo(videoId: string), playVideo(), pauseVideo(), getCurrentTime(): number, getDuration(): number, seekTo(seconds: number). Chaque méthode doit vérifier que le player est prêt avant exécution. Gérer les erreurs avec try/catch. Mettre à jour les signals correspondants après chaque action. Ajouter des guards pour vérifier l'état du player.",
+            "status": "pending",
+            "testStrategy": "Tester chaque méthode individuellement, vérifier que getCurrentTime et getDuration retournent des valeurs correctes, valider la gestion d'erreur"
+          },
+          {
+            "id": 9,
+            "title": "Gestion des événements YouTube Player (onReady, onStateChange)",
+            "description": "Implémenter la gestion des événements du lecteur YouTube pour synchroniser l'état de l'application",
+            "dependencies": [
+              "2.8"
+            ],
+            "details": "Configurer les event handlers onReady et onStateChange lors de l'initialisation du player. Dans onReady, mettre à jour le signal playerState à 'ready' et récupérer la durée. Dans onStateChange, mapper les états YouTube (PLAYING, PAUSED, ENDED, etc.) vers les signals internes. Implémenter un interval pour mettre à jour currentTime pendant la lecture. Gérer l'événement onError pour les erreurs de lecture.",
+            "status": "pending",
+            "testStrategy": "Vérifier que onReady se déclenche, tester les changements d'état lors de play/pause, valider la mise à jour du temps courant"
+          },
+          {
+            "id": 10,
+            "title": "Gestion d'erreurs pour vidéos privées et indisponibles",
+            "description": "Implémenter la gestion complète des erreurs YouTube avec feedback utilisateur approprié",
+            "dependencies": [
+              "2.9"
+            ],
+            "details": "Étendre la gestion d'erreurs dans onError pour identifier les types d'erreurs YouTube : vidéo privée (code 101), vidéo supprimée (code 100), géo-blocage (code 150), vidéo non trouvée (code 5). Créer un signal errorMessage pour stocker les messages d'erreur localisés en français. Implémenter clearError() pour réinitialiser l'état d'erreur. Ajouter des méthodes helper pour détecter si une vidéo est disponible. Prévoir un fallback pour les erreurs non identifiées.",
+            "status": "pending",
+            "testStrategy": "Tester avec des URLs de vidéos privées, supprimées, géo-bloquées, vérifier l'affichage des messages d'erreur appropriés, valider la remise à zéro des erreurs"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Composant de saisie d'URL YouTube avec validation",
+        "description": "Créer le composant pour saisir et valider les URLs YouTube avec auto-focus et feedback utilisateur",
+        "details": "Créer UrlInputComponent avec un formulaire réactif Angular. Implémenter la validation d'URL YouTube avec regex pour détecter les formats youtube.com/watch?v= et youtu.be/. Ajouter auto-focus avec ViewChild et ngAfterViewInit. Créer un placeholder avec exemple d'URL. Utiliser debounceTime pour éviter les validations excessives. Intégrer avec YouTubePlayerService pour charger automatiquement les vidéos valides. Afficher des messages d'erreur clairs pour les URLs invalides.",
+        "testStrategy": "Tester avec différents formats d'URLs YouTube (youtube.com, youtu.be, avec/sans paramètres), vérifier l'auto-focus, valider les messages d'erreur pour URLs invalides.",
+        "priority": "high",
+        "dependencies": [
+          2
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 4,
+        "title": "Composant lecteur vidéo avec contrôles natifs",
+        "description": "Créer le composant pour afficher la vidéo YouTube avec l'API IFrame et les contrôles natifs",
+        "details": "Créer VideoPlayerComponent qui utilise YouTubePlayerService. Implémenter l'affichage du lecteur IFrame avec les contrôles natifs YouTube activés (controls: 1). Gérer les états de chargement, erreur, et lecture. Utiliser signals pour réagir aux changements d'état. Implémenter la communication bidirectionnelle avec le service pour exposer les méthodes nécessaires (getCurrentTime, getDuration, etc.). Responsive design pour différentes tailles d'écran.",
+        "testStrategy": "Vérifier l'affichage correct de la vidéo, tester les contrôles natifs (play, pause, volume, plein écran), valider la responsivité sur mobile/desktop.",
+        "priority": "high",
+        "dependencies": [
+          3
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 5,
+        "title": "Service de gestion des boucles temporelles",
+        "description": "Créer un service pour gérer la logique de boucle avec start/end times et la répétition automatique",
+        "details": "Créer LoopService avec signals pour gérer startTime, endTime, isLoopActive. Implémenter la logique de surveillance temporelle avec interval pour vérifier la position courante. Quand currentTime >= endTime, rediriger vers startTime. Méthodes : setStartTime(), setEndTime(), toggleLoop(), getCurrentLoop(). Utiliser takeUntilDestroyed pour nettoyer les intervalles. Intégrer avec YouTubePlayerService pour contrôler la position de la vidéo. Gérer un seul loop actif à la fois (V1).",
+        "testStrategy": "Tester la création d'une boucle avec start/end, vérifier que la vidéo redémarre automatiquement à startTime après avoir atteint endTime, valider l'activation/désactivation de la boucle.",
+        "priority": "high",
+        "dependencies": [
+          4
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 6,
+        "title": "Interface timeline interactive avec poignées start/end",
+        "description": "Créer un composant timeline avec deux poignées draggables pour définir visuellement les bornes de boucle",
+        "details": "Créer TimelineComponent avec une barre de progression visuelle. Implémenter deux poignées draggables (start/end) avec HTML5 drag & drop ou mouse events. Afficher le temps au-dessus de chaque poignée pendant le drag. Zone colorée entre start et end pour visualiser la boucle. Synchroniser avec LoopService pour mettre à jour les temps. Responsive avec touch events pour mobile. Contraintes : startTime < endTime, bornes dans la durée de la vidéo.",
+        "testStrategy": "Tester le drag des poignées, vérifier l'affichage des temps, valider la zone colorée, tester sur écran tactile, vérifier les contraintes de validation.",
+        "priority": "medium",
+        "dependencies": [
+          5
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 7,
+        "title": "Boutons de contrôle rapide pour la boucle",
+        "description": "Implémenter les boutons 'Set Start', 'Set End' et 'Play/Stop Loop' avec indicateurs visuels",
+        "details": "Créer LoopControlsComponent avec trois boutons principaux : 'Set Start' (définit startTime à la position courante), 'Set End' (définit endTime à la position courante), 'Toggle Loop' (active/désactive la boucle). Ajouter un indicateur visuel 'Loop ON/OFF' avec couleur distinctive. Boutons tactiles ≥44px selon les guidelines. Utiliser Angular Material ou CSS custom pour le design. Intégrer avec LoopService et YouTubePlayerService. Feedback immédiat sur les actions utilisateur.",
+        "testStrategy": "Tester chaque bouton individuellement, vérifier que 'Set Start/End' utilisent la position courante, valider l'indicateur visuel de boucle, tester la taille tactile des boutons.",
+        "priority": "medium",
+        "dependencies": [
+          6
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 8,
+        "title": "Contrôle de vitesse de lecture avec presets",
+        "description": "Implémenter les contrôles de vitesse avec boutons presets (0.5x, 0.75x, 1x) et menu déroulant pour options avancées",
+        "details": "Créer SpeedControlComponent avec trois boutons presets pour les vitesses courantes (0.5x, 0.75x, 1x). Ajouter un dropdown/select pour vitesses supplémentaires (0.25x, 0.375x, 1.25x, 1.5x, 1.75x, 2x). Afficher la vitesse courante avec un indicateur visuel. Utiliser l'API YouTube setPlaybackRate(). Persister la vitesse sélectionnée dans localStorage. Intégrer avec YouTubePlayerService pour synchroniser l'état.",
+        "testStrategy": "Tester chaque preset de vitesse, vérifier le menu déroulant, valider l'affichage de la vitesse courante, tester la persistance localStorage.",
+        "priority": "medium",
+        "dependencies": [
+          4
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 9,
+        "title": "Persistance localStorage et gestion des préférences",
+        "description": "Implémenter la sauvegarde locale des boucles, vitesse, et URL pour permettre la restauration des sessions",
+        "details": "Créer StorageService pour gérer localStorage. Sauvegarder : URL courante, startTime/endTime de la boucle, vitesse de lecture, état de la boucle (active/inactive). Implémenter auto-save lors des changements d'état. Ajouter une méthode de restauration au démarrage de l'application. Gérer les cas d'erreur (localStorage indisponible, données corrompues). Nettoyer les anciennes données si nécessaire. Utiliser JSON.stringify/parse pour les objets complexes.",
+        "testStrategy": "Tester la sauvegarde automatique des paramètres, vérifier la restauration au rechargement de la page, valider la gestion des erreurs localStorage, tester avec plusieurs vidéos.",
+        "priority": "low",
+        "dependencies": [
+          7,
+          8
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 10,
+        "title": "Interface responsive et optimisations d'accessibilité",
+        "description": "Finaliser le design responsive mobile-first et implémenter les fonctionnalités d'accessibilité",
+        "details": "Implémenter CSS Grid/Flexbox pour layout responsive. Breakpoints : mobile (<768px), tablet (768px-1024px), desktop (>1024px). Optimiser pour orientation paysage sur tablette. Ajouter navigation clavier (tab index, focus visible). Implémenter couleurs contrastées selon WCAG AA. Ajouter aria-labels pour tous les contrôles. Tailles tactiles minimum 44px. Tester avec screen readers. Ajouter un toggle dark/light mode pour améliorer la lisibilité.",
+        "testStrategy": "Tester sur différents appareils (mobile, tablette, desktop), valider la navigation clavier, vérifier les contrastes de couleur, tester avec lecteur d'écran, valider les orientations portrait/paysage.",
+        "priority": "medium",
+        "dependencies": [
+          9
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 11,
+        "title": "Créer le layout principal et composant header avec mode sombre/clair",
+        "description": "Développer un gabarit global minimaliste avec header contenant le titre de l'app et toggle dark/light mode, une zone principale pour le contenu, et un footer discret.",
+        "details": "Créer MainLayoutComponent avec structure HTML sémantique (header, main, footer). Implémenter HeaderComponent avec titre 'YouTube Looper' et ThemeToggleComponent pour basculer dark/light mode. Créer les variables CSS custom properties dans styles.scss pour les deux thèmes : couleurs primaires, secondaires, backgrounds, textes, bordures. Utiliser CSS Grid pour le layout principal responsive. Header fixe en haut avec flexbox pour titre/toggle alignés. Zone main flexible pour accueillir les futurs composants (URL input, vidéo, contrôles). Footer minimaliste en bas avec liens essentiels. Implémenter ThemeService avec signals pour gérer l'état du thème et persister la préférence dans localStorage. Appliquer les classes CSS dynamiquement selon le thème sélectionné.",
+        "testStrategy": "Vérifier l'affichage correct des trois zones (header, main, footer), tester le basculement des thèmes avec changement visuel immédiat, valider la persistance du thème au rechargement, contrôler la responsivité sur mobile/desktop, vérifier que les variables CSS sont correctement appliquées pour chaque thème.",
+        "status": "pending",
+        "dependencies": [
+          1
+        ],
+        "priority": "medium",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Créer le service ThemeService avec gestion des signaux",
+            "description": "Implémenter le service responsable de la gestion du thème (dark/light) avec signals et persistance dans localStorage",
+            "dependencies": [],
+            "details": "Créer ThemeService dans src/app/core/services/ avec signals pour gérer l'état du thème ('light' | 'dark'). Implémenter toggleTheme(), setTheme(), currentTheme signal en lecture seule. Persister la préférence dans localStorage avec la clé 'theme-preference'. Initialiser avec thème système ou valeur par défaut 'light'. Utiliser inject() et signal() d'Angular. Appliquer les classes CSS dynamiquement sur document.documentElement.",
+            "status": "pending",
+            "testStrategy": "Tester le basculement de thème avec changement immédiat, vérifier la persistance localStorage, contrôler l'initialisation avec thème par défaut et système"
+          },
+          {
+            "id": 2,
+            "title": "Définir les variables CSS custom properties pour les thèmes",
+            "description": "Créer les variables CSS globales pour les couleurs des thèmes sombre et clair dans styles.scss",
+            "dependencies": [
+              "11.1"
+            ],
+            "details": "Dans src/styles.scss, définir les custom properties CSS pour les deux thèmes. Variables pour couleurs primaires, secondaires, backgrounds (principal, secondaire, surfaces), textes (primaire, secondaire, tertiaire), bordures, ombres. Utiliser la structure :root { } pour le thème clair et [data-theme='dark'] { } pour le thème sombre. Couleurs cohérentes et accessibles avec contraste WCAG AA minimum. Prévoir variables pour états hover, focus, active.",
+            "status": "pending",
+            "testStrategy": "Vérifier que les variables CSS sont correctement appliquées selon le thème, contrôler les contrastes d'accessibilité, tester les états interactifs"
+          },
+          {
+            "id": 3,
+            "title": "Créer le composant ThemeToggleComponent",
+            "description": "Développer le composant bouton pour basculer entre les modes sombre et clair",
+            "dependencies": [
+              "11.1",
+              "11.2"
+            ],
+            "details": "Créer ThemeToggleComponent dans src/app/shared/ui/theme-toggle/ avec structure organisée (index.ts, .component.ts, .html, .scss). Utiliser ThemeService avec inject(). Template avec bouton et icônes pour soleil/lune. Accessibilité avec aria-label, aria-pressed. Animations CSS smooth pour transition d'icônes. Styles avec variables CSS custom properties. Signal computed pour afficher l'icône selon thème actuel.",
+            "status": "pending",
+            "testStrategy": "Tester le changement visuel d'icône selon le thème, vérifier l'accessibilité (aria-*, navigation clavier), valider les animations de transition"
+          },
+          {
+            "id": 4,
+            "title": "Créer le composant HeaderComponent avec titre et toggle thème",
+            "description": "Développer le composant header contenant le titre de l'application et le toggle de thème",
+            "dependencies": [
+              "11.3"
+            ],
+            "details": "Créer HeaderComponent dans src/app/layout/ui/header/ avec structure organisée. Template avec titre 'YouTube Looper' et ThemeToggleComponent. Utiliser flexbox pour alignement horizontal (titre à gauche, toggle à droite). Header fixe en position sticky ou fixed selon besoins. Responsive avec ajustements mobile. Sémantique HTML correcte avec balises header, h1. Styles avec variables CSS custom properties.",
+            "status": "pending",
+            "testStrategy": "Vérifier l'affichage correct du titre et du toggle, tester la responsivité mobile/desktop, valider la position fixe et l'accessibilité"
+          },
+          {
+            "id": 5,
+            "title": "Créer le composant MainLayoutComponent avec structure grid",
+            "description": "Développer le layout principal avec header, zone contenu principal et footer en CSS Grid",
+            "dependencies": [
+              "11.4"
+            ],
+            "details": "Créer MainLayoutComponent dans src/app/layout/ui/main-layout/ avec structure HTML sémantique (header, main, footer). Utiliser CSS Grid pour layout responsive : header fixe en haut, main flexible au centre, footer en bas. Grid-template-rows avec fr unités. Zone main avec padding et préparation pour futurs composants. Footer discret avec copyright et liens essentiels. Intégrer HeaderComponent. Responsive avec ajustements mobile/tablet.",
+            "status": "pending",
+            "testStrategy": "Vérifier l'affichage correct des trois zones (header, main, footer), tester la responsivité sur mobile/desktop, contrôler que la zone main occupe l'espace disponible"
+          },
+          {
+            "id": 6,
+            "title": "Créer le service ThemeService pour la gestion du mode sombre/clair",
+            "description": "Développer un service Angular utilisant des signals pour gérer l'état du thème (dark/light) et persister les préférences utilisateur dans localStorage",
+            "dependencies": [],
+            "details": "Créer ThemeService dans src/app/core/services/ avec signal pour currentTheme ('light' | 'dark'). Implémenter méthodes toggleTheme(), setTheme(), loadTheme() depuis localStorage. Utiliser effect() pour appliquer la classe CSS sur document.body. Initialiser avec la préférence système via window.matchMedia('(prefers-color-scheme: dark)'). Persister automatiquement les changements dans localStorage avec clé 'youtube-looper-theme'.",
+            "status": "pending",
+            "testStrategy": "Tester l'initialisation avec préférence système, vérifier la persistance localStorage, valider l'application des classes CSS sur body"
+          },
+          {
+            "id": 7,
+            "title": "Définir les variables CSS et thèmes dans styles.scss",
+            "description": "Créer un système de variables CSS custom properties pour supporter les thèmes dark et light avec toutes les couleurs nécessaires",
+            "dependencies": [
+              "11.6"
+            ],
+            "details": "Dans src/styles.scss, définir :root avec variables CSS --color-primary, --color-secondary, --color-background, --color-surface, --color-text-primary, --color-text-secondary, --color-border, --color-accent pour le thème light. Créer .dark-theme avec les mêmes variables mais valeurs adaptées au mode sombre. Ajouter reset CSS basique et styles globaux. Utiliser des couleurs accessibles avec contraste suffisant (minimum WCAG AA). Prévoir variables pour les transitions et shadows.",
+            "status": "pending",
+            "testStrategy": "Vérifier que les variables CSS sont bien définies, tester l'application des thèmes en basculant les classes, valider les contrastes d'accessibilité"
+          },
+          {
+            "id": 8,
+            "title": "Créer le composant ThemeToggleComponent",
+            "description": "Développer un composant toggle switch pour basculer entre les modes sombre et clair avec feedback visuel immédiat",
+            "dependencies": [
+              "11.6",
+              "11.7"
+            ],
+            "details": "Créer ThemeToggleComponent dans src/app/shared/ui/theme-toggle/ avec template HTML contenant un bouton toggle stylisé. Utiliser inject(ThemeService) pour accéder au service. Implémenter onClick() qui appelle themeService.toggleTheme(). Afficher une icône soleil/lune selon le thème actuel avec computed() signal. Styles SCSS pour switch animé avec transition smooth. Accessible avec rôles ARIA appropriés et support clavier (space/enter).",
+            "status": "pending",
+            "testStrategy": "Tester le basculement visuel immédiat, vérifier l'accessibilité clavier, valider les animations CSS de transition"
+          },
+          {
+            "id": 9,
+            "title": "Créer le composant HeaderComponent avec titre et toggle thème",
+            "description": "Développer le composant header contenant le titre de l'application et le toggle de thème, avec layout responsive",
+            "dependencies": [
+              "11.8"
+            ],
+            "details": "Créer HeaderComponent dans src/app/shared/ui/header/ avec template contenant <header> sémantique. Structure : titre 'YouTube Looper' à gauche, ThemeToggleComponent à droite. Utiliser flexbox pour alignement avec justify-content: space-between. Header fixe en haut (position: fixed, top: 0) avec z-index approprié. Styles responsive : titre plus petit sur mobile, padding adaptatif. Hauteur fixe (ex: 60px) pour que le main content puisse s'adapter.",
+            "status": "pending",
+            "testStrategy": "Vérifier l'affichage titre/toggle, tester la responsivité mobile/desktop, valider la position fixe et l'alignement"
+          },
+          {
+            "id": 10,
+            "title": "Créer le MainLayoutComponent avec structure Grid responsive",
+            "description": "Développer le composant layout principal utilisant CSS Grid pour organiser header, main et footer de façon responsive",
+            "dependencies": [
+              "11.9"
+            ],
+            "details": "Créer MainLayoutComponent dans src/app/core/layout/ avec template contenant HeaderComponent, <main> avec router-outlet, et <footer> minimaliste. Utiliser CSS Grid : grid-template-rows: auto 1fr auto pour header/main/footer. Header fixe compensé par padding-top sur main. Main zone flexible pour contenu futur. Footer discret avec liens copyright et version. Responsive : adapter grid sur mobile. Classes CSS utilisant les variables de thème définies. Intégrer ng-content ou router-outlet selon besoins.",
+            "status": "pending",
+            "testStrategy": "Vérifier la structure Grid responsive, tester l'affichage des trois zones, valider l'adaptation mobile et l'application des thèmes"
+          }
+        ]
+      }
+    ],
+    "metadata": {
+      "created": "2025-09-07T19:39:54.188Z",
+      "updated": "2025-09-08T05:46:12.526Z",
+      "description": "Tasks for master context"
+    }
+  }
+}
