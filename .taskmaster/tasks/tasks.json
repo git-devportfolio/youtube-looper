@@ -243,7 +243,7 @@
         "description": "Développer un gabarit global minimaliste avec header contenant le titre de l'app et toggle dark/light mode, une zone principale pour le contenu, et un footer discret.",
         "details": "Créer MainLayoutComponent avec structure HTML sémantique (header, main, footer). Implémenter HeaderComponent avec titre 'YouTube Looper' et ThemeToggleComponent pour basculer dark/light mode. Créer les variables CSS custom properties dans styles.scss pour les deux thèmes : couleurs primaires, secondaires, backgrounds, textes, bordures. Utiliser CSS Grid pour le layout principal responsive. Header fixe en haut avec flexbox pour titre/toggle alignés. Zone main flexible pour accueillir les futurs composants (URL input, vidéo, contrôles). Footer minimaliste en bas avec liens essentiels. Implémenter ThemeService avec signals pour gérer l'état du thème et persister la préférence dans localStorage. Appliquer les classes CSS dynamiquement selon le thème sélectionné.",
         "testStrategy": "Vérifier l'affichage correct des trois zones (header, main, footer), tester le basculement des thèmes avec changement visuel immédiat, valider la persistance du thème au rechargement, contrôler la responsivité sur mobile/desktop, vérifier que les variables CSS sont correctement appliquées pour chaque thème.",
-        "status": "pending",
+        "status": "done",
         "dependencies": [
           1
         ],
@@ -255,7 +255,7 @@
             "description": "Implémenter le service responsable de la gestion du thème (dark/light) avec signals et persistance dans localStorage",
             "dependencies": [],
             "details": "Créer ThemeService dans src/app/core/services/ avec signals pour gérer l'état du thème ('light' | 'dark'). Implémenter toggleTheme(), setTheme(), currentTheme signal en lecture seule. Persister la préférence dans localStorage avec la clé 'theme-preference'. Initialiser avec thème système ou valeur par défaut 'light'. Utiliser inject() et signal() d'Angular. Appliquer les classes CSS dynamiquement sur document.documentElement.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Tester le basculement de thème avec changement immédiat, vérifier la persistance localStorage, contrôler l'initialisation avec thème par défaut et système"
           },
           {
@@ -266,7 +266,7 @@
               "11.1"
             ],
             "details": "Dans src/styles.scss, définir les custom properties CSS pour les deux thèmes. Variables pour couleurs primaires, secondaires, backgrounds (principal, secondaire, surfaces), textes (primaire, secondaire, tertiaire), bordures, ombres. Utiliser la structure :root { } pour le thème clair et [data-theme='dark'] { } pour le thème sombre. Couleurs cohérentes et accessibles avec contraste WCAG AA minimum. Prévoir variables pour états hover, focus, active.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Vérifier que les variables CSS sont correctement appliquées selon le thème, contrôler les contrastes d'accessibilité, tester les états interactifs"
           },
           {
@@ -278,7 +278,7 @@
               "11.2"
             ],
             "details": "Créer ThemeToggleComponent dans src/app/shared/ui/theme-toggle/ avec structure organisée (index.ts, .component.ts, .html, .scss). Utiliser ThemeService avec inject(). Template avec bouton et icônes pour soleil/lune. Accessibilité avec aria-label, aria-pressed. Animations CSS smooth pour transition d'icônes. Styles avec variables CSS custom properties. Signal computed pour afficher l'icône selon thème actuel.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Tester le changement visuel d'icône selon le thème, vérifier l'accessibilité (aria-*, navigation clavier), valider les animations de transition"
           },
           {
@@ -289,7 +289,7 @@
               "11.3"
             ],
             "details": "Créer HeaderComponent dans src/app/layout/ui/header/ avec structure organisée. Template avec titre 'YouTube Looper' et ThemeToggleComponent. Utiliser flexbox pour alignement horizontal (titre à gauche, toggle à droite). Header fixe en position sticky ou fixed selon besoins. Responsive avec ajustements mobile. Sémantique HTML correcte avec balises header, h1. Styles avec variables CSS custom properties.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Vérifier l'affichage correct du titre et du toggle, tester la responsivité mobile/desktop, valider la position fixe et l'accessibilité"
           },
           {
@@ -300,7 +300,7 @@
               "11.4"
             ],
             "details": "Créer MainLayoutComponent dans src/app/layout/ui/main-layout/ avec structure HTML sémantique (header, main, footer). Utiliser CSS Grid pour layout responsive : header fixe en haut, main flexible au centre, footer en bas. Grid-template-rows avec fr unités. Zone main avec padding et préparation pour futurs composants. Footer discret avec copyright et liens essentiels. Intégrer HeaderComponent. Responsive avec ajustements mobile/tablet.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Vérifier l'affichage correct des trois zones (header, main, footer), tester la responsivité sur mobile/desktop, contrôler que la zone main occupe l'espace disponible"
           },
           {
@@ -309,7 +309,7 @@
             "description": "Développer un service Angular utilisant des signals pour gérer l'état du thème (dark/light) et persister les préférences utilisateur dans localStorage",
             "dependencies": [],
             "details": "Créer ThemeService dans src/app/core/services/ avec signal pour currentTheme ('light' | 'dark'). Implémenter méthodes toggleTheme(), setTheme(), loadTheme() depuis localStorage. Utiliser effect() pour appliquer la classe CSS sur document.body. Initialiser avec la préférence système via window.matchMedia('(prefers-color-scheme: dark)'). Persister automatiquement les changements dans localStorage avec clé 'youtube-looper-theme'.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Tester l'initialisation avec préférence système, vérifier la persistance localStorage, valider l'application des classes CSS sur body"
           },
           {
@@ -320,7 +320,7 @@
               "11.6"
             ],
             "details": "Dans src/styles.scss, définir :root avec variables CSS --color-primary, --color-secondary, --color-background, --color-surface, --color-text-primary, --color-text-secondary, --color-border, --color-accent pour le thème light. Créer .dark-theme avec les mêmes variables mais valeurs adaptées au mode sombre. Ajouter reset CSS basique et styles globaux. Utiliser des couleurs accessibles avec contraste suffisant (minimum WCAG AA). Prévoir variables pour les transitions et shadows.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Vérifier que les variables CSS sont bien définies, tester l'application des thèmes en basculant les classes, valider les contrastes d'accessibilité"
           },
           {
@@ -332,7 +332,7 @@
               "11.7"
             ],
             "details": "Créer ThemeToggleComponent dans src/app/shared/ui/theme-toggle/ avec template HTML contenant un bouton toggle stylisé. Utiliser inject(ThemeService) pour accéder au service. Implémenter onClick() qui appelle themeService.toggleTheme(). Afficher une icône soleil/lune selon le thème actuel avec computed() signal. Styles SCSS pour switch animé avec transition smooth. Accessible avec rôles ARIA appropriés et support clavier (space/enter).",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Tester le basculement visuel immédiat, vérifier l'accessibilité clavier, valider les animations CSS de transition"
           },
           {
@@ -343,7 +343,7 @@
               "11.8"
             ],
             "details": "Créer HeaderComponent dans src/app/shared/ui/header/ avec template contenant <header> sémantique. Structure : titre 'YouTube Looper' à gauche, ThemeToggleComponent à droite. Utiliser flexbox pour alignement avec justify-content: space-between. Header fixe en haut (position: fixed, top: 0) avec z-index approprié. Styles responsive : titre plus petit sur mobile, padding adaptatif. Hauteur fixe (ex: 60px) pour que le main content puisse s'adapter.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Vérifier l'affichage titre/toggle, tester la responsivité mobile/desktop, valider la position fixe et l'alignement"
           },
           {
@@ -354,7 +354,7 @@
               "11.9"
             ],
             "details": "Créer MainLayoutComponent dans src/app/core/layout/ avec template contenant HeaderComponent, <main> avec router-outlet, et <footer> minimaliste. Utiliser CSS Grid : grid-template-rows: auto 1fr auto pour header/main/footer. Header fixe compensé par padding-top sur main. Main zone flexible pour contenu futur. Footer discret avec liens copyright et version. Responsive : adapter grid sur mobile. Classes CSS utilisant les variables de thème définies. Intégrer ng-content ou router-outlet selon besoins.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Vérifier la structure Grid responsive, tester l'affichage des trois zones, valider l'adaptation mobile et l'application des thèmes"
           }
         ]
@@ -362,7 +362,7 @@
     ],
     "metadata": {
       "created": "2025-09-07T19:39:54.188Z",
-      "updated": "2025-09-08T05:46:12.526Z",
+      "updated": "2025-09-09T05:34:11.068Z",
       "description": "Tasks for master context"
     }
   }

@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(task-master show:*)",
+      "Bash(mkdir:*)",
+      "Bash(npm run build:*)",
+      "Bash(npm start)",
+      "Bash(task-master set-status:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

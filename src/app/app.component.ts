@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { MainLayoutComponent } from './features/layout';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [MainLayoutComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
-  title = 'youtube-looper';
+  title = 'YouTube Looper';
 }

@@ -1,0 +1,99 @@
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background-color: var(--background-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  min-height: 40px;
+  
+  &:hover {
+    background-color: var(--background-tertiary);
+    border-color: var(--border-dark);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+  }
+  
+  &:active {
+    transform: translateY(0);
+    box-shadow: none;
+  }
+  
+  &:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+  }
+  
+  &__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    transition: transform 0.3s ease;
+    
+    svg {
+      width: 100%;
+      height: 100%;
+      color: var(--text-secondary);
+      transition: color 0.2s ease;
+    }
+    
+    &--dark {
+      transform: rotate(180deg);
+      
+      svg {
+        color: var(--primary-color);
+      }
+    }
+  }
+  
+  &__text {
+    white-space: nowrap;
+    
+    // Masquer le texte sur mobile pour économiser l'espace
+    @media (max-width: 480px) {
+      display: none;
+    }
+  }
+}
+
+// Animation pour le changement d'icône
+.theme-toggle__icon {
+  animation: themeIconRotate 0.3s ease;
+}
+
+@keyframes themeIconRotate {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(90deg) scale(0.8);
+  }
+  100% {
+    transform: rotate(180deg) scale(1);
+  }
+}
+
+// Version compacte pour le header
+.theme-toggle--compact {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  min-height: 32px;
+  font-size: 0.75rem;
+  
+  .theme-toggle__icon {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .theme-toggle__text {
+    @media (max-width: 768px) {
+      display: none;
+    }
+  }
+}

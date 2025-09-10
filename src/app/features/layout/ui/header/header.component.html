@@ -1,0 +1,28 @@
+<header class="header">
+  <div class="container">
+    <div class="header__content">
+      <!-- Logo et titre -->
+      <div class="header__brand">
+        <div class="header__logo">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Icône YouTube stylisée avec boucle -->
+            <rect x="2" y="6" width="20" height="12" rx="2" stroke="currentColor" stroke-width="2"/>
+            <path d="M8 12l6-3v6l-6-3z" fill="currentColor"/>
+            <!-- Symbole de boucle -->
+            <path d="M16 4l2 2-2 2M6 16l2 2-2 2" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M18 6H8M6 18h10" stroke="currentColor" stroke-width="1.5"/>
+          </svg>
+        </div>
+        <div class="header__titles">
+          <h1 class="header__title">{{ appTitle }}</h1>
+          <p class="header__subtitle">{{ appSubtitle }}</p>
+        </div>
+      </div>
+      
+      <!-- Contrôles -->
+      <div class="header__controls">
+        <app-theme-toggle class="header__theme-toggle"></app-theme-toggle>
+      </div>
+    </div>
+  </div>
+</header>

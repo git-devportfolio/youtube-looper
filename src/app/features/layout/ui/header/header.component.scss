@@ -1,0 +1,182 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background-color: var(--background-primary);
+  border-bottom: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s ease;
+  
+  &__content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-md) 0;
+    min-height: 70px;
+    
+    @media (max-width: 768px) {
+      padding: var(--spacing-sm) 0;
+      min-height: 60px;
+    }
+  }
+  
+  &__brand {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    
+    @media (max-width: 480px) {
+      gap: var(--spacing-sm);
+    }
+  }
+  
+  &__logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-sm);
+    transition: transform 0.2s ease;
+    
+    @media (max-width: 768px) {
+      width: 40px;
+      height: 40px;
+    }
+    
+    @media (max-width: 480px) {
+      width: 36px;
+      height: 36px;
+    }
+    
+    &:hover {
+      transform: scale(1.05);
+    }
+    
+    svg {
+      width: 100%;
+      height: 100%;
+      color: white;
+    }
+  }
+  
+  &__titles {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  
+  &__title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+    line-height: 1.2;
+    
+    @media (max-width: 768px) {
+      font-size: 1.5rem;
+    }
+    
+    @media (max-width: 480px) {
+      font-size: 1.25rem;
+    }
+  }
+  
+  &__subtitle {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin: 0;
+    font-weight: 400;
+    
+    @media (max-width: 480px) {
+      font-size: 0.75rem;
+      display: none; // Masquer sur très petits écrans
+    }
+  }
+  
+  &__controls {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    
+    @media (max-width: 480px) {
+      gap: var(--spacing-sm);
+    }
+  }
+  
+  &__theme-toggle {
+    // Le composant theme-toggle gère ses propres styles
+    // On peut ajouter des styles spécifiques au contexte header ici
+    
+    :global(.theme-toggle) {
+      @media (max-width: 768px) {
+        padding: var(--spacing-xs) var(--spacing-sm);
+        min-height: 36px;
+        font-size: 0.75rem;
+      }
+    }
+  }
+}
+
+// Animation d'apparition du header
+.header {
+  animation: headerSlideIn 0.3s ease-out;
+}
+
+@keyframes headerSlideIn {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+// Effet de survol sur le brand
+.header__brand {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  
+  &:hover {
+    transform: translateY(-1px);
+    
+    .header__logo {
+      transform: scale(1.05);
+    }
+    
+    .header__title {
+      color: var(--primary-color);
+    }
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+// Responsive breakpoints additionnels
+@media (max-width: 360px) {
+  .header {
+    &__content {
+      padding: var(--spacing-xs) 0;
+      min-height: 50px;
+    }
+    
+    &__logo {
+      width: 32px;
+      height: 32px;
+    }
+    
+    &__title {
+      font-size: 1.125rem;
+    }
+    
+    &__subtitle {
+      display: none;
+    }
+  }
+}
