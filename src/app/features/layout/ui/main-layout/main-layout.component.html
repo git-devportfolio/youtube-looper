@@ -9,40 +9,8 @@
         <!-- Zone pour le contenu dynamique (router-outlet) -->
         <router-outlet></router-outlet>
         
-        <!-- Zone de contenu par défaut si pas de routes spécifiques -->
-        <div class="main-layout__welcome" *ngIf="!hasRouterContent">
-          <div class="welcome-card">
-            <div class="welcome-card__icon">
-              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="2" y="6" width="20" height="12" rx="2" stroke="currentColor" stroke-width="2"/>
-                <path d="M8 12l6-3v6l-6-3z" fill="currentColor"/>
-                <path d="M16 4l2 2-2 2M6 16l2 2-2 2" stroke="currentColor" stroke-width="1.5"/>
-                <path d="M18 6H8M6 18h10" stroke="currentColor" stroke-width="1.5"/>
-              </svg>
-            </div>
-            <h2 class="welcome-card__title">Bienvenue sur YouTube Looper</h2>
-            <p class="welcome-card__description">
-              Bouclez vos passages musicaux préférés pour faciliter votre apprentissage instrumental.
-            </p>
-            <div class="welcome-card__features">
-              <div class="feature">
-                <div class="feature__icon">🎵</div>
-                <span class="feature__text">Boucles précises</span>
-              </div>
-              <div class="feature">
-                <div class="feature__icon">⚡</div>
-                <span class="feature__text">Contrôle de vitesse</span>
-              </div>
-              <div class="feature">
-                <div class="feature__icon">📱</div>
-                <span class="feature__text">Interface responsive</span>
-              </div>
-            </div>
-            <div class="welcome-card__cta">
-              <p class="cta-text">Collez l'URL d'une vidéo YouTube pour commencer</p>
-            </div>
-          </div>
-        </div>
+        <!-- Composant de test temporaire -->
+        <app-test-youtube></app-test-youtube>
       </div>
     </div>
   </main>

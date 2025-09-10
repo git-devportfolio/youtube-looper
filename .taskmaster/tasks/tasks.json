@@ -22,7 +22,7 @@
         "dependencies": [
           1
         ],
-        "status": "pending",
+        "status": "done",
         "subtasks": [
           {
             "id": 1,
@@ -30,7 +30,7 @@
             "description": "Implémenter le chargement dynamique du script YouTube API et initialiser l'environnement d'intégration",
             "dependencies": [],
             "details": "Créer une méthode loadYouTubeAPI() qui injecte dynamiquement le script https://www.youtube.com/iframe_api dans le document. Utiliser un Promise pour gérer l'état de chargement et éviter les multiples chargements. Implémenter une variable globale onYouTubeIframeAPIReady pour capturer la callback d'initialisation. Gérer les erreurs de chargement du script et les timeouts.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Vérifier que le script YouTube API se charge correctement, tester les scénarios d'erreur de réseau, valider qu'une seule instance du script est chargée même avec multiples appels"
           },
           {
@@ -41,7 +41,7 @@
               "2.1"
             ],
             "details": "Créer YouTubePlayerService injectable avec signals pour : playerState (unloaded/loading/ready/playing/paused/error), currentVideo (videoId, title, duration), playerInstance. Implémenter le pattern de service avec computed signals pour les états dérivés. Utiliser takeUntilDestroyed pour la gestion automatique des subscriptions. Initialiser le service avec la méthode d'injection moderne inject().",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Tester l'initialisation du service, vérifier les states des signals, valider la gestion mémoire avec takeUntilDestroyed"
           },
           {
@@ -52,7 +52,7 @@
               "2.2"
             ],
             "details": "Implémenter loadVideo(videoId: string) avec extraction d'ID depuis URL complète, playVideo(), pauseVideo(), getCurrentTime(), getDuration(), seekTo(seconds: number). Chaque méthode doit vérifier l'état du player avant exécution. Utiliser des Promises pour les opérations asynchrones. Intégrer la mise à jour des signals correspondants après chaque opération.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Tester chaque méthode individuellement, vérifier les retours d'erreur pour player non initialisé, valider la synchronisation des signals avec l'état réel du player"
           },
           {
@@ -63,7 +63,7 @@
               "2.3"
             ],
             "details": "Créer les callbacks onPlayerReady() et onPlayerStateChange() pour capturer les événements YouTube. Mapper les états YouTube (YT.PlayerState) vers les signals internes. Émettre des events personnalisés pour les composants externes. Implémenter onPlayerError() pour capturer les erreurs de lecture. Synchroniser automatiquement currentTime via interval quand en lecture.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Tester les transitions d'état (loading->ready->playing->paused), vérifier la synchronisation temps réel, valider la capture d'événements d'erreur"
           },
           {
@@ -74,7 +74,7 @@
               "2.4"
             ],
             "details": "Créer un enum YouTubeError pour typer les erreurs (VIDEO_NOT_FOUND, PRIVATE_VIDEO, REGION_BLOCKED, etc.). Implémenter handlePlayerError() avec mapping des codes d'erreur YouTube vers messages utilisateur français. Utiliser un signal errorState pour exposer l'état d'erreur aux composants. Ajouter retry mechanism avec backoff exponentiel pour erreurs réseau. Logger les erreurs pour debug.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Tester avec vidéo inexistante, vidéo privée, vidéo géo-bloquée, vérifier les messages d'erreur français, valider le système de retry"
           },
           {
@@ -83,7 +83,7 @@
             "description": "Configurer le chargement dynamique du script YouTube IFrame API dans l'application Angular",
             "dependencies": [],
             "details": "Créer une fonction utilitaire pour charger dynamiquement le script YouTube IFrame API (https://www.youtube.com/iframe_api). Implémenter une vérification pour éviter le double chargement. Gérer la promesse de chargement avec resolve/reject. Ajouter la fonction dans un service ou directement dans YouTubePlayerService. S'assurer que window.onYouTubeIframeAPIReady est correctement configurée.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Vérifier que le script se charge une seule fois, tester que l'API est disponible après chargement, valider le callback onYouTubeIframeAPIReady"
           },
           {
@@ -94,7 +94,7 @@
               "2.6"
             ],
             "details": "Créer YouTubePlayerService injectable avec providedIn: 'root'. Définir les signals : playerState (loading, ready, playing, paused, error), videoId, currentTime, duration, isLoaded. Créer les interfaces TypeScript pour les événements YouTube. Implémenter la méthode initializePlayer() qui instancie YT.Player. Utiliser takeUntilDestroyed pour la gestion du cycle de vie. Ajouter les types YouTube dans un fichier de déclarations.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Vérifier l'injection du service, tester l'initialisation du player, valider que les signals se mettent à jour correctement"
           },
           {
@@ -105,7 +105,7 @@
               "2.7"
             ],
             "details": "Implémenter dans YouTubePlayerService les méthodes : loadVideo(videoId: string), playVideo(), pauseVideo(), getCurrentTime(): number, getDuration(): number, seekTo(seconds: number). Chaque méthode doit vérifier que le player est prêt avant exécution. Gérer les erreurs avec try/catch. Mettre à jour les signals correspondants après chaque action. Ajouter des guards pour vérifier l'état du player.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Tester chaque méthode individuellement, vérifier que getCurrentTime et getDuration retournent des valeurs correctes, valider la gestion d'erreur"
           },
           {
@@ -116,7 +116,7 @@
               "2.8"
             ],
             "details": "Configurer les event handlers onReady et onStateChange lors de l'initialisation du player. Dans onReady, mettre à jour le signal playerState à 'ready' et récupérer la durée. Dans onStateChange, mapper les états YouTube (PLAYING, PAUSED, ENDED, etc.) vers les signals internes. Implémenter un interval pour mettre à jour currentTime pendant la lecture. Gérer l'événement onError pour les erreurs de lecture.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Vérifier que onReady se déclenche, tester les changements d'état lors de play/pause, valider la mise à jour du temps courant"
           },
           {
@@ -127,7 +127,7 @@
               "2.9"
             ],
             "details": "Étendre la gestion d'erreurs dans onError pour identifier les types d'erreurs YouTube : vidéo privée (code 101), vidéo supprimée (code 100), géo-blocage (code 150), vidéo non trouvée (code 5). Créer un signal errorMessage pour stocker les messages d'erreur localisés en français. Implémenter clearError() pour réinitialiser l'état d'erreur. Ajouter des méthodes helper pour détecter si une vidéo est disponible. Prévoir un fallback pour les erreurs non identifiées.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Tester avec des URLs de vidéos privées, supprimées, géo-bloquées, vérifier l'affichage des messages d'erreur appropriés, valider la remise à zéro des erreurs"
           }
         ]
@@ -362,7 +362,7 @@
     ],
     "metadata": {
       "created": "2025-09-07T19:39:54.188Z",
-      "updated": "2025-09-09T05:34:11.068Z",
+      "updated": "2025-09-10T06:21:53.329Z",
       "description": "Tasks for master context"
     }
   }
