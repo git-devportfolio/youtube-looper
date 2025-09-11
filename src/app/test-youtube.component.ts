@@ -1,17 +1,30 @@
 import { Component, OnInit, inject, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { YouTubePlayerService, extractYouTubeVideoId } from './core';
+import { YouTubePlayerService, extractYouTubeVideoId, YouTubeUrlInfo } from './core';
+import { UrlInputComponent } from './features/youtube';
 
 @Component({
   selector: 'app-test-youtube',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, UrlInputComponent],
   template: `
     <div class="test-container">
       <h2 class="test-title">Test YouTube Player Service</h2>
       
+      <!-- Nouveau composant URL Input -->
       <div class="test-section">
+        <h3 class="test-subtitle">Composant de saisie d'URL</h3>
+        <app-url-input 
+          (validUrlSubmitted)="onValidUrlSubmitted($event)"
+          (urlChanged)="onUrlChanged($event)"
+          (urlCleared)="onUrlCleared()">
+        </app-url-input>
+      </div>
+
+      <!-- Ancienne interface de test -->
+      <div class="test-section">
+        <h3 class="test-subtitle">Test manuel (ancien)</h3>
         <label class="test-label">URL YouTube:</label>
         <input 
           type="text" 
@@ -391,8 +404,8 @@ export class TestYouTubeComponent implements OnInit {
 
   async initPlayer() {
     try {
-      debugger;
       console.log('Initialisation du player...');
+      debugger
       await this.playerService.initializePlayer('youtube-player', {
         width: 640,
         height: 360,
@@ -454,5 +467,40 @@ export class TestYouTubeComponent implements OnInit {
       '5': 'CUED'
     };
     return stateNames[state] || 'UNKNOWN';
+  }
+
+  // Nouveaux handlers pour le composant UrlInputComponent
+  async onValidUrlSubmitted(urlInfo: YouTubeUrlInfo) {
+    debugger
+    console.log('URL valide soumise:', urlInfo);
+    
+    try {
+      // Initialiser le player si nécessaire
+      if (!this.playerService.isReady()) {
+        console.log('Initialisation du player automatique...');
+        await this.initPlayer();
+      }
+
+      // Charger la vidéo automatiquement
+      console.log('Chargement automatique de la vidéo:', urlInfo.videoId);
+      await this.playerService.loadVideo({
+        videoId: urlInfo.videoId,
+        startSeconds: urlInfo.startTime,
+        autoplay: false
+      });
+      
+      console.log('Vidéo chargée avec succès via le composant URL');
+    } catch (error) {
+      console.error('Erreur lors du chargement automatique:', error);
+      alert('Erreur lors du chargement de la vidéo: ' + error);
+    }
+  }
+
+  onUrlChanged(url: string) {
+    console.log('URL changée:', url);
+  }
+
+  onUrlCleared() {
+    console.log('URL effacée');
   }
 }

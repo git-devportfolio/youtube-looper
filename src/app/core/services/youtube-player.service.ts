@@ -106,26 +106,38 @@ export class YouTubePlayerService {
 
       this.elementId = elementId;
 
-      const playerOptions: YouTubePlayerOptions = {
-        width: config.width || '100%',
-        height: config.height || '100%',
-        playerVars: {
-          enablejsapi: 1,
-          origin: window.location.origin,
-          controls: 1,
-          modestbranding: 1,
-          rel: 0,
-          showinfo: 0,
-          ...config.playerVars
-        },
-        events: {
-          onReady: this.onPlayerReady.bind(this),
-          onStateChange: this.onPlayerStateChange.bind(this),
-          onError: this.onPlayerError.bind(this)
-        }
-      };
+      // Créer une promesse qui se résout quand le player est prêt
+      const playerReadyPromise = new Promise<void>((resolve, reject) => {
+        const playerOptions: YouTubePlayerOptions = {
+          width: config.width || '100%',
+          height: config.height || '100%',
+          playerVars: {
+            enablejsapi: 1,
+            origin: window.location.origin,
+            controls: 1,
+            modestbranding: 1,
+            rel: 0,
+            showinfo: 0,
+            ...config.playerVars
+          },
+          events: {
+            onReady: (event: YouTubePlayerEvent) => {
+              this.onPlayerReady(event);
+              resolve(); // Résoudre la promesse quand le player est prêt
+            },
+            onStateChange: this.onPlayerStateChange.bind(this),
+            onError: (event: YouTubePlayerErrorEvent) => {
+              this.onPlayerError(event);
+              reject(new Error(`Erreur du lecteur YouTube: ${event.data}`));
+            }
+          }
+        };
 
-      this.player = new window.YT.Player(elementId, playerOptions);
+        this.player = new window.YT.Player(elementId, playerOptions);
+      });
+
+      // Attendre que le player soit vraiment prêt
+      await playerReadyPromise;
     } catch (error) {
       console.error('Erreur lors de l\'initialisation du lecteur YouTube:', error);
       throw error;
