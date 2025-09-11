@@ -116,17 +116,38 @@
   }
   
   &--right {
-    .loading-spinner svg {
-      animation: spin 1s linear infinite;
-      color: var(--primary-color);
+    .loading-spinner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      
+      svg {
+        animation: spin 1s linear infinite;
+        color: var(--primary-color);
+      }
     }
     
-    .success-icon svg {
-      color: #28a745;
+    .success-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      
+      svg {
+        color: #28a745;
+      }
     }
     
-    .error-icon svg {
-      color: #dc3545;
+    .error-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      
+      svg {
+        color: #dc3545;
+      }
     }
   }
 }
