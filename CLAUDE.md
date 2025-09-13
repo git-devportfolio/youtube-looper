@@ -95,6 +95,7 @@ L’objectif est de fournir un outil **simple, efficace et ergonomique** pour r�
 
 * **Découpage itératif** : chaque fonctionnalité est une tâche indépendante et testable.
 * **Livrables incrémentaux** : chaque tâche doit livrer une version **fonctionnelle immédiatement testable**.
+* **Pour chaque sous tâches TaskMaster AI** : lancer un build de l'application pour contrôler les erreurs
 * **Human-in-the-loop** :
   * La chaîne est **bloquée après chaque sous tâche**.
   * Un **test manuel** valide la fonctionnalité avant de continuer.
@@ -195,6 +196,9 @@ export * from './component-name';
 - Angular-specific strict options enabled (injection parameters, templates, input access modifiers)
 
 ## Conventions de Code et Architecture
+
+### Convetion de code
+- Utiliser les principes du clean code
 
 ### Références Angular
 Les conventions de développement Angular sont définies dans :
