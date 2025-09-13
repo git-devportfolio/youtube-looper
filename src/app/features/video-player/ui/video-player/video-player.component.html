@@ -1,0 +1,34 @@
+<div class="video-player-container">
+  <div class="video-player-wrapper">
+    <!-- Conteneur pour le lecteur YouTube IFrame -->
+    <div #playerContainer id="youtube-player" class="player-container">
+      <!-- Le lecteur sera injecté ici par l'API YouTube -->
+    </div>
+    
+    <!-- États de chargement et d'erreur -->
+    @if (isLoading()) {
+      <div class="player-loading">
+        <div class="loading-spinner">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+          </svg>
+        </div>
+        <p>Chargement de la vidéo...</p>
+      </div>
+    }
+    
+    @if (hasError()) {
+      <div class="player-error">
+        <div class="error-icon">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+            <line x1="15" y1="9" x2="9" y2="15" stroke="currentColor" stroke-width="2"/>
+            <line x1="9" y1="9" x2="15" y2="15" stroke="currentColor" stroke-width="2"/>
+          </svg>
+        </div>
+        <h3>Erreur de lecture</h3>
+        <p>{{ errorMessage() }}</p>
+      </div>
+    }
+  </div>
+</div>

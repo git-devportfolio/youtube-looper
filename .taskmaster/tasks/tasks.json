@@ -142,7 +142,7 @@
         "dependencies": [
           2
         ],
-        "status": "in-progress",
+        "status": "done",
         "subtasks": []
       },
       {
@@ -155,8 +155,62 @@
         "dependencies": [
           3
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Créer la structure de base du VideoPlayerComponent",
+            "description": "Générer et configurer le composant VideoPlayer avec l'architecture de base et l'injection du YouTubePlayerService",
+            "dependencies": [],
+            "details": "Créer VideoPlayerComponent dans features/video-player/ui/video-player/ avec ng generate. Configurer l'injection du YouTubePlayerService via inject(). Définir les signals de base pour l'état du lecteur (isLoading, hasError, currentVideoId). Créer le template HTML de base avec un conteneur pour le lecteur IFrame. Configurer les styles SCSS responsive avec des breakpoints mobile/desktop.",
+            "status": "done",
+            "testStrategy": "Vérifier que le composant se compile correctement et s'affiche sans erreur dans l'application"
+          },
+          {
+            "id": 2,
+            "title": "Implémenter l'affichage du lecteur IFrame YouTube",
+            "description": "Intégrer l'API YouTube IFrame Player dans le composant avec les contrôles natifs activés",
+            "dependencies": [
+              "4.1"
+            ],
+            "details": "Ajouter un div conteneur avec un ID unique pour le lecteur YouTube. Utiliser ViewChild pour référencer l'élément DOM. Dans ngAfterViewInit, appeler le service pour initialiser le lecteur avec les paramètres : controls: 1, showinfo: 0, rel: 0. Configurer la taille responsive du lecteur (16:9 ratio). Gérer les événements onReady du lecteur pour confirmer l'initialisation.",
+            "status": "done",
+            "testStrategy": "Tester l'affichage du lecteur avec une URL valide, vérifier que les contrôles natifs (play, pause, volume, plein écran) sont visibles et fonctionnels"
+          },
+          {
+            "id": 3,
+            "title": "Gérer les états de chargement et d'erreur",
+            "description": "Implémenter la gestion des différents états du lecteur (chargement, erreur, prêt) avec feedback utilisateur",
+            "dependencies": [
+              "4.2"
+            ],
+            "details": "Créer des signals pour isLoading, hasError, errorMessage. Écouter les événements onStateChange du lecteur pour détecter les états BUFFERING, PLAYING, PAUSED, ENDED. Afficher un spinner de chargement pendant le buffering. Créer des messages d'erreur pour vidéos privées, indisponibles, ou géo-bloquées. Implémenter un mécanisme de retry pour les erreurs temporaires.",
+            "status": "done",
+            "testStrategy": "Tester avec une vidéo valide, une vidéo privée, et une URL inexistante pour valider tous les cas d'erreur et états de chargement"
+          },
+          {
+            "id": 4,
+            "title": "Implémenter la communication bidirectionnelle avec YouTubePlayerService",
+            "description": "Exposer les méthodes du lecteur et synchroniser l'état entre le composant et le service",
+            "dependencies": [
+              "4.3"
+            ],
+            "details": "Créer des méthodes publiques : getCurrentTime(), getDuration(), seekTo(), getVideoData(). Utiliser des signals computed pour exposer l'état du lecteur (currentTime, duration, playbackState). Implémenter un système d'événements pour notifier les changements d'état au service parent. Ajouter des méthodes pour contrôler la lecture : play(), pause(), stop().",
+            "status": "done",
+            "testStrategy": "Vérifier que getCurrentTime() retourne la position correcte, tester seekTo() pour naviguer dans la vidéo, valider la synchronisation des états"
+          },
+          {
+            "id": 5,
+            "title": "Optimiser la responsivité et finaliser l'interface",
+            "description": "Perfectionner le design responsive et l'intégration visuelle du composant dans l'application",
+            "dependencies": [
+              "4.4"
+            ],
+            "details": "Implémenter CSS Grid/Flexbox pour un layout responsive optimal. Ajouter des media queries pour mobile (< 768px), tablette (768px-1024px), et desktop (> 1024px). Configurer l'aspect ratio 16:9 avec CSS aspect-ratio ou padding-bottom technique. Ajouter des styles pour les états de chargement et d'erreur. Optimiser les performances avec OnPush change detection strategy.",
+            "status": "done",
+            "testStrategy": "Tester sur différentes tailles d'écran, vérifier l'aspect ratio en mode portrait/paysage, valider l'accessibilité avec navigation clavier"
+          }
+        ]
       },
       {
         "id": 5,
@@ -362,7 +416,7 @@
     ],
     "metadata": {
       "created": "2025-09-07T19:39:54.188Z",
-      "updated": "2025-09-10T20:59:26.239Z",
+      "updated": "2025-09-13T12:08:14.263Z",
       "description": "Tasks for master context"
     }
   }

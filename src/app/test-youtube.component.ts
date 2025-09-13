@@ -1,13 +1,14 @@
-import { Component, OnInit, inject, DestroyRef } from '@angular/core';
+import { Component, OnInit, inject, DestroyRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { YouTubePlayerService, extractYouTubeVideoId, YouTubeUrlInfo } from './core';
+import { extractYouTubeVideoId, YouTubeUrlInfo } from './core';
 import { UrlInputComponent } from './features/youtube';
+import { VideoPlayerComponent } from './features/video-player';
 
 @Component({
   selector: 'app-test-youtube',
   standalone: true,
-  imports: [CommonModule, FormsModule, UrlInputComponent],
+  imports: [CommonModule, FormsModule, UrlInputComponent, VideoPlayerComponent],
   template: `
     <div class="test-container">
       <h2 class="test-title">Test YouTube Player Service</h2>
@@ -48,28 +49,31 @@ import { UrlInputComponent } from './features/youtube';
                   [class.disabled]="!canPlay">▶ Play</button>
           <button (click)="pause()" [disabled]="!canPause" class="test-button warning" 
                   [class.disabled]="!canPause">⏸ Pause</button>
-          <button (click)="seekTo(30)" [disabled]="!playerService.isReady()" class="test-button info" 
-                  [class.disabled]="!playerService.isReady()">⏭ 30s</button>
+          <button (click)="seekTo(30)" [disabled]="!videoPlayer?.isReady" class="test-button info" 
+                  [class.disabled]="!videoPlayer?.isReady">⏭ 30s</button>
         </div>
       </div>
 
-      <!-- Zone pour le player YouTube -->
-      <div id="youtube-player" class="youtube-player-container"></div>
+      <!-- Nouveau composant VideoPlayer -->
+      <div class="test-section">
+        <h3 class="test-subtitle">Lecteur Vidéo YouTube</h3>
+        <app-video-player #videoPlayer class="video-player-wrapper"></app-video-player>
+      </div>
 
       <!-- Informations de debug -->
       <div class="test-info-panel">
         <h3 class="test-subtitle">État du Service</h3>
         <ul class="test-info-list">
           <li><strong>API Ready:</strong> <span class="status" [class.success]="apiReady" [class.error]="!apiReady">{{ apiReady }}</span></li>
-          <li><strong>Player Ready:</strong> <span class="status" [class.success]="playerService.isReady()" [class.error]="!playerService.isReady()">{{ playerService.isReady() }}</span></li>
-          <li><strong>State:</strong> <span class="state-badge">{{ getStateName(playerService.state()) }}</span></li>
-          <li><strong>Playing:</strong> <span class="status" [class.success]="playerService.isPlaying()">{{ playerService.isPlaying() }}</span></li>
-          <li><strong>Paused:</strong> <span class="status" [class.warning]="playerService.isPaused()">{{ playerService.isPaused() }}</span></li>
-          <li><strong>Current Time:</strong> <span class="time-display">{{ playerService.currentTime() | number:'1.1-1' }}s</span></li>
-          <li><strong>Duration:</strong> <span class="time-display">{{ playerService.duration() | number:'1.0-0' }}s</span></li>
-          <li><strong>Volume:</strong> <span class="volume-display">{{ playerService.volume() }}%</span></li>
-          <li><strong>Video ID:</strong> <span class="video-id">{{ playerService.videoId() || 'Aucun' }}</span></li>
-          <li><strong>Error:</strong> <span class="status" [class.error]="playerService.error()">{{ playerService.error() || 'Aucune' }}</span></li>
+          <li><strong>Player Ready:</strong> <span class="status" [class.success]="videoPlayer?.isReady" [class.error]="!videoPlayer?.isReady">{{ videoPlayer?.isReady || false }}</span></li>
+          <li><strong>State:</strong> <span class="state-badge">{{ getStateName(videoPlayer?.state() || -1) }}</span></li>
+          <li><strong>Playing:</strong> <span class="status" [class.success]="videoPlayer?.isPlaying">{{ videoPlayer?.isPlaying || false }}</span></li>
+          <li><strong>Paused:</strong> <span class="status" [class.warning]="videoPlayer?.isPaused">{{ videoPlayer?.isPaused || false }}</span></li>
+          <li><strong>Current Time:</strong> <span class="time-display">{{ (videoPlayer?.getCurrentTime() || 0) | number:'1.1-1' }}s</span></li>
+          <li><strong>Duration:</strong> <span class="time-display">{{ (videoPlayer?.getDuration() || 0) | number:'1.0-0' }}s</span></li>
+          <li><strong>Volume:</strong> <span class="volume-display">{{ videoPlayer?.getVolume() || 0 }}%</span></li>
+          <li><strong>Video ID:</strong> <span class="video-id">{{ videoPlayer?.videoId || 'Aucun' }}</span></li>
+          <li><strong>Error:</strong> <span class="status" [class.error]="videoPlayer?.error">{{ videoPlayer?.error || 'Aucune' }}</span></li>
           <li><strong>URL Valide:</strong> <span class="status" [class.success]="isValidUrl" [class.error]="!isValidUrl">{{ isValidUrl }}</span></li>
           <li><strong>Video ID extrait:</strong> <span class="video-id">{{ extractedVideoId || 'Aucun' }}</span></li>
         </ul>
@@ -224,15 +228,6 @@ import { UrlInputComponent } from './features/youtube';
       transform: none !important;
     }
 
-    .youtube-player-container {
-      width: 100%;
-      max-width: 640px;
-      height: 360px;
-      background: #000;
-      margin: var(--spacing-xl) auto;
-      border-radius: var(--border-radius);
-      border: 2px solid var(--border-color);
-    }
 
     .test-info-panel {
       background-color: var(--background-secondary);
@@ -347,10 +342,6 @@ import { UrlInputComponent } from './features/youtube';
         min-width: auto;
       }
 
-      .youtube-player-container {
-        height: 240px;
-      }
-
       .test-info-list li {
         flex-direction: column;
         align-items: flex-start;
@@ -360,7 +351,8 @@ import { UrlInputComponent } from './features/youtube';
   `]
 })
 export class TestYouTubeComponent implements OnInit {
-  protected readonly playerService = inject(YouTubePlayerService);
+  @ViewChild('videoPlayer') videoPlayer!: VideoPlayerComponent;
+  
   private readonly destroyRef = inject(DestroyRef);
 
   testUrl = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
@@ -375,11 +367,11 @@ export class TestYouTubeComponent implements OnInit {
   }
 
   get canPlay(): boolean {
-    return this.playerService.canPlay();
+    return this.videoPlayer?.canPlay || false;
   }
 
   get canPause(): boolean {
-    return this.playerService.canPause();
+    return this.videoPlayer?.canPause || false;
   }
 
   async ngOnInit() {
@@ -404,18 +396,9 @@ export class TestYouTubeComponent implements OnInit {
 
   async initPlayer() {
     try {
-      console.log('Initialisation du player...');
-      debugger
-      await this.playerService.initializePlayer('youtube-player', {
-        width: 640,
-        height: 360,
-        playerVars: {
-          controls: 1,
-          modestbranding: 1,
-          rel: 0
-        }
-      });
-      console.log('Player initialisé avec succès');
+      console.log('Initialisation via le nouveau composant VideoPlayer...');
+      // Le VideoPlayerComponent gère automatiquement l'initialisation dans ngAfterViewInit
+      console.log('Player initialisé avec succès via le composant');
     } catch (error) {
       console.error('Erreur lors de l\'initialisation:', error);
       alert('Erreur lors de l\'initialisation du player: ' + error);
@@ -430,11 +413,8 @@ export class TestYouTubeComponent implements OnInit {
     }
 
     try {
-      console.log('Chargement de la vidéo:', videoId);
-      await this.playerService.loadVideo({
-        videoId: videoId,
-        autoplay: false
-      });
+      console.log('Chargement de la vidéo via le composant:', videoId);
+      await this.videoPlayer.loadVideo(videoId, false);
       console.log('Vidéo chargée avec succès');
     } catch (error) {
       console.error('Erreur lors du chargement:', error);
@@ -444,17 +424,17 @@ export class TestYouTubeComponent implements OnInit {
 
   play() {
     console.log('Lecture...');
-    this.playerService.play();
+    this.videoPlayer.play();
   }
 
   pause() {
     console.log('Pause...');
-    this.playerService.pause();
+    this.videoPlayer.pause();
   }
 
   seekTo(seconds: number) {
     console.log('Seek to:', seconds);
-    this.playerService.seekTo(seconds);
+    this.videoPlayer.seekTo(seconds);
   }
 
   getStateName(state: number): string {
@@ -471,23 +451,19 @@ export class TestYouTubeComponent implements OnInit {
 
   // Nouveaux handlers pour le composant UrlInputComponent
   async onValidUrlSubmitted(urlInfo: YouTubeUrlInfo) {
-    debugger
     console.log('URL valide soumise:', urlInfo);
     
     try {
-      // Initialiser le player si nécessaire
-      if (!this.playerService.isReady()) {
-        console.log('Initialisation du player automatique...');
-        await this.initPlayer();
-      }
-
-      // Charger la vidéo automatiquement
+      // Charger la vidéo automatiquement via le VideoPlayerComponent
       console.log('Chargement automatique de la vidéo:', urlInfo.videoId);
-      await this.playerService.loadVideo({
-        videoId: urlInfo.videoId,
-        startSeconds: urlInfo.startTime,
-        autoplay: false
-      });
+      await this.videoPlayer.loadVideo(urlInfo.videoId, false);
+      
+      // Si un startTime est spécifié, naviguer à cette position
+      if (urlInfo.startTime && urlInfo.startTime > 0) {
+        setTimeout(() => {
+          this.videoPlayer.seekTo(urlInfo.startTime!);
+        }, 1000); // Attendre que la vidéo soit chargée
+      }
       
       console.log('Vidéo chargée avec succès via le composant URL');
     } catch (error) {
