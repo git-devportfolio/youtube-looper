@@ -2,12 +2,12 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from '../header';
-import { TestYouTubeComponent } from '../../../../test-youtube.component';
+import { AppMainComponent } from '../../../main-app';
 
 @Component({
   selector: 'app-main-layout',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, HeaderComponent, TestYouTubeComponent],
+  imports: [CommonModule, RouterOutlet, HeaderComponent, AppMainComponent],
   templateUrl: './main-layout.component.html',
   styleUrl: './main-layout.component.scss'
 })

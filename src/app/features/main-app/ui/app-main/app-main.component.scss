@@ -1,0 +1,270 @@
+.app-main-container {
+  display: grid;
+  grid-template-areas: 
+    "url-input"
+    "player"
+    "controls"
+    "footer";
+  grid-template-rows: auto 1fr auto auto;
+  gap: var(--spacing-lg);
+  min-height: 100vh;
+  padding: var(--spacing-lg);
+  background-color: var(--background-primary);
+  color: var(--text-primary);
+  
+  // Assurer la largeur maximale et centrage
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+// Zone de saisie URL
+.url-input-zone {
+  grid-area: url-input;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: var(--spacing-md);
+  background-color: var(--background-secondary);
+  border-radius: var(--border-radius-lg);
+  border: 1px solid var(--border-color);
+}
+
+// Zone lecteur vid�o principal
+.player-zone {
+  grid-area: player;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: var(--spacing-md);
+  background-color: var(--background-secondary);
+  border-radius: var(--border-radius-lg);
+  border: 1px solid var(--border-color);
+  min-height: 400px; // Hauteur minimale pour le lecteur
+  
+  .video-player-wrapper {
+    width: 100%;
+    max-width: 800px;
+  }
+}
+
+// Zone contr�les (pr�par�e pour futurs composants)
+.controls-zone {
+  grid-area: controls;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  background-color: var(--background-secondary);
+  border-radius: var(--border-radius-lg);
+  border: 1px solid var(--border-color);
+  min-height: 120px; // Hauteur minimale pour les futurs contr�les
+  
+  // Placeholder styling pour les futurs composants
+  &:empty::before {
+    content: "Zone contr�les - En attente des composants timeline, boucles et vitesse";
+    display: block;
+    text-align: center;
+    color: var(--text-secondary);
+    font-style: italic;
+    padding: var(--spacing-xl);
+  }
+}
+
+// Zone footer discr�te
+.footer-zone {
+  grid-area: footer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: var(--spacing-sm);
+  background-color: var(--background-tertiary);
+  border-radius: var(--border-radius);
+  border-top: 1px solid var(--border-light);
+  
+  .footer-text {
+    margin: 0;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    text-align: center;
+  }
+}
+
+// Classes container r�utilisables pour standardiser les espacements
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-lg);
+}
+
+.player-container {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.controls-container {
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+// Classes pr�par�es pour les futurs composants
+.timeline-container {
+  width: 100%;
+  padding: var(--spacing-md);
+  background-color: var(--background-primary);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-light);
+  // Sera utilis� par le timeline component
+}
+
+.loop-controls-container {
+  display: flex;
+  gap: var(--spacing-md);
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: var(--spacing-md);
+  background-color: var(--background-primary);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-light);
+  // Sera utilis� par les contr�les de boucle
+}
+
+.speed-controls-container {
+  display: flex;
+  gap: var(--spacing-sm);
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: var(--spacing-md);
+  background-color: var(--background-primary);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-light);
+  // Sera utilisé par les contrôles de vitesse
+}
+
+// Architecture responsive mobile-first avec breakpoints
+// Mobile (<768px) : Layout par défaut déjà défini ci-dessus
+
+// Tablet (768px-1024px)
+@media (min-width: 768px) {
+  .app-main-container {
+    grid-template-areas: 
+      "url-input url-input"
+      "player player"
+      "controls controls"
+      "footer footer";
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto 1fr auto auto;
+    gap: var(--spacing-xl);
+    padding: var(--spacing-xl);
+  }
+
+  .player-zone {
+    min-height: 450px;
+  }
+
+  .controls-zone {
+    min-height: 150px;
+  }
+
+  // Adapter les contrôles pour tablet
+  .loop-controls-container,
+  .speed-controls-container {
+    justify-content: space-between;
+    flex-wrap: nowrap;
+  }
+}
+
+// Desktop (>1024px)
+@media (min-width: 1024px) {
+  .app-main-container {
+    grid-template-areas: 
+      "url-input url-input url-input"
+      "player player player"
+      "controls controls controls"
+      "footer footer footer";
+    grid-template-columns: 1fr 2fr 1fr;
+    grid-template-rows: auto 1fr auto auto;
+    gap: var(--spacing-xl);
+    padding: var(--spacing-xl);
+    max-width: 1400px;
+  }
+
+  .player-zone {
+    min-height: 500px;
+    
+    .video-player-wrapper {
+      max-width: 900px;
+    }
+  }
+
+  .controls-zone {
+    min-height: 180px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  // Layout desktop optimisé pour les futurs composants
+  .timeline-container {
+    flex: 1 1 100%;
+    margin-bottom: var(--spacing-md);
+  }
+
+  .loop-controls-container {
+    flex: 1 1 45%;
+  }
+
+  .speed-controls-container {
+    flex: 1 1 45%;
+  }
+}
+
+// Gestion des orientations sur tablette
+@media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
+  .app-main-container {
+    grid-template-areas: 
+      "url-input controls"
+      "player player"
+      "footer footer";
+    grid-template-columns: 1fr 300px;
+    grid-template-rows: auto 1fr auto;
+  }
+
+  .controls-zone {
+    min-height: 200px;
+  }
+}
+
+// Optimisations pour très petits écrans (<480px)
+@media (max-width: 480px) {
+  .app-main-container {
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+  }
+
+  .url-input-zone,
+  .player-zone,
+  .controls-zone {
+    padding: var(--spacing-sm);
+  }
+
+  .player-zone {
+    min-height: 300px;
+  }
+
+  .controls-zone {
+    min-height: 100px;
+  }
+
+  .footer-zone {
+    .footer-text {
+      font-size: 0.75rem;
+    }
+  }
+}

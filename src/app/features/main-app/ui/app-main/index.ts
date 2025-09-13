@@ -1,0 +1,1 @@
+export { AppMainComponent } from './app-main.component';

@@ -1,0 +1,32 @@
+<div class="app-main-container">
+  <!-- Zone de saisie URL -->
+  <div class="url-input-zone">
+    <app-url-input 
+      (validUrlSubmitted)="onValidUrlSubmitted($event)"
+      (urlChanged)="onUrlChanged($event)"
+      (urlCleared)="onUrlCleared()">
+    </app-url-input>
+  </div>
+
+  <!-- Zone lecteur vidéo principal -->
+  <div class="player-zone">
+    <app-video-player #videoPlayer class="video-player-wrapper"></app-video-player>
+  </div>
+
+  <!-- Zone contrôles (préparée pour futurs composants) -->
+  <div class="controls-zone">
+    <!-- Futur: Timeline component sera intégré ici -->
+    <!-- <app-timeline-component></app-timeline-component> -->
+    
+    <!-- Futur: Loop controls sera intégré ici -->
+    <!-- <app-loop-controls></app-loop-controls> -->
+    
+    <!-- Futur: Speed controls sera intégré ici -->
+    <!-- <app-speed-controls></app-speed-controls> -->
+  </div>
+
+  <!-- Zone footer discrète -->
+  <div class="footer-zone">
+    <p class="footer-text">YouTube Looper - Outil pour musiciens</p>
+  </div>
+</div>

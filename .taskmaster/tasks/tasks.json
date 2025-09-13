@@ -412,11 +412,83 @@
             "testStrategy": "Vérifier la structure Grid responsive, tester l'affichage des trois zones, valider l'adaptation mobile et l'application des thèmes"
           }
         ]
+      },
+      {
+        "id": 12,
+        "title": "Interface utilisateur principale intégrée avec layout responsive",
+        "description": "Créer l'interface utilisateur définitive en intégrant UrlInputComponent et VideoPlayerComponent dans un layout responsive cohérent avec zones préparées pour les futurs composants.",
+        "details": "Créer AppMainComponent qui remplace le composant de test actuel en intégrant UrlInputComponent et VideoPlayerComponent existants. Implémenter un design system modulaire avec CSS Grid pour organiser les zones : zone de saisie URL en haut, zone player principale au centre, zone contrôles vide préparée pour les futurs composants (timeline, boucles, vitesse), et footer discret. Utiliser CSS custom properties pour maintenir la cohérence avec le thème dark/light existant. Implémenter une architecture responsive mobile-first avec breakpoints : mobile (<768px), tablet (768px-1024px), desktop (>1024px). Créer des container classes réutilisables (.container, .player-zone, .controls-zone) pour standardiser les espacements et marges. Préparer les emplacements avec des div conteneurs commentés et des classes CSS prêtes pour l'intégration future des composants timeline, loop-controls, et speed-control. Optimiser la hiérarchie visuelle avec une mise en page centrée sur la vidéo comme élément principal. Assurer la compatibilité avec les composants existants sans modification de leur API.",
+        "testStrategy": "Vérifier l'intégration correcte des composants UrlInputComponent et VideoPlayerComponent, tester la responsivité sur tous les breakpoints (mobile, tablet, desktop), valider l'affichage cohérent du thème dark/light, contrôler que les zones préparées sont correctement positionnées et dimensionnées, tester la navigation entre saisie URL et lecture vidéo, vérifier que le layout s'adapte aux différentes orientations d'écran, valider l'accessibilité avec navigation clavier, tester sur différents navigateurs (Chrome, Firefox, Safari, Edge).",
+        "status": "done",
+        "dependencies": [
+          3,
+          4,
+          11
+        ],
+        "priority": "medium",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Créer le composant AppMainComponent avec architecture modulaire",
+            "description": "Créer AppMainComponent dans src/app/features/main-app/ avec structure modulaire selon les conventions du projet, incluant les zones d'interface définies (saisie URL, player, contrôles futurs) et l'intégration des composants existants.",
+            "dependencies": [],
+            "details": "Générer le composant AppMainComponent avec ng generate dans src/app/features/main-app/ui/app-main/. Définir la structure HTML avec CSS Grid pour organiser les zones : .url-input-zone (en haut), .player-zone (centre), .controls-zone (vide pour futurs composants), .footer-zone (discret). Créer les fichiers index.ts selon la convention du projet. Importer et intégrer UrlInputComponent et VideoPlayerComponent existants. Créer les barrel exports nécessaires dans src/app/features/main-app/index.ts.",
+            "status": "done",
+            "testStrategy": "Vérifier la génération correcte du composant, la structure HTML avec CSS Grid, l'intégration des composants existants UrlInputComponent et VideoPlayerComponent, et la création des fichiers index.ts avec barrel exports."
+          },
+          {
+            "id": 2,
+            "title": "Implémenter le système de design modulaire avec CSS Grid et custom properties",
+            "description": "Créer le système CSS Grid responsive avec zones bien définies et utiliser les custom properties existantes pour maintenir la cohérence avec le thème dark/light.",
+            "dependencies": [
+              "12.1"
+            ],
+            "details": "Dans app-main.component.scss, implémenter CSS Grid avec grid-template-areas pour définir les zones (url-input, player, controls, footer). Utiliser les variables CSS existantes du fichier styles.scss (--spacing-*, --background-*, --border-*). Créer des classes container réutilisables (.container, .player-zone, .controls-zone) avec espacements standardisés. Assurer la compatibilité avec le système de thème existant (dark/light).",
+            "status": "done",
+            "testStrategy": "Vérifier la mise en page avec CSS Grid, l'utilisation correcte des custom properties existantes, l'affichage cohérent en mode dark et light, et la réutilisabilité des classes container."
+          },
+          {
+            "id": 3,
+            "title": "Implémenter l'architecture responsive mobile-first avec breakpoints",
+            "description": "Créer le design responsive avec breakpoints mobile (<768px), tablet (768px-1024px), desktop (>1024px) et optimiser la hiérarchie visuelle centrée sur la vidéo.",
+            "dependencies": [
+              "12.2"
+            ],
+            "details": "Définir les breakpoints dans app-main.component.scss : mobile (<768px), tablet (768px-1024px), desktop (>1024px). Adapter la grille CSS Grid pour chaque breakpoint (colonne unique mobile, grille adaptée tablet/desktop). Optimiser les tailles et espacements pour chaque format. Centrer la vidéo comme élément principal de l'interface. Gérer les orientations portrait/paysage sur tablette.",
+            "status": "done",
+            "testStrategy": "Tester l'affichage sur différentes tailles d'écran (mobile, tablet, desktop), vérifier la réorganisation de la grille selon les breakpoints, valider le centrage de la vidéo et l'optimisation des espaces."
+          },
+          {
+            "id": 4,
+            "title": "Préparer les zones pour les futurs composants avec containers commentés",
+            "description": "Créer les emplacements prêts pour l'intégration future des composants timeline, loop-controls et speed-control avec des conteneurs commentés et classes CSS préparées.",
+            "dependencies": [
+              "12.3"
+            ],
+            "details": "Dans le template app-main.component.html, ajouter des div conteneurs commentés dans la .controls-zone pour timeline-component, loop-controls-component, et speed-control-component. Créer les classes CSS correspondantes (.timeline-container, .loop-controls-container, .speed-controls-container) avec dimensionnement et positionnement préparés. Ajouter des commentaires explicatifs dans le code pour l'intégration future. Préparer l'API d'intégration avec des propriétés/méthodes placeholder commentées.",
+            "status": "done",
+            "testStrategy": "Vérifier la présence des conteneurs commentés dans le HTML, les classes CSS préparées avec dimensions appropriées, la structure prête pour l'intégration future sans impact sur l'affichage actuel."
+          },
+          {
+            "id": 5,
+            "title": "Remplacer TestYouTubeComponent par AppMainComponent dans MainLayoutComponent",
+            "description": "Modifier MainLayoutComponent pour utiliser AppMainComponent à la place de TestYouTubeComponent et assurer la compatibilité avec l'architecture existante.",
+            "dependencies": [
+              "12.1",
+              "12.2",
+              "12.3",
+              "12.4"
+            ],
+            "details": "Dans main-layout.component.ts, remplacer l'import TestYouTubeComponent par AppMainComponent. Mettre à jour le tableau imports et le template main-layout.component.html pour utiliser <app-main></app-main> à la place de <app-test-youtube></app-test-youtube>. Vérifier que l'intégration respecte la structure existante du layout et les styles CSS. Préserver la fonctionnalité du header avec theme toggle et footer.",
+            "status": "done",
+            "testStrategy": "Vérifier le remplacement correct dans main-layout.component.ts et le template, s'assurer que l'application fonctionne sans erreur avec le nouveau composant, valider que le header et footer restent fonctionnels, et tester l'intégration des composants UrlInputComponent et VideoPlayerComponent."
+          }
+        ]
       }
     ],
     "metadata": {
       "created": "2025-09-07T19:39:54.188Z",
-      "updated": "2025-09-13T12:08:14.263Z",
+      "updated": "2025-09-13T16:27:51.950Z",
       "description": "Tasks for master context"
     }
   }
