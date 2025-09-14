@@ -235,8 +235,62 @@
         "dependencies": [
           5
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Créer la structure du composant TimelineComponent",
+            "description": "Générer le composant TimelineComponent avec sa structure de base, l'intégrer dans l'architecture existante et préparer l'injection du LoopService",
+            "dependencies": [],
+            "details": "Créer TimelineComponent dans src/app/features/video-controls/ui/timeline/ en suivant les conventions du projet. Générer les fichiers component.ts, component.html, component.scss avec architecture standalone. Ajouter l'injection du LoopService et YouTubePlayerService. Créer le fichier index.ts pour barrel export. Mettre en place les signals de base pour startTime, endTime, duration et isActive.",
+            "status": "done",
+            "testStrategy": "Vérifier la génération correcte du composant, l'injection des services, la compilation sans erreurs et l'affichage de base dans l'interface"
+          },
+          {
+            "id": 2,
+            "title": "Implémenter la barre de progression visuelle avec zone colorée",
+            "description": "Créer l'interface visuelle de la timeline avec une barre de progression et zone colorée entre les bornes start/end",
+            "dependencies": [
+              "6.1"
+            ],
+            "details": "Créer le template HTML avec une barre de progression SVG ou Canvas. Implémenter l'affichage de la position courante de la vidéo. Ajouter la zone colorée entre startTime et endTime. Utiliser les variables CSS du thème existant pour maintenir la cohérence visuelle. Synchroniser l'affichage avec la duration de la vidéo du YouTubePlayerService. Assurer la responsivité sur tous les breakpoints.",
+            "status": "done",
+            "testStrategy": "Valider l'affichage de la barre de progression, vérifier la zone colorée entre les bornes, tester la responsivité sur mobile/tablet/desktop"
+          },
+          {
+            "id": 3,
+            "title": "Développer les poignées draggables start et end",
+            "description": "Implémenter deux poignées interactives pour définir les bornes de boucle avec drag and drop",
+            "dependencies": [
+              "6.2"
+            ],
+            "details": "Créer deux éléments draggables (poignées start/end) positionnés sur la timeline. Implémenter les event listeners pour mousedown, mousemove, mouseup. Gérer les contraintes : startTime < endTime, bornes dans [0, duration]. Synchroniser les changements avec le LoopService via setStartTime() et setEndTime(). Ajouter des styles visuels distincts pour chaque poignée. Implémenter le feedback visuel pendant le drag (cursor, hover states).",
+            "status": "done",
+            "testStrategy": "Tester le drag des poignées, vérifier les contraintes de validation, valider la synchronisation avec LoopService, contrôler les feedbacks visuels"
+          },
+          {
+            "id": 4,
+            "title": "Ajouter l'affichage du temps au-dessus des poignées",
+            "description": "Implémenter l'affichage dynamique du temps pendant le drag des poignées avec formatage approprié",
+            "dependencies": [
+              "6.3"
+            ],
+            "details": "Créer des tooltips ou overlays qui affichent le temps (MM:SS format) au-dessus de chaque poignée. Afficher les temps pendant le drag et au survol. Implémenter une fonction de formatage du temps (secondes vers MM:SS). Positionner dynamiquement les affichages selon la position des poignées. Gérer la visibilité et les transitions CSS. Assurer la lisibilité avec les contrastes appropriés selon le thème actuel.",
+            "status": "done",
+            "testStrategy": "Vérifier l'affichage des temps pendant le drag, valider le formatage MM:SS, tester la visibilité et positionnement sur différentes tailles d'écran"
+          },
+          {
+            "id": 5,
+            "title": "Implémenter le support tactile et finaliser l'intégration",
+            "description": "Ajouter le support des événements tactiles pour mobile et intégrer le TimelineComponent dans l'interface principale",
+            "dependencies": [
+              "6.4"
+            ],
+            "details": "Ajouter les event listeners pour touch events (touchstart, touchmove, touchend). Adapter les calculs de position pour les interactions tactiles. Gérer les spécificités mobile (touch target size minimum 44px). Intégrer le TimelineComponent dans app-main.component.html en remplaçant le commentaire. Appliquer les styles timeline-container existants. Tester la synchronisation complète avec LoopService et YouTubePlayerService. Valider l'expérience utilisateur sur tous les appareils.",
+            "status": "done",
+            "testStrategy": "Tester les interactions tactiles sur mobile/tablette, vérifier l'intégration dans l'interface principale, valider la synchronisation complète avec les services, contrôler l'ergonomie sur tous les breakpoints"
+          }
+        ]
       },
       {
         "id": 7,
@@ -488,7 +542,7 @@
     ],
     "metadata": {
       "created": "2025-09-07T19:39:54.188Z",
-      "updated": "2025-09-13T18:23:24.747Z",
+      "updated": "2025-09-14T05:49:38.315Z",
       "description": "Tasks for master context"
     }
   }

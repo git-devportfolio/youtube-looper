@@ -1,0 +1,267 @@
+.timeline-container {
+  width: 100%;
+  padding: var(--spacing-md);
+  background-color: var(--background-secondary);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
+  user-select: none;
+  
+  &.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+}
+
+.timeline-track {
+  position: relative;
+  height: 20px;
+  margin: var(--spacing-md) 0;
+  border-radius: 10px;
+  overflow: visible; // Pour permettre aux tooltips de dépasser
+}
+
+.timeline-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--background-tertiary);
+  border: 1px solid var(--border-light);
+  border-radius: 10px;
+}
+
+.timeline-progress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  background-color: var(--text-secondary);
+  border-radius: 10px;
+  transition: width 0.1s linear;
+  z-index: 1;
+}
+
+.timeline-loop-zone {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background-color: rgba(255, 0, 0, 0.2);
+  border: 1px solid rgba(255, 0, 0, 0.4);
+  border-radius: 10px;
+  z-index: 2;
+  transition: all 0.2s ease;
+  
+  &.active {
+    background-color: rgba(255, 0, 0, 0.3);
+    border-color: rgba(255, 0, 0, 0.6);
+    box-shadow: 0 0 8px rgba(255, 0, 0, 0.3);
+  }
+}
+
+.timeline-cursor {
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  width: 2px;
+  background-color: var(--primary-color);
+  border-radius: 1px;
+  z-index: 4;
+  transition: left 0.1s linear;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    width: 10px;
+    height: 10px;
+    background-color: var(--primary-color);
+    border-radius: 50%;
+    border: 2px solid white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+}
+
+.timeline-handle {
+  position: absolute;
+  top: -8px;
+  width: 16px;
+  height: 36px;
+  margin-left: -8px; // Centrer la poignée
+  background-color: var(--background-primary);
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  cursor: grab;
+  z-index: 5;
+  transition: all 0.2s ease;
+  
+  // Style distinctif pour start
+  &--start {
+    border-color: #28a745;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 8px;
+      height: 8px;
+      background-color: #28a745;
+      border-radius: 50%;
+    }
+  }
+  
+  // Style distinctif pour end
+  &--end {
+    border-color: #dc3545;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 8px;
+      height: 8px;
+      background-color: #dc3545;
+      border-radius: 50%;
+    }
+  }
+  
+  &:hover, &.active {
+    transform: scale(1.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  }
+  
+  &.dragging {
+    cursor: grabbing;
+    transform: scale(1.2);
+    z-index: 6;
+  }
+}
+
+.timeline-tooltip {
+  position: absolute;
+  bottom: 50px; // Au-dessus de la poignée
+  left: 50%;
+  transform: translateX(-50%);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background-color: var(--background-tertiary);
+  color: var(--text-primary);
+  font-size: 0.75rem;
+  font-weight: 500;
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
+  white-space: nowrap;
+  z-index: 10;
+  
+  // Flèche pointant vers la poignée
+  &::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 6px solid var(--border-color);
+  }
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid var(--background-tertiary);
+    z-index: 1;
+  }
+}
+
+.timeline-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: var(--spacing-sm);
+}
+
+.timeline-time {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  font-family: monospace;
+  
+  &--current {
+    color: var(--primary-color);
+  }
+  
+  &--duration {
+    color: var(--text-secondary);
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .timeline-container {
+    padding: var(--spacing-sm);
+  }
+  
+  .timeline-track {
+    height: 24px;
+    margin: var(--spacing-sm) 0;
+  }
+  
+  .timeline-handle {
+    width: 20px;
+    height: 40px;
+    margin-left: -10px;
+    top: -10px;
+    
+    // Taille tactile minimale de 44px
+    &::after {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -12px;
+      right: -12px;
+      bottom: -2px;
+      min-height: 44px;
+      min-width: 44px;
+    }
+  }
+  
+  .timeline-tooltip {
+    font-size: 0.7rem;
+    bottom: 55px;
+  }
+  
+  .timeline-time {
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .timeline-container {
+    padding: var(--spacing-xs);
+  }
+  
+  .timeline-track {
+    height: 28px;
+    margin: var(--spacing-xs) 0;
+  }
+  
+  .timeline-handle {
+    width: 24px;
+    height: 44px;
+    margin-left: -12px;
+    top: -10px;
+  }
+}

@@ -1,11 +1,12 @@
 import { Component, ViewChild } from '@angular/core';
 import { UrlInputComponent } from '../../../youtube';
 import { VideoPlayerComponent } from '../../../video-player';
+import { TimelineComponent } from '../../../video-controls';
 import { YouTubeUrlInfo } from '../../../../core';
 
 @Component({
   selector: 'app-main',
-  imports: [UrlInputComponent, VideoPlayerComponent],
+  imports: [UrlInputComponent, VideoPlayerComponent, TimelineComponent],
   templateUrl: './app-main.component.html',
   styleUrl: './app-main.component.scss'
 })

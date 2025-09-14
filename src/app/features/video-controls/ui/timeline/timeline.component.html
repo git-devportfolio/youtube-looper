@@ -1,0 +1,75 @@
+<div class="timeline-container" [class.disabled]="!isReady()">
+  <!-- Barre de progression principale -->
+  <div class="timeline-track" 
+       (click)="onTimelineClick($event)" 
+       (touchstart)="onTimelineTouchStart($event)">
+    <!-- Arrière-plan de la timeline -->
+    <div class="timeline-background"></div>
+    
+    <!-- Barre de progression (temps écoulé) -->
+    <div 
+      class="timeline-progress" 
+      [style.width.%]="currentPosition()">
+    </div>
+    
+    <!-- Zone de boucle colorée -->
+    @if (hasValidLoop()) {
+      <div 
+        class="timeline-loop-zone"
+        [class.active]="isLoopActive()"
+        [style.left.%]="startPosition()"
+        [style.width.%]="loopWidth()">
+      </div>
+    }
+    
+    <!-- Indicateur de position courante -->
+    <div 
+      class="timeline-cursor"
+      [style.left.%]="currentPosition()">
+    </div>
+    
+    <!-- Poignée de début de boucle -->
+    <div 
+      class="timeline-handle timeline-handle--start"
+      [class.active]="hoveredHandle() === 'start' || dragTarget() === 'start'"
+      [class.dragging]="dragTarget() === 'start'"
+      [style.left.%]="startPosition()"
+      (mouseenter)="onHandleHover('start')"
+      (mouseleave)="onHandleHover(null)"
+      (mousedown)="onDragStart('start', $event)"
+      (touchstart)="onTouchStart('start', $event)">
+      
+      <!-- Affichage du temps au-dessus de la poignée -->
+      @if (hoveredHandle() === 'start' || dragTarget() === 'start') {
+        <div class="timeline-tooltip timeline-tooltip--start">
+          {{ formatTime(startTime()) }}
+        </div>
+      }
+    </div>
+    
+    <!-- Poignée de fin de boucle -->
+    <div 
+      class="timeline-handle timeline-handle--end"
+      [class.active]="hoveredHandle() === 'end' || dragTarget() === 'end'"
+      [class.dragging]="dragTarget() === 'end'"
+      [style.left.%]="endPosition()"
+      (mouseenter)="onHandleHover('end')"
+      (mouseleave)="onHandleHover(null)"
+      (mousedown)="onDragStart('end', $event)"
+      (touchstart)="onTouchStart('end', $event)">
+      
+      <!-- Affichage du temps au-dessus de la poignée -->
+      @if (hoveredHandle() === 'end' || dragTarget() === 'end') {
+        <div class="timeline-tooltip timeline-tooltip--end">
+          {{ formatTime(endTime()) }}
+        </div>
+      }
+    </div>
+  </div>
+  
+  <!-- Informations de la timeline -->
+  <div class="timeline-info">
+    <span class="timeline-time timeline-time--current">{{ formatTime(currentTime()) }}</span>
+    <span class="timeline-time timeline-time--duration">{{ formatTime(duration()) }}</span>
+  </div>
+</div>
