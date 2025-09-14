@@ -39,7 +39,7 @@
   background-color: var(--background-secondary);
   border-radius: var(--border-radius-lg);
   border: 1px solid var(--border-color);
-  min-height: 400px; // Hauteur minimale pour le lecteur
+  // min-height: 400px; // Hauteur minimale pour le lecteur
   
   .video-player-wrapper {
     width: 100%;
@@ -164,7 +164,7 @@
   }
 
   .player-zone {
-    min-height: 450px;
+    // min-height: 450px;
   }
 
   .controls-zone {
@@ -195,7 +195,7 @@
   }
 
   .player-zone {
-    min-height: 500px;
+    // min-height: 500px;
     
     .video-player-wrapper {
       max-width: 900px;

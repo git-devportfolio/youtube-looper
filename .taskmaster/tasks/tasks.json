@@ -303,7 +303,61 @@
           6
         ],
         "status": "pending",
-        "subtasks": []
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Créer le composant LoopControlsComponent avec la structure de base",
+            "description": "Générer le composant LoopControlsComponent avec sa structure de base, son template HTML et ses styles SCSS",
+            "dependencies": [],
+            "details": "Utiliser ng generate component features/loop/ui/loop-controls. Créer le template avec trois boutons principaux (Set Start, Set End, Toggle Loop) et un indicateur de statut. Définir les styles de base avec des dimensions tactiles minimums (44px). Créer le fichier index.ts pour l'export. Intégrer le composant dans l'interface principale.",
+            "status": "pending",
+            "testStrategy": "Vérifier que le composant se génère correctement, que les trois boutons s'affichent et que les styles de base sont appliqués"
+          },
+          {
+            "id": 2,
+            "title": "Intégrer les services LoopService et YouTubePlayerService dans le composant",
+            "description": "Injecter les services nécessaires et créer les propriétés réactives pour l'état de la boucle",
+            "dependencies": [
+              "7.1"
+            ],
+            "details": "Injecter LoopService et YouTubePlayerService avec inject(). Créer des computed signals pour récupérer startTime, endTime, isLoopActive depuis LoopService. Créer une propriété computed pour getCurrentTime() du YouTubePlayerService. Utiliser ces signals dans le template pour l'affichage des informations.",
+            "status": "pending",
+            "testStrategy": "Vérifier que les services sont correctement injectés et que les propriétés réactives reflètent l'état actuel du lecteur et de la boucle"
+          },
+          {
+            "id": 3,
+            "title": "Implémenter la logique des boutons Set Start et Set End",
+            "description": "Créer les méthodes pour définir les bornes de boucle à partir de la position courante de la vidéo",
+            "dependencies": [
+              "7.2"
+            ],
+            "details": "Implémenter setStartTime() qui récupère getCurrentTime() du YouTubePlayerService et l'envoie à LoopService.setStartTime(). Implémenter setEndTime() de manière similaire avec LoopService.setEndTime(). Ajouter une validation pour s'assurer que startTime < endTime. Afficher un feedback visuel temporaire (toast ou highlight) après chaque action.",
+            "status": "pending",
+            "testStrategy": "Tester que les boutons définissent correctement les temps de début et fin à la position courante, vérifier les validations et le feedback utilisateur"
+          },
+          {
+            "id": 4,
+            "title": "Implémenter le bouton Toggle Loop avec indicateur visuel",
+            "description": "Créer la fonctionnalité d'activation/désactivation de la boucle avec un indicateur visuel distinctif",
+            "dependencies": [
+              "7.3"
+            ],
+            "details": "Implémenter toggleLoop() qui appelle LoopService.toggleLoop(). Créer un indicateur visuel 'Loop ON/OFF' avec des couleurs distinctives (vert pour actif, gris pour inactif). Utiliser des icônes appropriées (play/pause ou loop). Mettre à jour le style du bouton selon l'état isLoopActive. Ajouter des animations de transition pour les changements d'état.",
+            "status": "pending",
+            "testStrategy": "Vérifier que le bouton active/désactive correctement la boucle, valider les changements visuels de l'indicateur et tester les animations"
+          },
+          {
+            "id": 5,
+            "title": "Finaliser le design responsive et l'accessibilité des contrôles",
+            "description": "Optimiser l'interface pour tous les appareils et implémenter les fonctionnalités d'accessibilité",
+            "dependencies": [
+              "7.4"
+            ],
+            "details": "Ajuster les styles SCSS pour responsive mobile-first avec breakpoints appropriés. Garantir des zones tactiles ≥44px sur mobile. Ajouter aria-labels descriptifs pour chaque bouton. Implémenter focus-visible et navigation clavier. Ajouter des tooltips explicatifs. Optimiser l'espacement et la disposition pour écrans tactiles. Tester avec différentes tailles d'écran.",
+            "status": "pending",
+            "testStrategy": "Tester sur mobile, tablette et desktop, valider la navigation clavier, vérifier l'accessibilité avec aria-labels, confirmer les tailles tactiles minimums"
+          }
+        ]
       },
       {
         "id": 8,
@@ -542,7 +596,7 @@
     ],
     "metadata": {
       "created": "2025-09-07T19:39:54.188Z",
-      "updated": "2025-09-14T05:49:38.315Z",
+      "updated": "2025-09-14T10:17:49.977Z",
       "description": "Tasks for master context"
     }
   }

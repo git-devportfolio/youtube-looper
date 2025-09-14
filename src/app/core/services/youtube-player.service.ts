@@ -110,7 +110,7 @@ export class YouTubePlayerService {
       const playerReadyPromise = new Promise<void>((resolve, reject) => {
         const playerOptions: YouTubePlayerOptions = {
           width: config.width || '100%',
-          height: config.height || '100%',
+          // height: config.height || '100%',
           playerVars: {
             enablejsapi: 1,
             origin: window.location.origin,
