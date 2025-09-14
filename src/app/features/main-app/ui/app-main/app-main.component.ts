@@ -3,11 +3,12 @@ import { UrlInputComponent } from '../../../youtube';
 import { VideoPlayerComponent } from '../../../video-player';
 import { TimelineComponent } from '../../../video-controls';
 import { LoopControlsComponent } from '../../../loop';
+import { SpeedControlComponent } from '../../../player';
 import { YouTubeUrlInfo } from '../../../../core';
 
 @Component({
   selector: 'app-main',
-  imports: [UrlInputComponent, VideoPlayerComponent, TimelineComponent, LoopControlsComponent],
+  imports: [UrlInputComponent, VideoPlayerComponent, TimelineComponent, LoopControlsComponent, SpeedControlComponent],
   templateUrl: './app-main.component.html',
   styleUrl: './app-main.component.scss'
 })

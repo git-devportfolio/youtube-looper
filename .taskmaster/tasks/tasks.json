@@ -369,8 +369,63 @@
         "dependencies": [
           4
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Créer le composant SpeedControlComponent avec structure de base",
+            "description": "Générer et configurer le composant SpeedControlComponent avec la structure de base, les imports nécessaires et l'intégration dans l'application",
+            "dependencies": [],
+            "details": "Utiliser Angular CLI pour générer le composant dans features/player/ui/speed-control. Créer la structure HTML de base avec conteneur pour boutons presets et dropdown. Configurer les imports standalone nécessaires (CommonModule, FormsModule). Ajouter les styles SCSS de base. Créer l'interface TypeScript pour les types de vitesse. Intégrer le composant dans PlayerControlsComponent ou directement dans AppComponent.",
+            "status": "done",
+            "testStrategy": "Vérifier que le composant s'affiche correctement dans l'application et que la structure HTML est bien formée"
+          },
+          {
+            "id": 2,
+            "title": "Implémenter les boutons presets de vitesse (0.5x, 0.75x, 1x)",
+            "description": "Créer les trois boutons principaux pour les vitesses courantes avec gestion des clics et état actif",
+            "dependencies": [
+              "8.1"
+            ],
+            "details": "Créer un tableau des vitesses presets : [0.5, 0.75, 1.0]. Implémenter les boutons avec ngFor et gestion du clic via (click)='setSpeed(speed)'. Ajouter une classe CSS 'active' pour le bouton correspondant à la vitesse courante. Utiliser un signal currentSpeed pour gérer l'état. Implémenter la méthode setSpeed() qui appellera YouTubePlayerService.setPlaybackRate(). Styliser les boutons avec styles distinctifs et états hover/active.",
+            "status": "done",
+            "testStrategy": "Cliquer sur chaque bouton preset et vérifier que la vitesse de lecture change, valider l'affichage visuel de l'état actif"
+          },
+          {
+            "id": 3,
+            "title": "Développer le menu déroulant pour vitesses avancées",
+            "description": "Implémenter un dropdown/select avec les vitesses supplémentaires et gestion de la sélection",
+            "dependencies": [
+              "8.2"
+            ],
+            "details": "Créer un select HTML avec les options : 0.25x, 0.375x, 1.25x, 1.5x, 1.75x, 2x. Utiliser ngModel pour la liaison bidirectionnelle avec currentSpeed signal. Implémenter (change)='onSpeedChange($event)' pour gérer la sélection. Styliser le dropdown pour correspondre au design de l'application. Ajouter une option par défaut 'Autres vitesses...' quand aucune vitesse avancée n'est sélectionnée. Synchroniser avec les boutons presets pour désactiver le dropdown quand un preset est actif.",
+            "status": "done",
+            "testStrategy": "Sélectionner différentes vitesses dans le dropdown et vérifier que la lecture change, tester la synchronisation avec les boutons presets"
+          },
+          {
+            "id": 4,
+            "title": "Intégrer avec YouTubePlayerService et ajouter l'indicateur visuel",
+            "description": "Connecter le composant avec YouTubePlayerService pour contrôler la vitesse et afficher l'indicateur de vitesse courante",
+            "dependencies": [
+              "8.2",
+              "8.3"
+            ],
+            "details": "Injecter YouTubePlayerService dans le composant. Implémenter la méthode setPlaybackRate() du service si elle n'existe pas encore. Créer un signal computed() pour afficher la vitesse courante avec format 'Xx' (ex: '0.75x'). Ajouter un indicateur visuel (badge ou texte) montrant la vitesse active près du lecteur. Gérer les erreurs si setPlaybackRate() échoue (certaines vitesses peuvent ne pas être supportées). Écouter les changements d'état du player pour synchroniser la vitesse affichée.",
+            "status": "done",
+            "testStrategy": "Vérifier que les changements de vitesse via l'interface affectent réellement la lecture YouTube, valider l'affichage correct de l'indicateur de vitesse"
+          },
+          {
+            "id": 5,
+            "title": "Implémenter la persistance localStorage et finaliser l'intégration",
+            "description": "Ajouter la persistance de la vitesse sélectionnée et finaliser l'intégration complète avec l'application",
+            "dependencies": [
+              "8.4"
+            ],
+            "details": "Implémenter la sauvegarde de currentSpeed dans localStorage avec clé 'youtube-looper-speed'. Charger la vitesse sauvegardée au démarrage du composant avec ngOnInit(). Appliquer automatiquement la vitesse restaurée lors du chargement d'une nouvelle vidéo. Gérer les cas d'erreur (localStorage indisponible, valeur corrompue) avec fallback sur vitesse 1x. Ajouter des animations CSS pour les transitions de vitesse. Optimiser les performances avec debounce si nécessaire. Effectuer les tests finaux d'intégration avec tous les composants.",
+            "status": "done",
+            "testStrategy": "Changer la vitesse, recharger l'application et vérifier que la vitesse est restaurée, tester avec localStorage désactivé, valider l'intégration complète avec les autres contrôles"
+          }
+        ]
       },
       {
         "id": 9,
@@ -666,7 +721,7 @@
     ],
     "metadata": {
       "created": "2025-09-07T19:39:54.188Z",
-      "updated": "2025-09-14T18:00:28.089Z",
+      "updated": "2025-09-14T19:30:02.049Z",
       "description": "Tasks for master context"
     }
   }
