@@ -1,0 +1,211 @@
+.loop-controls {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+  // ============ BOUTONS DE CONTRÔLE ============
+  .control-btn {
+    // Taille tactile minimale 44px selon les guidelines
+    min-width: 44px;
+    min-height: 44px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+
+    padding: 0.5rem 0.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+
+    font-size: 0.75rem;
+    font-weight: 500;
+    cursor: pointer;
+
+    transition: all 0.2s ease;
+    user-select: none;
+
+    // Styles de survol
+    &:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.3);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    // Styles de focus pour accessibilité
+    &:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+    }
+
+    // Focus visible moderne pour navigation clavier
+    &:focus-visible {
+      outline: 2px solid #3b82f6;
+      outline-offset: 2px;
+    }
+
+    // Styles d'activation
+    &:active {
+      transform: translateY(0);
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    // Disabled state
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.05);
+        border-color: rgba(255, 255, 255, 0.2);
+        transform: none;
+        box-shadow: none;
+      }
+    }
+
+    .btn-icon {
+      font-size: 1rem;
+      line-height: 1;
+    }
+
+    .btn-text {
+      font-size: 0.7rem;
+      line-height: 1;
+      white-space: nowrap;
+    }
+  }
+
+  // ============ STYLES SPÉCIFIQUES PAR BOUTON ============
+
+  .set-start-btn {
+    &:hover {
+      border-color: rgba(34, 197, 94, 0.4);
+      box-shadow: 0 4px 12px rgba(34, 197, 94, 0.2);
+    }
+
+    .btn-icon {
+      filter: drop-shadow(0 0 4px rgba(34, 197, 94, 0.3));
+    }
+  }
+
+  .set-end-btn {
+    &:hover {
+      border-color: rgba(239, 68, 68, 0.4);
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+    }
+
+    .btn-icon {
+      filter: drop-shadow(0 0 4px rgba(239, 68, 68, 0.3));
+    }
+  }
+
+  .toggle-loop-btn {
+    &:hover {
+      border-color: rgba(59, 130, 246, 0.4);
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+    }
+
+    .btn-icon {
+      filter: drop-shadow(0 0 4px rgba(59, 130, 246, 0.3));
+    }
+
+    // État actif pour la boucle
+    &.active {
+      background: rgba(59, 130, 246, 0.2);
+      border-color: rgba(59, 130, 246, 0.4);
+      color: #3b82f6;
+
+      .btn-icon,
+      .btn-text {
+        color: #3b82f6;
+        filter: drop-shadow(0 0 6px rgba(59, 130, 246, 0.4));
+      }
+
+      &:hover {
+        background: rgba(59, 130, 246, 0.3);
+        border-color: rgba(59, 130, 246, 0.5);
+      }
+    }
+  }
+
+  // ============ RESPONSIVE DESIGN ============
+
+  // Mobile
+  @media (max-width: 480px) {
+    gap: 0.5rem;
+    padding: 0.75rem 0.5rem;
+
+    .control-btn {
+      min-width: 48px;
+      min-height: 48px;
+      padding: 0.75rem;
+
+      .btn-text {
+        font-size: 0.65rem;
+      }
+    }
+  }
+
+  // Tablette
+  @media (min-width: 481px) and (max-width: 768px) {
+    .control-btn {
+      min-width: 46px;
+      min-height: 46px;
+    }
+  }
+
+  // Desktop
+  @media (min-width: 769px) {
+    gap: 1rem;
+
+    .control-btn {
+      min-width: 50px;
+      min-height: 50px;
+      padding: 0.75rem 1rem;
+
+      .btn-text {
+        font-size: 0.75rem;
+      }
+    }
+  }
+
+  // ============ THÈME SOMBRE/CLAIR ============
+
+  // Mode clair
+  :host-context([data-theme="light"]) & {
+    .control-btn {
+      border-color: rgba(0, 0, 0, 0.1);
+      background: rgba(255, 255, 255, 0.8);
+      color: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(10px);
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.9);
+        border-color: rgba(0, 0, 0, 0.2);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+
+      &:active {
+        background: rgba(255, 255, 255, 0.95);
+      }
+    }
+
+    .toggle-loop-btn.active {
+      background: rgba(59, 130, 246, 0.1);
+      border-color: rgba(59, 130, 246, 0.3);
+
+      &:hover {
+        background: rgba(59, 130, 246, 0.15);
+      }
+    }
+  }
+}

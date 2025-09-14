@@ -1,0 +1,35 @@
+<div class="loop-controls">
+  <!-- Bouton Set Start -->
+  <button
+    class="control-btn set-start-btn"
+    type="button"
+    [disabled]="!canSetLoop()"
+    (click)="onSetStart()"
+    aria-label="Set loop start time at current position">
+    <span class="btn-icon">⏮️</span>
+    <span class="btn-text">Set Start</span>
+  </button>
+
+  <!-- Bouton Set End -->
+  <button
+    class="control-btn set-end-btn"
+    type="button"
+    [disabled]="!canSetLoop()"
+    (click)="onSetEnd()"
+    aria-label="Set loop end time at current position">
+    <span class="btn-icon">⏭️</span>
+    <span class="btn-text">Set End</span>
+  </button>
+
+  <!-- Bouton Toggle Loop -->
+  <button
+    class="control-btn toggle-loop-btn"
+    type="button"
+    [class.active]="isLoopActive()"
+    [disabled]="!canSetLoop() || !hasValidLoop()"
+    (click)="onToggleLoop()"
+    aria-label="Toggle loop playback">
+    <span class="btn-icon">{{ toggleLoopButtonIcon() }}</span>
+    <span class="btn-text">{{ toggleLoopButtonText() }}</span>
+  </button>
+</div>

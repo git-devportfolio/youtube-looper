@@ -295,67 +295,67 @@
       {
         "id": 7,
         "title": "Boutons de contrôle rapide pour la boucle",
-        "description": "Implémenter les boutons 'Set Start', 'Set End' et 'Play/Stop Loop' avec indicateurs visuels",
-        "details": "Créer LoopControlsComponent avec trois boutons principaux : 'Set Start' (définit startTime à la position courante), 'Set End' (définit endTime à la position courante), 'Toggle Loop' (active/désactive la boucle). Ajouter un indicateur visuel 'Loop ON/OFF' avec couleur distinctive. Boutons tactiles ≥44px selon les guidelines. Utiliser Angular Material ou CSS custom pour le design. Intégrer avec LoopService et YouTubePlayerService. Feedback immédiat sur les actions utilisateur.",
-        "testStrategy": "Tester chaque bouton individuellement, vérifier que 'Set Start/End' utilisent la position courante, valider l'indicateur visuel de boucle, tester la taille tactile des boutons.",
+        "description": "Implémenter les boutons 'Set Start', 'Set End' et 'Play/Stop Loop' avec indicateurs visuels et contrôle automatique de la position de lecture",
+        "details": "Créer LoopControlsComponent avec trois boutons principaux : 'Set Start' (définit startTime à la position courante ET repositionne automatiquement la vidéo sur cette position), 'Set End' (définit endTime à la position courante), 'Toggle Loop' (active/désactive la boucle). NOUVEAU : Le bouton play démarre la lecture depuis startTime et boucle automatiquement entre start et end définis par Set Start/Set End. Design des boutons discret et élégant qui s'intègre parfaitement dans la page existante et au workflow avec la timeline. Boutons tactiles ≥44px selon les guidelines. Intégrer avec LoopService et YouTubePlayerService. Feedback immédiat sur les actions utilisateur.",
+        "testStrategy": "Tester chaque bouton individuellement, NOUVEAU : valider que 'Set Start' repositionne automatiquement la vidéo, tester que play démarre depuis startTime et boucle automatiquement, vérifier que 'Set Start/End' utilisent la position courante, valider l'indicateur visuel de boucle, tester la taille tactile des boutons, valider l'intégration design avec la timeline existante.",
         "priority": "medium",
         "dependencies": [
           6
         ],
-        "status": "pending",
+        "status": "done",
         "subtasks": [
           {
             "id": 1,
-            "title": "Créer le composant LoopControlsComponent avec la structure de base",
-            "description": "Générer le composant LoopControlsComponent avec sa structure de base, son template HTML et ses styles SCSS",
+            "title": "Créer le composant LoopControlsComponent avec structure de base",
+            "description": "Créer le composant standalone LoopControlsComponent avec la structure HTML et SCSS de base pour les trois boutons de contrôle rapide",
             "dependencies": [],
-            "details": "Utiliser ng generate component features/loop/ui/loop-controls. Créer le template avec trois boutons principaux (Set Start, Set End, Toggle Loop) et un indicateur de statut. Définir les styles de base avec des dimensions tactiles minimums (44px). Créer le fichier index.ts pour l'export. Intégrer le composant dans l'interface principale.",
-            "status": "pending",
-            "testStrategy": "Vérifier que le composant se génère correctement, que les trois boutons s'affichent et que les styles de base sont appliqués"
+            "details": "Générer le composant avec ng generate dans features/loop/ui/loop-controls. Créer la structure HTML avec trois boutons : 'Set Start', 'Set End' et 'Toggle Loop'. Ajouter les styles SCSS de base avec tailles tactiles minimum 44px selon les guidelines d'accessibilité. Implémenter le design discret et élégant qui s'intègre avec la page existante. Utiliser des icônes appropriées pour chaque bouton.",
+            "status": "done",
+            "testStrategy": "Vérifier que le composant se compile et s'affiche correctement avec les trois boutons visibles et correctement stylisés"
           },
           {
             "id": 2,
-            "title": "Intégrer les services LoopService et YouTubePlayerService dans le composant",
-            "description": "Injecter les services nécessaires et créer les propriétés réactives pour l'état de la boucle",
+            "title": "Intégrer LoopControlsComponent avec les services existants",
+            "description": "Injecter LoopService et YouTubePlayerService dans le composant et créer les méthodes de base pour chaque bouton",
             "dependencies": [
               "7.1"
             ],
-            "details": "Injecter LoopService et YouTubePlayerService avec inject(). Créer des computed signals pour récupérer startTime, endTime, isLoopActive depuis LoopService. Créer une propriété computed pour getCurrentTime() du YouTubePlayerService. Utiliser ces signals dans le template pour l'affichage des informations.",
-            "status": "pending",
-            "testStrategy": "Vérifier que les services sont correctement injectés et que les propriétés réactives reflètent l'état actuel du lecteur et de la boucle"
+            "details": "Utiliser la fonction inject() pour injecter LoopService et YouTubePlayerService. Créer les méthodes setStartTime(), setEndTime() et toggleLoop(). Implémenter les signals nécessaires pour réagir aux changements d'état. Créer les event handlers pour les clics des boutons. Préparer la structure pour la logique de repositionnement automatique.",
+            "status": "done",
+            "testStrategy": "Tester l'injection des services et vérifier que les méthodes sont appelées lors des clics sur les boutons"
           },
           {
             "id": 3,
-            "title": "Implémenter la logique des boutons Set Start et Set End",
-            "description": "Créer les méthodes pour définir les bornes de boucle à partir de la position courante de la vidéo",
+            "title": "Implémenter la fonctionnalité 'Set Start' avec repositionnement automatique",
+            "description": "Développer la logique du bouton 'Set Start' qui définit le startTime à la position courante ET repositionne automatiquement la vidéo sur cette position",
             "dependencies": [
               "7.2"
             ],
-            "details": "Implémenter setStartTime() qui récupère getCurrentTime() du YouTubePlayerService et l'envoie à LoopService.setStartTime(). Implémenter setEndTime() de manière similaire avec LoopService.setEndTime(). Ajouter une validation pour s'assurer que startTime < endTime. Afficher un feedback visuel temporaire (toast ou highlight) après chaque action.",
-            "status": "pending",
-            "testStrategy": "Tester que les boutons définissent correctement les temps de début et fin à la position courante, vérifier les validations et le feedback utilisateur"
+            "details": "Implémenter setStartTime() pour récupérer la position courante via YouTubePlayerService.getCurrentTime(), mettre à jour loopService.startTime, puis immédiatement repositionner la vidéo sur cette position avec YouTubePlayerService.seekTo(). Ajouter feedback visuel immédiat pour confirmer l'action. Gérer les cas d'erreur si la vidéo n'est pas prête.",
+            "status": "done",
+            "testStrategy": "Valider que Set Start récupère la position courante, met à jour le startTime dans LoopService et repositionne automatiquement la vidéo à cette position"
           },
           {
             "id": 4,
-            "title": "Implémenter le bouton Toggle Loop avec indicateur visuel",
-            "description": "Créer la fonctionnalité d'activation/désactivation de la boucle avec un indicateur visuel distinctif",
+            "title": "Implémenter la fonctionnalité 'Set End' et 'Toggle Loop'",
+            "description": "Développer la logique des boutons 'Set End' et 'Toggle Loop' avec indicateurs visuels d'état",
             "dependencies": [
               "7.3"
             ],
-            "details": "Implémenter toggleLoop() qui appelle LoopService.toggleLoop(). Créer un indicateur visuel 'Loop ON/OFF' avec des couleurs distinctives (vert pour actif, gris pour inactif). Utiliser des icônes appropriées (play/pause ou loop). Mettre à jour le style du bouton selon l'état isLoopActive. Ajouter des animations de transition pour les changements d'état.",
-            "status": "pending",
-            "testStrategy": "Vérifier que le bouton active/désactive correctement la boucle, valider les changements visuels de l'indicateur et tester les animations"
+            "details": "Implémenter setEndTime() pour définir endTime à la position courante via YouTubePlayerService.getCurrentTime(). Développer toggleLoop() pour activer/désactiver la boucle via loopService.toggleLoop(). Ajouter indicateurs visuels : état actif/inactif du bouton Toggle Loop, feedback temporaire pour Set End. Implémenter la logique pour que Toggle Loop démarre la lecture depuis startTime quand activé.",
+            "status": "done",
+            "testStrategy": "Tester Set End avec la position courante, valider Toggle Loop pour activer/désactiver la boucle, vérifier les indicateurs visuels d'état"
           },
           {
             "id": 5,
-            "title": "Finaliser le design responsive et l'accessibilité des contrôles",
-            "description": "Optimiser l'interface pour tous les appareils et implémenter les fonctionnalités d'accessibilité",
+            "title": "Finaliser l'intégration et la logique de lecture automatique",
+            "description": "Compléter l'intégration avec la timeline et implémenter la logique de lecture automatique depuis startTime avec bouclage automatique",
             "dependencies": [
               "7.4"
             ],
-            "details": "Ajuster les styles SCSS pour responsive mobile-first avec breakpoints appropriés. Garantir des zones tactiles ≥44px sur mobile. Ajouter aria-labels descriptifs pour chaque bouton. Implémenter focus-visible et navigation clavier. Ajouter des tooltips explicatifs. Optimiser l'espacement et la disposition pour écrans tactiles. Tester avec différentes tailles d'écran.",
-            "status": "pending",
-            "testStrategy": "Tester sur mobile, tablette et desktop, valider la navigation clavier, vérifier l'accessibilité avec aria-labels, confirmer les tailles tactiles minimums"
+            "details": "Intégrer LoopControlsComponent dans MainPlayerComponent. Synchroniser avec TimelineComponent pour refléter les changements de bornes. Implémenter la logique pour que le bouton play/toggle démarre la lecture depuis startTime et boucle automatiquement entre start et end. Ajouter la gestion des états : disabled quand pas de vidéo chargée, feedback sur les actions utilisateur. Optimiser les performances et nettoyer les listeners.",
+            "status": "done",
+            "testStrategy": "Tester l'intégration complète : vérifier que play démarre depuis startTime et boucle automatiquement, valider la synchronisation avec la timeline, tester tous les cas d'usage bout-en-bout"
           }
         ]
       },
@@ -666,7 +666,7 @@
     ],
     "metadata": {
       "created": "2025-09-07T19:39:54.188Z",
-      "updated": "2025-09-14T11:12:20.740Z",
+      "updated": "2025-09-14T18:00:28.089Z",
       "description": "Tasks for master context"
     }
   }
