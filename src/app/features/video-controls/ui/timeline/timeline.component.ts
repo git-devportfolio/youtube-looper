@@ -46,6 +46,12 @@ export class TimelineComponent implements OnInit, OnDestroy {
     return Math.max(0, this.endPosition() - this.startPosition());
   });
 
+  // Computed signals pour la synchronisation avec LoopService
+  readonly loopServiceStartTime = computed(() => this.loopService.startTime());
+  readonly loopServiceEndTime = computed(() => this.loopService.endTime());
+  readonly loopServiceIsActive = computed(() => this.loopService.isLoopActive());
+  readonly loopServiceHasValidLoop = computed(() => this.loopService.hasValidLoop());
+
   // Propriétés publiques readonly
   readonly isDragging = this._isDragging.asReadonly();
   readonly dragTarget = this._dragTarget.asReadonly();
@@ -56,12 +62,25 @@ export class TimelineComponent implements OnInit, OnDestroy {
   private dragStartTime = 0;
   private timelineRect?: DOMRect;
 
+  // Debounce pour les mises à jour du LoopService
+  private loopUpdateDebounceTimer?: ReturnType<typeof setTimeout>;
+
+  // Debounce pour les appels à seekTo
+  private seekToDebounceTimer?: ReturnType<typeof setTimeout>;
+
   ngOnInit(): void {
     this.startTimeMonitoring();
   }
 
   ngOnDestroy(): void {
     this.stopTimeMonitoring();
+    // Nettoyer les timers de debounce
+    if (this.loopUpdateDebounceTimer) {
+      clearTimeout(this.loopUpdateDebounceTimer);
+    }
+    if (this.seekToDebounceTimer) {
+      clearTimeout(this.seekToDebounceTimer);
+    }
   }
 
   /**
@@ -111,17 +130,106 @@ export class TimelineComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Met à jour le temps de début
+   * Valide que les bornes respectent les contraintes
    */
-  setStartTime(time: number): void {
-    this.loopService.setStartTime(time);
+  private validateBounds(startTime: number, endTime: number): { isValid: boolean; constrainedStart: number; constrainedEnd: number } {
+    const videoDuration = this.duration();
+
+    // Contraindre dans les limites de la vidéo
+    const constrainedStart = Math.max(0, Math.min(startTime, videoDuration - 1));
+    const constrainedEnd = Math.max(constrainedStart + 1, Math.min(endTime, videoDuration));
+
+    // Vérifier que start < end avec une marge minimale de 1 seconde
+    const isValid = constrainedStart < constrainedEnd && constrainedEnd - constrainedStart >= 1;
+
+    return {
+      isValid,
+      constrainedStart,
+      constrainedEnd
+    };
   }
 
   /**
-   * Met à jour le temps de fin
+   * Met à jour le temps de début avec validation
+   */
+  setStartTime(time: number): void {
+    const validation = this.validateBounds(time, this.endTime());
+    if (validation.isValid) {
+      this.loopService.setStartTime(validation.constrainedStart);
+      console.log(`Timeline: Start time set to ${validation.constrainedStart}s`);
+    } else {
+      console.warn(`Timeline: Invalid start time ${time}s, constrained to ${validation.constrainedStart}s`);
+      this.loopService.setStartTime(validation.constrainedStart);
+    }
+  }
+
+  /**
+   * Met à jour le temps de fin avec validation
    */
   setEndTime(time: number): void {
-    this.loopService.setEndTime(time);
+    const validation = this.validateBounds(this.startTime(), time);
+    if (validation.isValid) {
+      this.loopService.setEndTime(validation.constrainedEnd);
+      console.log(`Timeline: End time set to ${validation.constrainedEnd}s`);
+    } else {
+      console.warn(`Timeline: Invalid end time ${time}s, constrained to ${validation.constrainedEnd}s`);
+      this.loopService.setEndTime(validation.constrainedEnd);
+    }
+  }
+
+  /**
+   * Met à jour les bornes du LoopService avec debounce et activation automatique
+   */
+  private updateLoopBoundsWithDebounce(startTime: number, endTime: number): void {
+    // Nettoyer le timer précédent
+    if (this.loopUpdateDebounceTimer) {
+      clearTimeout(this.loopUpdateDebounceTimer);
+    }
+
+    // Planifier la mise à jour avec debounce de 100ms
+    this.loopUpdateDebounceTimer = setTimeout(() => {
+      const validation = this.validateBounds(startTime, endTime);
+
+      if (validation.isValid) {
+        // Mettre à jour les bornes dans le LoopService
+        this.loopService.setStartTime(validation.constrainedStart);
+        this.loopService.setEndTime(validation.constrainedEnd);
+
+        // Activer automatiquement la boucle
+        if (!this.loopService.isLoopActive()) {
+          this.loopService.activateLoop();
+          console.log(`Timeline: Loop auto-activated with bounds ${validation.constrainedStart}s - ${validation.constrainedEnd}s`);
+        }
+
+        console.log(`Timeline: Bounds updated via debounce: ${validation.constrainedStart}s - ${validation.constrainedEnd}s`);
+      }
+    }, 100);
+  }
+
+  /**
+   * Repositionne la lecture vidéo avec debounce pour éviter les appels excessifs
+   */
+  private seekToWithDebounce(time: number): void {
+    // Vérifier que le lecteur est prêt
+    if (!this.isReady()) {
+      console.warn('Timeline: Cannot seek - player not ready');
+      return;
+    }
+
+    // Nettoyer le timer précédent
+    if (this.seekToDebounceTimer) {
+      clearTimeout(this.seekToDebounceTimer);
+    }
+
+    // Planifier le repositionnement avec debounce de 200ms
+    this.seekToDebounceTimer = setTimeout(() => {
+      try {
+        this.youTubePlayerService.seekTo(time);
+        console.log(`Timeline: Video seeked to ${time}s`);
+      } catch (error) {
+        console.error('Timeline: Error seeking video:', error);
+      }
+    }, 200);
   }
 
   /**
@@ -173,26 +281,28 @@ export class TimelineComponent implements OnInit, OnDestroy {
     }
 
     event.preventDefault();
-    
+
     const deltaX = event.clientX - this.dragStartX;
     const timelineWidth = this.timelineRect.width;
     const deltaPercentage = (deltaX / timelineWidth) * 100;
-    
+
     const currentHandle = this.dragTarget();
     if (!currentHandle) return;
-    
+
     // Calculer le nouveau temps
     const currentPercentage = this.timeToPosition(this.dragStartTime);
     const newPercentage = Math.max(0, Math.min(100, currentPercentage + deltaPercentage));
     const newTime = this.positionToTime(newPercentage);
-    
-    // Appliquer les contraintes
+
+    // Appliquer les contraintes et mettre à jour avec debounce
     if (currentHandle === 'start') {
       const constrainedTime = Math.max(0, Math.min(newTime, this.endTime() - 1));
-      this.setStartTime(constrainedTime);
+      this.updateLoopBoundsWithDebounce(constrainedTime, this.endTime());
+      // Repositionner automatiquement la lecture sur la nouvelle position start
+      this.seekToWithDebounce(constrainedTime);
     } else if (currentHandle === 'end') {
       const constrainedTime = Math.max(this.startTime() + 1, Math.min(newTime, this.duration()));
-      this.setEndTime(constrainedTime);
+      this.updateLoopBoundsWithDebounce(this.startTime(), constrainedTime);
     }
   }
 
@@ -285,27 +395,29 @@ export class TimelineComponent implements OnInit, OnDestroy {
     }
 
     event.preventDefault();
-    
+
     const touch = event.touches[0];
     const deltaX = touch.clientX - this.dragStartX;
     const timelineWidth = this.timelineRect.width;
     const deltaPercentage = (deltaX / timelineWidth) * 100;
-    
+
     const currentHandle = this.dragTarget();
     if (!currentHandle) return;
-    
+
     // Calculer le nouveau temps
     const currentPercentage = this.timeToPosition(this.dragStartTime);
     const newPercentage = Math.max(0, Math.min(100, currentPercentage + deltaPercentage));
     const newTime = this.positionToTime(newPercentage);
-    
-    // Appliquer les contraintes
+
+    // Appliquer les contraintes et mettre à jour avec debounce
     if (currentHandle === 'start') {
       const constrainedTime = Math.max(0, Math.min(newTime, this.endTime() - 1));
-      this.setStartTime(constrainedTime);
+      this.updateLoopBoundsWithDebounce(constrainedTime, this.endTime());
+      // Repositionner automatiquement la lecture sur la nouvelle position start
+      this.seekToWithDebounce(constrainedTime);
     } else if (currentHandle === 'end') {
       const constrainedTime = Math.max(this.startTime() + 1, Math.min(newTime, this.duration()));
-      this.setEndTime(constrainedTime);
+      this.updateLoopBoundsWithDebounce(this.startTime(), constrainedTime);
     }
   }
 

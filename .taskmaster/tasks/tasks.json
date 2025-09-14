@@ -592,11 +592,81 @@
             "testStrategy": "Vérifier le remplacement correct dans main-layout.component.ts et le template, s'assurer que l'application fonctionne sans erreur avec le nouveau composant, valider que le header et footer restent fonctionnels, et tester l'intégration des composants UrlInputComponent et VideoPlayerComponent."
           }
         ]
+      },
+      {
+        "id": 13,
+        "title": "Connecter la timeline interactive avec le service de boucles pour une lecture automatique",
+        "description": "Implémenter la liaison entre TimelineComponent et LoopService pour que les changements des poignées draggables mettent automatiquement à jour les bornes de boucle et activent la surveillance de boucle en temps réel avec contrôle automatique de la position de lecture.",
+        "status": "done",
+        "dependencies": [
+          5,
+          6,
+          12
+        ],
+        "priority": "medium",
+        "details": "Intégrer TimelineComponent avec LoopService en créant une communication bidirectionnelle via Angular Signals. Implémenter l'écoute des événements drag des poignées start/end pour mettre à jour automatiquement les bornes via loopService.setLoopBounds(). Activer automatiquement loop.isActive = true dès qu'une borne est modifiée. NOUVEAU : Lors du drag de la poignée start, positionner automatiquement la lecture vidéo sur cette position via YouTubePlayerService.seekTo(). Lors du déclenchement de play, démarrer la lecture depuis startTime et implémenter la boucle automatique entre start et end. Synchroniser l'affichage visual de la timeline avec l'état du LoopService. Implémenter la logique de validation des bornes (start < end, bornes dans les limites de la vidéo). Ajouter des debounce pour éviter les appels excessifs lors du drag. Gérer les cas edge : vidéo non chargée, bornes invalides, changement de vidéo. Utiliser computed() pour synchroniser l'état visual avec les données du service. Implémenter des animations CSS smooth pour les transitions des poignées.",
+        "testStrategy": "Tester le drag des poignées start/end et vérifier que les bornes sont mises à jour dans LoopService, NOUVEAU : valider que le drag de la poignée start repositionne la lecture vidéo automatiquement, tester que le bouton play démarre la lecture depuis startTime défini, valider la boucle automatique entre start et end lors de la lecture, valider l'activation automatique de la boucle lors des changements, tester la synchronisation bidirectionnelle timeline ↔ service, vérifier la validation des bornes (start < end), tester le comportement avec vidéos de différentes durées, valider les cas edge (pas de vidéo, bornes invalides), tester les performances lors de drag intensif, vérifier l'affichage correct de la zone de boucle sur la timeline.",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Implémenter l'injection des services dans TimelineComponent",
+            "description": "Intégrer LoopService et YouTubePlayerService dans TimelineComponent pour établir la communication bidirectionnelle",
+            "dependencies": [],
+            "details": "Injecter LoopService et YouTubePlayerService dans TimelineComponent via inject(). Créer des computed() signals pour synchroniser l'affichage des poignées avec loop.startTime et loop.endTime du service. Implémenter une méthode de validation des bornes qui vérifie que startTime < endTime et que les bornes sont dans la durée totale de la vidéo.",
+            "status": "done",
+            "testStrategy": "Vérifier que les services sont correctement injectés, tester que les computed signals reflètent les changements du LoopService, valider la logique de validation des bornes"
+          },
+          {
+            "id": 2,
+            "title": "Connecter les événements drag des poignées au LoopService",
+            "description": "Implémenter la liaison entre les événements drag des poignées start/end et les méthodes de mise à jour du LoopService",
+            "dependencies": [
+              "13.1"
+            ],
+            "details": "Modifier les handlers d'événements drag pour appeler loopService.setLoopBounds(startTime, endTime) lors des changements. Implémenter un debounce de 100ms pour éviter les appels excessifs pendant le drag. Activer automatiquement loop.isActive = true dès qu'une borne est modifiée. Ajouter la validation des bornes avant la mise à jour du service.",
+            "status": "done",
+            "testStrategy": "Tester le drag des poignées et vérifier que LoopService est mis à jour, valider le debounce pendant le drag continu, confirmer que isActive devient true automatiquement"
+          },
+          {
+            "id": 3,
+            "title": "Implémenter le repositionnement automatique lors du drag de start",
+            "description": "Ajouter la fonctionnalité de repositionnement automatique de la lecture vidéo lors du drag de la poignée start",
+            "dependencies": [
+              "13.2"
+            ],
+            "details": "Modifier le handler de drag de la poignée start pour appeler youTubePlayerService.seekTo() avec la nouvelle position. Implémenter une logique de debounce spécifique pour seekTo (200ms) pour éviter les appels trop fréquents à l'API YouTube. Gérer les cas où la vidéo n'est pas encore chargée ou en état de pause. Ajouter un feedback visuel pendant le repositionnement.",
+            "status": "done",
+            "testStrategy": "Valider que le drag de la poignée start repositionne automatiquement la lecture, tester le debounce pour éviter les appels excessifs à seekTo, vérifier le comportement avec une vidéo en pause"
+          },
+          {
+            "id": 4,
+            "title": "Synchroniser l'affichage visuel avec l'état du LoopService",
+            "description": "Implémenter la synchronisation complète entre l'affichage visuel des poignées et l'état du LoopService",
+            "dependencies": [
+              "13.2"
+            ],
+            "details": "Utiliser computed() pour calculer les positions visuelles des poignées basées sur loop.startTime et loop.endTime. Implémenter la zone colorée dynamique entre les poignées basée sur l'état isActive. Ajouter des animations CSS smooth pour les transitions des poignées lors des changements programmatiques. Gérer l'affichage des temps au-dessus des poignées avec formatage approprié (MM:SS).",
+            "status": "done",
+            "testStrategy": "Vérifier que les poignées se déplacent automatiquement lors des changements dans LoopService, tester l'affichage de la zone colorée, valider les animations smooth des transitions"
+          },
+          {
+            "id": 5,
+            "title": "Gérer les cas edge et finaliser l'intégration",
+            "description": "Implémenter la gestion des cas edge et finaliser l'intégration complète entre timeline et services",
+            "dependencies": [
+              "13.3",
+              "13.4"
+            ],
+            "details": "Gérer les cas où la vidéo n'est pas encore chargée (désactiver les interactions). Implémenter la réinitialisation des bornes lors du changement de vidéo. Ajouter la gestion d'erreur pour les appels à seekTo() qui échouent. Implémenter la logique de nettoyage des timers et subscriptions dans ngOnDestroy(). Ajouter des logs de debug pour faciliter le débogage en développement.",
+            "status": "done",
+            "testStrategy": "Tester avec une vidéo non chargée, valider le comportement lors du changement de vidéo, vérifier la gestion des erreurs seekTo(), confirmer le nettoyage des ressources"
+          }
+        ]
       }
     ],
     "metadata": {
       "created": "2025-09-07T19:39:54.188Z",
-      "updated": "2025-09-14T10:17:49.977Z",
+      "updated": "2025-09-14T11:12:20.740Z",
       "description": "Tasks for master context"
     }
   }
