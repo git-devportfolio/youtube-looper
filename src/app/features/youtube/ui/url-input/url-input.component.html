@@ -26,7 +26,9 @@
         (paste)="onPaste($event)"
         class="url-input-field"
         autocomplete="url"
-        spellcheck="false">
+        spellcheck="false"
+        tabindex="1"
+        aria-describedby="url-error">
 
       <!-- Icônes de statut à droite -->
       <div class="url-input-icon url-input-icon--right">
@@ -54,7 +56,8 @@
           (click)="onClear()"
           class="url-input-clear"
           aria-label="Effacer l'URL"
-          title="Effacer">
+          title="Effacer"
+          tabindex="2">
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2"/>
             <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2"/>
@@ -65,7 +68,7 @@
 
     <!-- Messages d'erreur -->
     @if (isUrlInvalid && validationErrorMessage) {
-      <div class="url-input-error" role="alert">
+      <div id="url-error" class="url-input-error" role="alert" aria-live="polite">
         <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="error-icon-small">
           <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/>
           <line x1="15" y1="9" x2="9" y2="15" stroke="currentColor" stroke-width="1.5"/>
@@ -102,48 +105,5 @@
       </div>
     }
 
-    <!-- Boutons d'action -->
-    <div class="url-input-actions">
-      <button
-        type="submit"
-        [disabled]="!isUrlValid || isLoading()"
-        class="url-input-button url-input-button--primary">
-        @if (isLoading()) {
-          <span class="button-spinner"></span>
-          Validation...
-        } @else {
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="button-icon">
-            <path d="M8 12l6-3v6l-6-3z" fill="currentColor"/>
-            <rect x="2" y="6" width="20" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/>
-          </svg>
-          Charger la vidéo
-        }
-      </button>
-
-      @if (urlControl?.value?.trim()) {
-        <button
-          type="button"
-          (click)="onClear()"
-          class="url-input-button url-input-button--secondary">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="button-icon">
-            <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="1.5"/>
-            <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="1.5"/>
-          </svg>
-          Effacer
-        </button>
-      }
-    </div>
-
-    <!-- Aide contextuelle -->
-    <div class="url-input-help">
-      <p class="help-text">
-        <strong>Formats supportés :</strong>
-      </p>
-      <ul class="help-list">
-        <li><code>https://www.youtube.com/watch?v=VIDEO_ID</code></li>
-        <li><code>https://youtu.be/VIDEO_ID</code></li>
-        <li><code>https://youtube.com/watch?v=VIDEO_ID&amp;t=30s</code> (avec temps)</li>
-      </ul>
-    </div>
   </div>
 </form>

@@ -451,8 +451,63 @@
         "dependencies": [
           9
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Optimiser le système de responsive design avec CSS Grid/Flexbox",
+            "description": "Réviser et unifier l'architecture responsive mobile-first en consolidant les breakpoints (<768px, 768px-1024px, >1024px) avec CSS Grid pour les layouts principaux et Flexbox pour les composants individuels.",
+            "dependencies": [],
+            "details": "Auditer le code SCSS existant dans tous les composants pour identifier les incohérences dans les breakpoints. Consolider les variables CSS pour les breakpoints dans styles.scss. Optimiser app-main.component.scss pour garantir que CSS Grid fonctionne parfaitement sur tous les breakpoints. Implémenter des containers Flexbox cohérents pour timeline, loop-controls et speed-control. Gérer spécifiquement l'orientation landscape sur tablette avec des media queries appropriées.",
+            "status": "done",
+            "testStrategy": "Tester sur différents appareils (mobile <768px, tablet 768px-1024px, desktop >1024px), valider l'orientation portrait/paysage sur tablette, vérifier que tous les composants utilisent les mêmes breakpoints de manière cohérente."
+          },
+          {
+            "id": 2,
+            "title": "Implémenter la navigation clavier et focus management",
+            "description": "Ajouter un système complet de navigation au clavier avec tab index, focus visible et indicateurs visuels pour tous les contrôles interactifs.",
+            "dependencies": [
+              "10.1"
+            ],
+            "details": "Ajouter tabindex sur tous les éléments interactifs (boutons, input URL, timeline handles, contrôles vitesse). Implémenter focus-visible avec outline personnalisé utilisant var(--primary-color) pour maintenir la cohérence visuelle. Créer un ordre de tabulation logique : URL input → Load button → Timeline handles → Loop controls → Speed controls → Theme toggle. Ajouter des indicateurs de focus keyboard-only (pas de focus au clic souris). Gérer le focus trap pour les interactions timeline drag.",
+            "status": "done",
+            "testStrategy": "Tester la navigation complète au clavier avec Tab/Shift+Tab, vérifier que tous les éléments sont accessibles au clavier, valider les indicateurs focus visibles, tester le focus trap sur la timeline."
+          },
+          {
+            "id": 3,
+            "title": "Implémenter les couleurs contrastées selon WCAG AA",
+            "description": "Réviser le système de couleurs existant pour garantir un contraste minimum 4.5:1 selon les standards WCAG AA et optimiser la lisibilité.",
+            "dependencies": [
+              "10.2"
+            ],
+            "details": "Auditer tous les contrastes couleur/fond dans les thèmes dark et light actuels avec des outils de validation WCAG. Ajuster les variables CSS dans styles.scss pour atteindre le ratio 4.5:1 minimum. Réviser particulièrement --text-secondary, --text-muted pour les labels et textes d'aide. Assurer que les états disabled, focus, hover maintiennent les contrastes requis. Optimiser la lisibilité des informations critiques (temps de boucle, messages d'erreur, états des boutons).",
+            "status": "done",
+            "testStrategy": "Utiliser des outils de validation de contraste (WebAIM, axe), tester la lisibilité dans différentes conditions d'éclairage, valider tous les états interactifs (hover, focus, disabled)."
+          },
+          {
+            "id": 4,
+            "title": "Ajouter aria-labels et améliorer la sémantique HTML pour screen readers",
+            "description": "Enrichir tous les composants avec des aria-labels appropriés, role attributes et descriptions sémantiques pour optimiser l'expérience avec les lecteurs d'écran.",
+            "dependencies": [
+              "10.3"
+            ],
+            "details": "Ajouter aria-label sur tous les boutons sans texte explicite (timeline handles, clear button, theme toggle). Implémenter aria-describedby pour les relations input/error messages. Ajouter role='slider' et aria-valuemin/max/now sur les timeline handles. Enrichir les messages d'état avec aria-live pour les changements de loop status, loading states. Ajouter aria-expanded sur les composants avec états (speed control dropdown). Créer des descriptions contextuelles avec sr-only classes pour navigation complexe.",
+            "status": "done",
+            "testStrategy": "Tester avec NVDA, JAWS ou VoiceOver, vérifier que toutes les actions sont annoncées correctement, valider la navigation logique avec screen reader, tester les descriptions d'état et changements dynamiques."
+          },
+          {
+            "id": 5,
+            "title": "Optimiser les tailles tactiles et interactions touch pour mobile",
+            "description": "Garantir une taille minimum de 44px pour tous les éléments interactifs et optimiser les interactions touch, particulièrement pour les timeline handles.",
+            "dependencies": [
+              "10.1",
+              "10.4"
+            ],
+            "details": "Auditer toutes les tailles d'éléments interactifs et appliquer 44x44px minimum. Optimiser spécifiquement timeline handles pour le touch (augmenter zone de touch sans affecter le visuel). Ajouter des zones de touch étendues avec ::before pseudo-elements si nécessaire. Améliorer les boutons loop-controls et speed-control pour faciliter l'interaction thumb. Implémenter touch feedback (active states) sur mobile. Gérer les conflits entre touch events et drag events sur timeline.",
+            "status": "done",
+            "testStrategy": "Tester sur dispositifs tactiles réels (smartphone, tablette), valider la facilité d'interaction avec le pouce, mesurer les zones de touch avec outils développeur, tester le drag des timeline handles sur écrans tactiles."
+          }
+        ]
       },
       {
         "id": 11,
@@ -721,7 +776,7 @@
     ],
     "metadata": {
       "created": "2025-09-07T19:39:54.188Z",
-      "updated": "2025-09-14T19:30:02.049Z",
+      "updated": "2025-09-14T20:14:12.635Z",
       "description": "Tasks for master context"
     }
   }

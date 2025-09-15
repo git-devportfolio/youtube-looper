@@ -1,11 +1,30 @@
-<div class="loop-controls">
+<div class="loop-controls" role="group" aria-labelledby="loop-controls-title">
+  <!-- Titre invisible pour screen readers -->
+  <h2 id="loop-controls-title" class="sr-only">Contrôles de boucle vidéo</h2>
+
+  <!-- Statut de boucle pour screen readers -->
+  <div id="loop-status" class="sr-only" aria-live="polite" aria-atomic="true">
+    @if (isLoopActive()) {
+      Boucle activée
+    } @else {
+      Boucle désactivée
+    }
+  </div>
+
+  <!-- Aide contextuelle -->
+  <div id="loop-controls-help" class="sr-only">
+    Utilisez ces boutons pour définir les points de début et de fin de la boucle, puis activez la lecture en boucle.
+  </div>
+
   <!-- Bouton Set Start -->
   <button
     class="control-btn set-start-btn"
     type="button"
     [disabled]="!canSetLoop()"
     (click)="onSetStart()"
-    aria-label="Set loop start time at current position">
+    aria-label="Set loop start time at current position"
+    tabindex="5"
+    aria-describedby="loop-controls-help">
     <span class="btn-icon">⏮️</span>
     <span class="btn-text">Set Start</span>
   </button>
@@ -16,7 +35,8 @@
     type="button"
     [disabled]="!canSetLoop()"
     (click)="onSetEnd()"
-    aria-label="Set loop end time at current position">
+    aria-label="Set loop end time at current position"
+    tabindex="6">
     <span class="btn-icon">⏭️</span>
     <span class="btn-text">Set End</span>
   </button>
@@ -28,7 +48,10 @@
     [class.active]="isLoopActive()"
     [disabled]="!canSetLoop() || !hasValidLoop()"
     (click)="onToggleLoop()"
-    aria-label="Toggle loop playback">
+    aria-label="Toggle loop playback"
+    tabindex="7"
+    [attr.aria-pressed]="isLoopActive()"
+    aria-describedby="loop-status">
     <span class="btn-icon">{{ toggleLoopButtonIcon() }}</span>
     <span class="btn-text">{{ toggleLoopButtonText() }}</span>
   </button>
