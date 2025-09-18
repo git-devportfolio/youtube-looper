@@ -17,7 +17,7 @@
   height: 20px;
   margin: var(--spacing-md) 0;
   border-radius: 10px;
-  overflow: visible; // Pour permettre aux tooltips de dépasser
+  overflow: visible; // Pour permettre aux tooltips de dï¿½passer
 }
 
 .timeline-background {
@@ -85,10 +85,10 @@
 
 .timeline-handle {
   position: absolute;
-  top: -8px;
-  width: 16px;
-  height: 36px;
-  margin-left: -8px; // Centrer la poignée
+  top: -12px;
+  width: 24px;
+  height: 44px;
+  margin-left: -12px; // Centrer la poignÃ©e
   background-color: var(--background-primary);
   border: 2px solid var(--border-color);
   border-radius: 8px;
@@ -144,7 +144,7 @@
 
 .timeline-tooltip {
   position: absolute;
-  bottom: 50px; // Au-dessus de la poignée
+  bottom: 50px; // Au-dessus de la poignï¿½e
   left: 50%;
   transform: translateX(-50%);
   padding: var(--spacing-xs) var(--spacing-sm);
@@ -157,7 +157,7 @@
   white-space: nowrap;
   z-index: 10;
   
-  // Flèche pointant vers la poignée
+  // Flï¿½che pointant vers la poignï¿½e
   &::after {
     content: '';
     position: absolute;
@@ -215,14 +215,14 @@
   }
   
   .timeline-track {
-    height: 24px;
+    height: 28px;
     margin: var(--spacing-sm) 0;
   }
   
   .timeline-handle {
-    width: 20px;
-    height: 40px;
-    margin-left: -10px;
+    width: 28px;
+    height: 48px;
+    margin-left: -14px;
     top: -10px;
     
     // Taille tactile minimale de 44px
@@ -254,14 +254,14 @@
   }
   
   .timeline-track {
-    height: 28px;
+    height: 32px;
     margin: var(--spacing-xs) 0;
   }
   
   .timeline-handle {
-    width: 24px;
-    height: 44px;
-    margin-left: -12px;
+    width: 32px;
+    height: 52px;
+    margin-left: -16px;
     top: -10px;
   }
 }

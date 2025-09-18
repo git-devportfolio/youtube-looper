@@ -1,6 +1,12 @@
+// Host component doit s'étendre sur toute la largeur
+:host {
+  display: block;
+  width: 100%;
+}
+
 .url-input-form {
   width: 100%;
-  max-width: 600px;
+  max-width: 800px;
   margin: 0 auto;
 }
 

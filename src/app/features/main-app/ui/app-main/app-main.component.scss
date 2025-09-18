@@ -6,14 +6,11 @@
     "controls"
     "footer";
   grid-template-rows: auto 1fr auto auto;
-  gap: var(--spacing-lg);
+  gap: var(--spacing-md);
   min-height: 100vh;
-  padding: var(--spacing-lg);
+  padding: var(--spacing-md);
   background-color: var(--background-primary);
   color: var(--text-primary);
-  
-  // Assurer la largeur maximale et centrage
-  max-width: 1200px;
   margin: 0 auto;
 }
 
@@ -22,7 +19,7 @@
   grid-area: url-input;
   display: flex;
   justify-content: center;
-  align-items: center;
+  // align-items: center;
   padding: var(--spacing-md);
   background-color: var(--background-secondary);
   border-radius: var(--border-radius-lg);
@@ -43,7 +40,7 @@
   
   .video-player-wrapper {
     width: 100%;
-    max-width: 800px;
+    max-width: 960px;
   }
 }
 
@@ -92,20 +89,17 @@
 // Classes container r�utilisables pour standardiser les espacements
 .container {
   width: 100%;
-  max-width: 1200px;
   margin: 0 auto;
   padding: 0 var(--spacing-lg);
 }
 
 .player-container {
   width: 100%;
-  max-width: 800px;
   margin: 0 auto;
 }
 
 .controls-container {
   width: 100%;
-  max-width: 1000px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -125,9 +119,6 @@
 .loop-controls-container {
   display: flex;
   gap: var(--spacing-md);
-  justify-content: center;
-  flex-wrap: wrap;
-  padding: var(--spacing-md);
   background-color: var(--background-primary);
   border-radius: var(--border-radius);
   border: 1px solid var(--border-light);
@@ -139,7 +130,6 @@
   gap: var(--spacing-sm);
   justify-content: center;
   flex-wrap: wrap;
-  padding: var(--spacing-md);
   background-color: var(--background-primary);
   border-radius: var(--border-radius);
   border: 1px solid var(--border-light);
@@ -152,15 +142,15 @@
 // Tablet (768px-1024px)
 @media (min-width: 768px) {
   .app-main-container {
-    grid-template-areas: 
+    grid-template-areas:
       "url-input url-input"
       "player player"
       "controls controls"
       "footer footer";
     grid-template-columns: 1fr 1fr;
     grid-template-rows: auto 1fr auto auto;
-    gap: var(--spacing-xl);
-    padding: var(--spacing-xl);
+    gap: var(--spacing-lg);
+    padding: var(--spacing-lg);
   }
 
   .player-zone {
@@ -174,7 +164,6 @@
   // Adapter les contrôles pour tablet
   .loop-controls-container,
   .speed-controls-container {
-    justify-content: space-between;
     flex-wrap: nowrap;
   }
 }
@@ -182,70 +171,71 @@
 // Desktop (>1024px)
 @media (min-width: 1024px) {
   .app-main-container {
-    grid-template-areas: 
+    grid-template-areas:
       "url-input url-input url-input"
       "player player player"
       "controls controls controls"
       "footer footer footer";
-    grid-template-columns: 1fr 2fr 1fr;
+    grid-template-columns: 1fr 4fr 1fr;
     grid-template-rows: auto 1fr auto auto;
-    gap: var(--spacing-xl);
-    padding: var(--spacing-xl);
-    max-width: 1400px;
+    gap: var(--spacing-lg);
+    padding: var(--spacing-lg);
+    max-width: 860px;
   }
 
   .player-zone {
-    // min-height: 500px;
     
     .video-player-wrapper {
-      max-width: 900px;
+    
     }
   }
 
   .controls-zone {
     min-height: 180px;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: flex-start;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    justify-content: flex-start;
+    align-items: stretch;
   }
 
   // Layout desktop optimisé pour les futurs composants
   .timeline-container {
-    flex: 1 1 100%;
-    margin-bottom: var(--spacing-md);
+    width: 100%;
   }
 
   .loop-controls-container {
-    flex: 1 1 45%;
+    width: 100%;
+    order: 1;
   }
 
   .speed-controls-container {
-    flex: 1 1 45%;
+    width: 100%;
+    order: 2;
   }
 }
 
 // Gestion des orientations sur tablette
 @media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
   .app-main-container {
-    grid-template-areas: 
-      "url-input controls"
+    grid-template-areas:
+      "url-input url-input"
       "player player"
+      "controls controls"
       "footer footer";
-    grid-template-columns: 1fr 300px;
-    grid-template-rows: auto 1fr auto;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto 1fr auto auto;
   }
 
   .controls-zone {
-    min-height: 200px;
+    min-height: 150px;
   }
 }
 
 // Optimisations pour très petits écrans (<480px)
 @media (max-width: 480px) {
   .app-main-container {
-    gap: var(--spacing-md);
-    padding: var(--spacing-md);
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm);
   }
 
   .url-input-zone,

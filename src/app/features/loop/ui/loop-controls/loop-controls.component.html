@@ -25,8 +25,7 @@
     aria-label="Set loop start time at current position"
     tabindex="5"
     aria-describedby="loop-controls-help">
-    <span class="btn-icon">⏮️</span>
-    <span class="btn-text">Set Start</span>
+    Set Start
   </button>
 
   <!-- Bouton Set End -->
@@ -37,8 +36,7 @@
     (click)="onSetEnd()"
     aria-label="Set loop end time at current position"
     tabindex="6">
-    <span class="btn-icon">⏭️</span>
-    <span class="btn-text">Set End</span>
+    Set End
   </button>
 
   <!-- Bouton Toggle Loop -->
@@ -52,7 +50,6 @@
     tabindex="7"
     [attr.aria-pressed]="isLoopActive()"
     aria-describedby="loop-status">
-    <span class="btn-icon">{{ toggleLoopButtonIcon() }}</span>
-    <span class="btn-text">{{ toggleLoopButtonText() }}</span>
+    {{ toggleLoopButtonText() }}
   </button>
 </div>
