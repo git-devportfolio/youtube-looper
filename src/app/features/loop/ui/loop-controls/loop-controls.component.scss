@@ -157,7 +157,7 @@
   // ============ TH�ME SOMBRE/CLAIR ============
 
   // Mode clair
-  :host-context([data-theme="light"]) & {
+  :host-context(.light-theme) & {
     .control-btn {
       border-color: rgba(0, 0, 0, 0.1);
       background: rgba(255, 255, 255, 0.8);

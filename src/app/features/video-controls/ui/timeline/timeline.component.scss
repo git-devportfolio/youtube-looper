@@ -1,9 +1,9 @@
 .timeline-container {
   width: 100%;
-  padding: var(--spacing-md);
-  background-color: var(--background-secondary);
-  border-radius: var(--border-radius);
-  border: 1px solid var(--border-color);
+  padding: 0 var(--spacing-md);
+  // background-color: var(--background-secondary);
+  // border-radius: var(--border-radius);
+  // border: 1px solid var(--border-color);
   user-select: none;
   
   &.disabled {
