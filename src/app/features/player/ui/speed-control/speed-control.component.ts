@@ -1,6 +1,5 @@
 import { Component, inject, signal, computed, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { YouTubePlayerService } from '../../../../core/services/youtube-player.service';
 
 // Interface pour les types de vitesse
@@ -12,15 +11,14 @@ export interface SpeedOption {
 
 // Configuration des vitesses disponibles
 const SPEED_CONFIG = {
-  presets: [0.5, 0.75, 1.0] as const,
-  advanced: [0.25, 0.375, 1.25, 1.5, 1.75, 2.0] as const,
+  presets: [0.45, 0.5, 0.70, 0.75, 1.0] as const,
   default: 1.0,
   storageKey: 'youtube-looper-speed'
 } as const;
 
 @Component({
   selector: 'app-speed-control',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule],
   templateUrl: './speed-control.component.html',
   styleUrl: './speed-control.component.scss'
 })
@@ -32,7 +30,6 @@ export class SpeedControlComponent implements OnInit {
 
   // Propriétés publiques pour le template
   readonly presetSpeeds = [...SPEED_CONFIG.presets];
-  readonly advancedSpeeds = [...SPEED_CONFIG.advanced];
 
   // Signals computed pour l'interface
   readonly currentSpeed = this._currentSpeed.asReadonly();
@@ -41,12 +38,6 @@ export class SpeedControlComponent implements OnInit {
   readonly currentSpeedDisplay = computed(() => {
     const speed = this._currentSpeed();
     return `${speed}x`;
-  });
-
-  readonly selectedAdvancedSpeed = computed(() => {
-    const currentSpeed = this._currentSpeed();
-    const isAdvanced = SPEED_CONFIG.advanced.includes(currentSpeed as any);
-    return isAdvanced ? currentSpeed.toString() : '';
   });
 
   ngOnInit(): void {
@@ -73,17 +64,6 @@ export class SpeedControlComponent implements OnInit {
     }
   }
 
-  /**
-   * Gère la sélection d'une vitesse avancée via le dropdown
-   */
-  onAdvancedSpeedChange(event: Event): void {
-    const target = event.target as HTMLSelectElement;
-    const speedValue = parseFloat(target.value);
-
-    if (!isNaN(speedValue) && speedValue > 0) {
-      this.setSpeed(speedValue);
-    }
-  }
 
   /**
    * Charge la vitesse sauvegardée depuis localStorage

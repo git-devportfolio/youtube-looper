@@ -4,14 +4,14 @@
 
   <!-- Aide contextuelle -->
   <div id="speed-help" class="sr-only">
-    Modifiez la vitesse de lecture de la vidéo avec les boutons presets ou le menu déroulant pour des vitesses personnalisées.
+    Modifiez la vitesse de lecture de la vidéo avec les boutons de vitesse.
   </div>
 
-  <!-- Boutons presets principaux -->
-  <div class="preset-buttons">
+  <!-- Boutons de vitesse -->
+  <div class="speed-buttons">
     <button
       *ngFor="let speed of presetSpeeds; let i = index"
-      class="preset-btn"
+      class="speed-btn"
       [class.active]="currentSpeed() === speed"
       [disabled]="!canControlSpeed()"
       (click)="setSpeed(speed)"
@@ -21,24 +21,5 @@
       type="button">
       <span class="btn-text">{{ speed }}x</span>
     </button>
-  </div>
-
-  <!-- Menu déroulant pour vitesses avancées -->
-  <div class="advanced-controls">
-    <label for="advanced-speed-select" class="sr-only">Advanced playback speeds</label>
-    <select
-      id="advanced-speed-select"
-      class="speed-dropdown"
-      [value]="selectedAdvancedSpeed()"
-      [disabled]="!canControlSpeed()"
-      (change)="onAdvancedSpeedChange($event)"
-      aria-label="Select advanced playback speed"
-      tabindex="11"
-      aria-describedby="speed-help">
-      <option value="">Autres vitesses...</option>
-      <option *ngFor="let speed of advancedSpeeds" [value]="speed">
-        {{ speed }}x
-      </option>
-    </select>
   </div>
 </div>
