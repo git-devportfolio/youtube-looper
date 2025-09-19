@@ -17,6 +17,10 @@ export class TimelineComponent implements OnInit, OnDestroy {
   private readonly _dragTarget = signal<'start' | 'end' | null>(null);
   private readonly _hoveredHandle = signal<'start' | 'end' | null>(null);
 
+  // Positions temporaires pendant le drag pour mise à jour visuelle immédiate
+  private readonly _tempStartTime = signal<number | null>(null);
+  private readonly _tempEndTime = signal<number | null>(null);
+
   // Signals basés sur les services
   readonly startTime = this.loopService.startTime;
   readonly endTime = this.loopService.endTime;
@@ -26,15 +30,25 @@ export class TimelineComponent implements OnInit, OnDestroy {
   readonly duration = this.youTubePlayerService.duration;
   readonly isReady = this.youTubePlayerService.isReady;
 
-  // Signals computed pour l'UI
+  // Signals computed pour l'UI avec support des valeurs temporaires pendant le drag
   readonly startPosition = computed(() => {
     const dur = this.duration();
-    return dur > 0 ? (this.startTime() / dur) * 100 : 0;
+    if (dur <= 0) return 0;
+
+    // Utiliser la valeur temporaire pendant le drag si disponible
+    const tempStart = this._tempStartTime();
+    const actualStart = tempStart !== null ? tempStart : this.startTime();
+    return (actualStart / dur) * 100;
   });
 
   readonly endPosition = computed(() => {
     const dur = this.duration();
-    return dur > 0 ? (this.endTime() / dur) * 100 : 100;
+    if (dur <= 0) return 100;
+
+    // Utiliser la valeur temporaire pendant le drag si disponible
+    const tempEnd = this._tempEndTime();
+    const actualEnd = tempEnd !== null ? tempEnd : this.endTime();
+    return (actualEnd / dur) * 100;
   });
 
   readonly currentPosition = computed(() => {
@@ -246,20 +260,24 @@ export class TimelineComponent implements OnInit, OnDestroy {
     if (event) {
       event.preventDefault();
       event.stopPropagation();
-      
+
       this.dragStartX = event.clientX;
       this.dragStartTime = handle === 'start' ? this.startTime() : this.endTime();
-      
+
       // Obtenir les dimensions de la timeline
       const timelineTrack = this.elementRef.nativeElement.querySelector('.timeline-track');
       if (timelineTrack) {
         this.timelineRect = timelineTrack.getBoundingClientRect();
       }
     }
-    
+
     this._isDragging.set(true);
     this._dragTarget.set(handle);
-    
+
+    // Initialiser les valeurs temporaires
+    this._tempStartTime.set(this.startTime());
+    this._tempEndTime.set(this.endTime());
+
     console.log(`Drag started for ${handle} handle`);
   }
 
@@ -269,6 +287,10 @@ export class TimelineComponent implements OnInit, OnDestroy {
   onDragEnd(): void {
     this._isDragging.set(false);
     this._dragTarget.set(null);
+
+    // Nettoyer les valeurs temporaires
+    this._tempStartTime.set(null);
+    this._tempEndTime.set(null);
   }
 
   /**
@@ -294,15 +316,25 @@ export class TimelineComponent implements OnInit, OnDestroy {
     const newPercentage = Math.max(0, Math.min(100, currentPercentage + deltaPercentage));
     const newTime = this.positionToTime(newPercentage);
 
-    // Appliquer les contraintes et mettre à jour avec debounce
+    // Mettre à jour les valeurs temporaires IMMÉDIATEMENT pour le feedback visuel
     if (currentHandle === 'start') {
-      const constrainedTime = Math.max(0, Math.min(newTime, this.endTime() - 1));
-      this.updateLoopBoundsWithDebounce(constrainedTime, this.endTime());
+      // Utiliser les valeurs temporaires pour les contraintes afin d'éviter la latence
+      const currentEndTime = this._tempEndTime() || this.endTime();
+      const constrainedTime = Math.max(0, Math.min(newTime, currentEndTime - 1));
+      this._tempStartTime.set(constrainedTime);
+
+      // Mettre à jour le service avec debounce
+      this.updateLoopBoundsWithDebounce(constrainedTime, currentEndTime);
       // Repositionner automatiquement la lecture sur la nouvelle position start
       this.seekToWithDebounce(constrainedTime);
     } else if (currentHandle === 'end') {
-      const constrainedTime = Math.max(this.startTime() + 1, Math.min(newTime, this.duration()));
-      this.updateLoopBoundsWithDebounce(this.startTime(), constrainedTime);
+      // Utiliser les valeurs temporaires pour les contraintes afin d'éviter la latence
+      const currentStartTime = this._tempStartTime() || this.startTime();
+      const constrainedTime = Math.max(currentStartTime + 1, Math.min(newTime, this.duration()));
+      this._tempEndTime.set(constrainedTime);
+
+      // Mettre à jour le service avec debounce
+      this.updateLoopBoundsWithDebounce(currentStartTime, constrainedTime);
     }
   }
 
@@ -365,23 +397,27 @@ export class TimelineComponent implements OnInit, OnDestroy {
    */
   onTouchStart(handle: 'start' | 'end', event: TouchEvent): void {
     if (event.touches.length !== 1) return;
-    
+
     event.preventDefault();
     event.stopPropagation();
-    
+
     const touch = event.touches[0];
     this.dragStartX = touch.clientX;
     this.dragStartTime = handle === 'start' ? this.startTime() : this.endTime();
-    
+
     // Obtenir les dimensions de la timeline
     const timelineTrack = this.elementRef.nativeElement.querySelector('.timeline-track');
     if (timelineTrack) {
       this.timelineRect = timelineTrack.getBoundingClientRect();
     }
-    
+
     this._isDragging.set(true);
     this._dragTarget.set(handle);
-    
+
+    // Initialiser les valeurs temporaires
+    this._tempStartTime.set(this.startTime());
+    this._tempEndTime.set(this.endTime());
+
     console.log(`Touch drag started for ${handle} handle`);
   }
 
@@ -409,15 +445,25 @@ export class TimelineComponent implements OnInit, OnDestroy {
     const newPercentage = Math.max(0, Math.min(100, currentPercentage + deltaPercentage));
     const newTime = this.positionToTime(newPercentage);
 
-    // Appliquer les contraintes et mettre à jour avec debounce
+    // Mettre à jour les valeurs temporaires IMMÉDIATEMENT pour le feedback visuel
     if (currentHandle === 'start') {
-      const constrainedTime = Math.max(0, Math.min(newTime, this.endTime() - 1));
-      this.updateLoopBoundsWithDebounce(constrainedTime, this.endTime());
+      // Utiliser les valeurs temporaires pour les contraintes afin d'éviter la latence
+      const currentEndTime = this._tempEndTime() || this.endTime();
+      const constrainedTime = Math.max(0, Math.min(newTime, currentEndTime - 1));
+      this._tempStartTime.set(constrainedTime);
+
+      // Mettre à jour le service avec debounce
+      this.updateLoopBoundsWithDebounce(constrainedTime, currentEndTime);
       // Repositionner automatiquement la lecture sur la nouvelle position start
       this.seekToWithDebounce(constrainedTime);
     } else if (currentHandle === 'end') {
-      const constrainedTime = Math.max(this.startTime() + 1, Math.min(newTime, this.duration()));
-      this.updateLoopBoundsWithDebounce(this.startTime(), constrainedTime);
+      // Utiliser les valeurs temporaires pour les contraintes afin d'éviter la latence
+      const currentStartTime = this._tempStartTime() || this.startTime();
+      const constrainedTime = Math.max(currentStartTime + 1, Math.min(newTime, this.duration()));
+      this._tempEndTime.set(constrainedTime);
+
+      // Mettre à jour le service avec debounce
+      this.updateLoopBoundsWithDebounce(currentStartTime, constrainedTime);
     }
   }
 
