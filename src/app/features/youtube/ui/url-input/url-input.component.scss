@@ -206,42 +206,6 @@
   }
 }
 
-.url-input-info {
-  background-color: var(--background-tertiary);
-  border: 1px solid var(--border-light);
-  border-radius: var(--border-radius);
-  padding: var(--spacing-md);
-  
-  .url-info-item {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-sm);
-    margin-bottom: var(--spacing-xs);
-    
-    &:last-child {
-      margin-bottom: 0;
-    }
-  }
-  
-  .url-info-label {
-    font-weight: 500;
-    color: var(--text-secondary);
-    font-size: 0.875rem;
-  }
-  
-  .url-info-value {
-    color: var(--text-primary);
-    font-weight: 600;
-    
-    &code {
-      background-color: var(--background-secondary);
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-family: 'Courier New', monospace;
-      font-size: 0.8rem;
-    }
-  }
-}
 
 .url-input-actions {
   display: flex;
@@ -380,8 +344,7 @@
   }
 }
 
-.url-input-error,
-.url-input-info {
+.url-input-error {
   animation: fadeIn 0.3s ease-out;
 }
 

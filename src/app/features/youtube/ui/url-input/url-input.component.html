@@ -89,25 +89,5 @@
       </div>
     }
 
-    <!-- Informations sur l'URL valide -->
-    @if (urlInfo() && !hasError() && !isUrlInvalid) {
-      <div class="url-input-info">
-        <div class="url-info-item">
-          <span class="url-info-label">ID de la vidéo :</span>
-          <code class="url-info-value">{{ urlInfo()!.videoId }}</code>
-        </div>
-        @if (urlInfo()!.startTime) {
-          <div class="url-info-item">
-            <span class="url-info-label">Temps de démarrage :</span>
-            <span class="url-info-value">{{ urlInfo()!.startTime }}s</span>
-          </div>
-        }
-      </div>
-    }
-
   </div>
-  
 </form>
-
-    
-  

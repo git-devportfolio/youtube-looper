@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, signal } from '@angular/core';
 import { UrlInputComponent } from '../../../youtube';
 import { VideoPlayerComponent } from '../../../video-player';
 import { TimelineComponent } from '../../../video-controls';
@@ -15,33 +15,47 @@ import { YouTubeUrlInfo } from '../../../../core';
 export class AppMainComponent {
   @ViewChild('videoPlayer') videoPlayer!: VideoPlayerComponent;
 
+  // Signal pour tracker si une URL valide a été chargée
+  hasValidUrl = signal(false);
+
   // Handlers pour le composant UrlInputComponent
   async onValidUrlSubmitted(urlInfo: YouTubeUrlInfo) {
     console.log('URL valide soumise:', urlInfo);
-    
+
     try {
       // Charger la vidéo automatiquement via le VideoPlayerComponent
       console.log('Chargement automatique de la vidéo:', urlInfo.videoId);
       await this.videoPlayer.loadVideo(urlInfo.videoId, false);
-      
+
+      // Marquer qu'une URL valide a été chargée
+      this.hasValidUrl.set(true);
+
       // Si un startTime est spécifié, naviguer à cette position
       if (urlInfo.startTime && urlInfo.startTime > 0) {
         setTimeout(() => {
           this.videoPlayer.seekTo(urlInfo.startTime!);
         }, 1000); // Attendre que la vidéo soit chargée
       }
-      
+
       console.log('Vidéo chargée avec succès');
     } catch (error) {
       console.error('Erreur lors du chargement automatique:', error);
+      // En cas d'erreur, ne pas afficher les contrôles
+      this.hasValidUrl.set(false);
     }
   }
 
   onUrlChanged(url: string) {
     console.log('URL changée:', url);
+    // Si l'URL change, cacher les contrôles jusqu'à la prochaine validation
+    if (!url.trim()) {
+      this.hasValidUrl.set(false);
+    }
   }
 
   onUrlCleared() {
     console.log('URL effacée');
+    // Quand l'URL est effacée, cacher les contrôles
+    this.hasValidUrl.set(false);
   }
 }
