@@ -1,0 +1,1 @@
+export { HelpGuideComponent } from './help-guide.component';

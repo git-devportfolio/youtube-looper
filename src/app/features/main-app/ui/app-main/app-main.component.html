@@ -1,11 +1,19 @@
 <div class="app-main-container">
   <!-- Zone de saisie URL -->
   <div class="url-input-zone">
-    <app-url-input 
+    <app-url-input
       (validUrlSubmitted)="onValidUrlSubmitted($event)"
       (urlChanged)="onUrlChanged($event)"
       (urlCleared)="onUrlCleared()">
     </app-url-input>
+
+    <!-- Message d'aide contextuel -->
+    <div class="help-hint">
+      <span class="help-hint__icon">💡</span>
+      <span class="help-hint__text">
+        Collez une URL YouTube pour commencer votre session d'apprentissage musical
+      </span>
+    </div>
   </div>
 
   <!-- Zone lecteur vidéo principal -->
@@ -19,12 +27,12 @@
     <div class="timeline-container">
       <app-timeline></app-timeline>
     </div>
-    
+
     <!-- Loop controls intégré -->
     <div class="loop-controls-container">
       <app-loop-controls></app-loop-controls>
     </div>
-    
+
     <!-- Speed controls intégré -->
     <div class="speed-controls-container">
       <app-speed-control></app-speed-control>

@@ -1,0 +1,93 @@
+<!-- Modal Overlay -->
+@if (isOpen()) {
+  <div class="help-modal-overlay" (click)="close()">
+    <div class="help-modal" (click)="$event.stopPropagation()">
+      <!-- Header -->
+      <div class="help-header">
+        <h2 class="help-title">
+          <span class="help-icon">❓</span>
+          Guide d'utilisation
+        </h2>
+        <button class="help-close" (click)="close()" aria-label="Fermer le guide">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Progress Bar -->
+      <div class="help-progress">
+        <div class="help-progress-bar" [style.width.%]="progress()"></div>
+        <span class="help-progress-text">{{ currentStep() + 1 }} / {{ steps.length }}</span>
+      </div>
+
+      <!-- Steps Navigation -->
+      <div class="help-steps-nav">
+        @for (step of steps; let i = $index; track step.id) {
+          <button
+            class="help-step-indicator"
+            [class.active]="i === currentStep()"
+            [class.completed]="i < currentStep()"
+            (click)="goToStep(i)"
+            [attr.aria-label]="step.title">
+            <span class="step-number">{{ i + 1 }}</span>
+          </button>
+        }
+      </div>
+
+      <!-- Current Step Content -->
+      <div class="help-content">
+        <div class="help-step">
+          <div class="step-icon">{{ currentStepData().icon }}</div>
+          <h3 class="step-title">{{ currentStepData().title }}</h3>
+          <p class="step-description">{{ currentStepData().description }}</p>
+
+          @if (currentStepData().tips) {
+            <div class="step-tips">
+              <h4 class="tips-title">💡 Conseils pratiques :</h4>
+              <ul class="tips-list">
+                @for (tip of currentStepData().tips; track tip) {
+                  <li class="tip-item">{{ tip }}</li>
+                }
+              </ul>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Navigation Controls -->
+      <div class="help-controls">
+        <button
+          class="help-btn help-btn--secondary"
+          [disabled]="isFirstStep()"
+          (click)="previousStep()">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          Précédent
+        </button>
+
+        @if (!isLastStep()) {
+          <button
+            class="help-btn help-btn--primary"
+            (click)="nextStep()">
+            Suivant
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
+        } @else {
+          <button
+            class="help-btn help-btn--success"
+            (click)="close()">
+            Commencer !
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
+        }
+      </div>
+    </div>
+  </div>
+}

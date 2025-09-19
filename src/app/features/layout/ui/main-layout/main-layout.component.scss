@@ -245,6 +245,9 @@
   padding: var(--spacing-xs) var(--spacing-sm);
   border-radius: var(--border-radius);
   transition: all 0.2s ease;
+  border: none;
+  background: transparent;
+  cursor: pointer;
   
   @media (max-width: 480px) {
     font-size: 0.8rem;
