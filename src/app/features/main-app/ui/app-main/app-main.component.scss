@@ -131,7 +131,9 @@
 
 .loop-controls-container {
   display: flex;
-  gap: var(--spacing-md);
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
   background-color: var(--background-primary);
   border-radius: var(--border-radius);
   border: 1px solid var(--border-light);
@@ -140,13 +142,32 @@
 
 .speed-controls-container {
   display: flex;
+  flex-direction: column;
   gap: var(--spacing-sm);
-  justify-content: center;
-  flex-wrap: wrap;
+  padding: var(--spacing-md);
   background-color: var(--background-primary);
   border-radius: var(--border-radius);
   border: 1px solid var(--border-light);
   // Sera utilisé par les contrôles de vitesse
+}
+
+// Titres discrets pour les contrôles
+.control-title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-tertiary);
+  margin-bottom: var(--spacing-xs);
+  border-bottom: 1px solid var(--border-light);
+  padding-bottom: var(--spacing-xs);
+  opacity: 0.8;
+
+  @media (max-width: 768px) {
+    font-size: 0.7rem;
+    margin-bottom: var(--spacing-xxs);
+    padding-bottom: var(--spacing-xxs);
+  }
 }
 
 // Architecture responsive mobile-first avec breakpoints
@@ -214,6 +235,7 @@
   // Layout desktop optimisé pour les futurs composants
   .timeline-container {
     width: 100%;
+    order: 2;
   }
 
   .loop-controls-container {
@@ -223,7 +245,7 @@
 
   .speed-controls-container {
     width: 100%;
-    order: 2;
+    order: 3;
   }
 }
 
