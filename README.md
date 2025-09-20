@@ -10,6 +10,12 @@ Une application web responsive développée en Angular pour faciliter l'apprenti
 ![Claude Code](https://img.shields.io/badge/Built_with-Claude_Code-purple)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
+## 🌐 Démo en Ligne
+
+**🚀 [Essayer l'application](https://git-devportfolio.github.io/youtube-looper/)**
+
+*Déployée automatiquement via GitHub Pages*
+
 ## 🎯 Objectif
 
 YouTube Looper est conçu spécifiquement pour les **musiciens** et **étudiants en musique** qui souhaitent :

@@ -107,7 +107,7 @@ export class UrlInputComponent implements OnInit, AfterViewInit {
     // Charger l'URL par défaut après un court délai pour permettre l'initialisation complète
     setTimeout(() => {
       this.urlForm.get('url')?.setValue(defaultTestUrl);
-    }, 500);
+    }, 1000);
   }
 
   private handleUrlChange(url: string): void {
