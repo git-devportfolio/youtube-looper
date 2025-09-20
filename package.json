@@ -6,7 +6,7 @@
     "start": "ng serve",
     "build": "ng build",
     "build:gh-pages": "ng build --configuration production --base-href /youtube-looper/",
-    "deploy:gh-pages": "ng build --configuration production --base-href /youtube-looper/ && npx angular-cli-ghpages --dir=dist/youtube-looper",
+    "deploy:gh-pages": "ng build --configuration production --base-href /youtube-looper/ && npx angular-cli-ghpages --dir=dist/youtube-looper/browser",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
