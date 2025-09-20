@@ -1,4 +1,4 @@
-import { Component, ViewChild, signal } from '@angular/core';
+import { Component, ViewChild, ElementRef, signal } from '@angular/core';
 import { UrlInputComponent } from '../../../youtube';
 import { VideoPlayerComponent } from '../../../video-player';
 import { TimelineComponent } from '../../../video-controls';
@@ -14,6 +14,7 @@ import { YouTubeUrlInfo } from '../../../../core';
 })
 export class AppMainComponent {
   @ViewChild('videoPlayer') videoPlayer!: VideoPlayerComponent;
+  @ViewChild('playerZone') playerZone!: ElementRef<HTMLDivElement>;
 
   // Signal pour tracker si une URL valide a été chargée
   hasValidUrl = signal(false);
@@ -30,11 +31,14 @@ export class AppMainComponent {
       // Marquer qu'une URL valide a été chargée
       this.hasValidUrl.set(true);
 
+      // Scroll automatique vers le lecteur vidéo
+      // this.scrollToPlayer();
+
       // Si un startTime est spécifié, naviguer à cette position
       if (urlInfo.startTime && urlInfo.startTime > 0) {
         setTimeout(() => {
           this.videoPlayer.seekTo(urlInfo.startTime!);
-        }, 1000); // Attendre que la vidéo soit chargée
+        }, 1500); // Attendre que la vidéo soit chargée
       }
 
       console.log('Vidéo chargée avec succès');
@@ -57,5 +61,14 @@ export class AppMainComponent {
     console.log('URL effacée');
     // Quand l'URL est effacée, cacher les contrôles
     this.hasValidUrl.set(false);
+  }
+
+  private scrollToPlayer(): void {
+    // Attendre un court délai pour s'assurer que le DOM est mis à jour
+    setTimeout(() => {
+      if (this.playerZone?.nativeElement) {
+        this.playerZone.nativeElement.scrollIntoView(true);
+      }
+    }, 500);
   }
 }

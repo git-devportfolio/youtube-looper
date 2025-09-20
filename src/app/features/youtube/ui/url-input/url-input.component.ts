@@ -61,6 +61,7 @@ export class UrlInputComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.initializeForm();
     this.setupFormValidation();
+    this.loadDefaultUrl();
   }
 
   ngAfterViewInit(): void {
@@ -97,6 +98,16 @@ export class UrlInputComponent implements OnInit, AfterViewInit {
       .subscribe(url => {
         this.handleUrlChange(url);
       });
+  }
+
+  private loadDefaultUrl(): void {
+    // URL de test par défaut - une vidéo musicale courte et libre de droits
+    const defaultTestUrl = 'https://www.youtube.com/watch?v=zdI76A_zALI&list=PLQLMktq8kjwXz9oMz-rB6enkPQ8gD1WWX&index=8';
+
+    // Charger l'URL par défaut après un court délai pour permettre l'initialisation complète
+    setTimeout(() => {
+      this.urlForm.get('url')?.setValue(defaultTestUrl);
+    }, 500);
   }
 
   private handleUrlChange(url: string): void {
