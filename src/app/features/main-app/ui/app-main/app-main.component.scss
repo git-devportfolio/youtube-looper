@@ -235,17 +235,17 @@
   // Layout desktop optimisé pour les futurs composants
   .timeline-container {
     width: 100%;
-    order: 2;
+    order: 3;
   }
 
   .loop-controls-container {
     width: 100%;
-    order: 1;
+    order: 2;
   }
 
   .speed-controls-container {
     width: 100%;
-    order: 3;
+    order: 1;
   }
 }
 
@@ -280,7 +280,7 @@
   }
 
   .player-zone {
-    min-height: 300px;
+    min-height: 250px;
   }
 
   .controls-zone {

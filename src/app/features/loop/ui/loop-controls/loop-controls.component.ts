@@ -19,12 +19,12 @@ export class LoopControlsComponent {
 
   // État du bouton toggle loop
   readonly toggleLoopButtonText = computed(() =>
-    this.isLoopActive() ? 'Stop Loop' : 'Play Loop'
+    this.isLoopActive() ? 'Loop' : 'Loop'
   );
 
-  readonly toggleLoopButtonIcon = computed(() =>
-    this.isLoopActive() ? '⏸️' : '▶️'
-  );
+  // readonly toggleLoopButtonIcon = computed(() =>
+  //   this.isLoopActive() ? '⏸️' : '▶️'
+  // );
 
   /**
    * Définit le temps de début de la boucle à la position actuelle

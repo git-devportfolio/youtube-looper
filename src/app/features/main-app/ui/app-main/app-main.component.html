@@ -15,14 +15,21 @@
       </span>
     </div>
   </div>
-
+  
   <!-- Zone lecteur vidéo principal -->
   <div class="player-zone" #playerZone>
     <app-video-player #videoPlayer class="video-player-wrapper"></app-video-player>
   </div>
-
+  
   <!-- Zone contrôles -->
   <div class="controls-zone">
+    
+    <!-- Speed controls intégré -->
+    <div class="speed-controls-container">
+      <div class="control-title">Contrôle de vitesse</div>
+      <app-speed-control></app-speed-control>
+    </div>
+    
     <!-- Loop controls intégré -->
     <div class="loop-controls-container">
       <div class="control-title">Contrôles de boucle</div>
@@ -35,11 +42,6 @@
       <app-timeline></app-timeline>
     </div>
 
-    <!-- Speed controls intégré -->
-    <div class="speed-controls-container">
-      <div class="control-title">Contrôle de vitesse</div>
-      <app-speed-control></app-speed-control>
-    </div>
   </div>
 
   <!-- Zone footer discrète -->
