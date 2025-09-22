@@ -19,7 +19,7 @@ export class LoopControlsComponent {
 
   // État du bouton toggle loop
   readonly toggleLoopButtonText = computed(() =>
-    this.isLoopActive() ? 'Stop' : 'Loop'
+    this.isLoopActive() ? 'Stop' : 'Play Loop'
   );
 
   // readonly toggleLoopButtonIcon = computed(() =>
