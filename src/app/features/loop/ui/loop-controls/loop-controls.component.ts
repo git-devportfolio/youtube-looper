@@ -19,7 +19,7 @@ export class LoopControlsComponent {
 
   // État du bouton toggle loop
   readonly toggleLoopButtonText = computed(() =>
-    this.isLoopActive() ? 'Loop' : 'Loop'
+    this.isLoopActive() ? 'Stop' : 'Loop'
   );
 
   // readonly toggleLoopButtonIcon = computed(() =>
@@ -41,12 +41,18 @@ export class LoopControlsComponent {
 
   /**
    * Définit le temps de fin de la boucle à la position actuelle
+   * et démarre automatiquement la loop
    */
   onSetEnd(): void {
     const currentTime = this.youTubePlayerService.currentTime();
     this.loopService.setEndTime(currentTime);
 
     console.log(`Set end time: ${currentTime}s`);
+
+    // Démarrer automatiquement la loop si elle est valide
+    if (this.hasValidLoop() && !this.isLoopActive()) {
+      this.onToggleLoop();
+    }
   }
 
   /**
@@ -73,9 +79,10 @@ export class LoopControlsComponent {
 
       console.log(`Loop activated and playback started from ${startTime}s`);
     } else {
-      // Désactiver la boucle
+      // Désactiver la boucle et arrêter la lecture
       this.loopService.deactivateLoop();
-      console.log('Loop deactivated');
+      this.youTubePlayerService.pause();
+      console.log('Loop deactivated and playback stopped');
     }
   }
 }
