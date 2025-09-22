@@ -5,7 +5,9 @@
       "Bash(mkdir:*)",
       "Bash(npm run build:*)",
       "Bash(npm start)",
-      "Bash(task-master set-status:*)"
+      "Bash(task-master set-status:*)",
+      "Bash(npm run build:gh-pages:*)",
+      "Bash(npm run deploy:gh-pages:*)"
     ],
     "deny": [],
     "ask": []

@@ -17,7 +17,7 @@
     max-width: 860px;
 
     @media (max-width: 768px) {
-      padding: var(--spacing-sm) 0;
+      padding: var(--spacing-sm);
       min-height: 60px;
     }
   }
