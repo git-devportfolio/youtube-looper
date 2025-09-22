@@ -209,10 +209,16 @@ export class TimelineComponent implements OnInit, OnDestroy {
         this.loopService.setStartTime(validation.constrainedStart);
         this.loopService.setEndTime(validation.constrainedEnd);
 
-        // Activer automatiquement la boucle
+        // Activer automatiquement la boucle et démarrer la lecture
         if (!this.loopService.isLoopActive()) {
           this.loopService.activateLoop();
-          console.log(`Timeline: Loop auto-activated with bounds ${validation.constrainedStart}s - ${validation.constrainedEnd}s`);
+
+          // Démarrer la lecture si elle n'est pas déjà en cours
+          if (!this.youTubePlayerService.isPlaying()) {
+            this.youTubePlayerService.play();
+          }
+
+          console.log(`Timeline: Loop auto-activated with playback started - bounds ${validation.constrainedStart}s - ${validation.constrainedEnd}s`);
         }
 
         console.log(`Timeline: Bounds updated via debounce: ${validation.constrainedStart}s - ${validation.constrainedEnd}s`);
