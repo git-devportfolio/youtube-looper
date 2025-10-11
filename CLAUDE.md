@@ -4,12 +4,18 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Développer une **application web responsive en Angular** permettant de **boucler un segment précis d’une vidéo YouTube** afin de faciliter le travail instrumental (ex. guitare).
-L’objectif est de fournir un outil **simple, efficace et ergonomique** pour répéter en boucle un passage musical.
+Développer une **application web responsive en Angular** permettant de **boucler un segment précis d'une vidéo YouTube ou d'un fichier audio local** afin de faciliter le travail instrumental (ex. guitare).
+L'objectif est de fournir un outil **simple, efficace et ergonomique** pour répéter en boucle un passage musical.
+
+L'application se compose de deux modules complémentaires :
+1. **YouTube Looper** : Lecture et bouclage de vidéos YouTube en ligne
+2. **Audio Looper** : Lecture et bouclage de fichiers audio locaux avec contrôle avancé (pitch, vitesse, volume)
 
 ## Fonctionnalités principales
 
-### 1. Saisie d’URL YouTube
+## Module YouTube Looper (existant)
+
+### 1. Saisie d'URL YouTube
 
 * **Champ de saisie** : L’utilisateur peut coller une URL de vidéo YouTube.
 * **Placeholder** : Un exemple d’URL YouTube est affiché pour guider l’utilisateur.
@@ -61,8 +67,73 @@ L’objectif est de fournir un outil **simple, efficace et ergonomique** pour r�
 ### 7. Accessibilité
 
 * **Contrastes élevés** : Lisible même en environnement lumineux (ex. salle de répétition).
-* **Icônes + texte** : Associer systématiquement icône et label (“Loop”, “Speed”).
+* **Icônes + texte** : Associer systématiquement icône et label ("Loop", "Speed").
 * **Support accessibilité** : Navigation clavier.
+
+## Module Audio Looper (nouveau)
+
+Le module Audio Looper permet l'upload et la manipulation de fichiers audio locaux avec des fonctionnalités avancées de contrôle audio.
+
+### Fonctionnalités clés
+
+1. **Upload de fichiers audio**
+   - Formats supportés : MP3, WAV, OGG, M4A
+   - Taille maximale : 10 Mo (10 485 760 octets)
+   - Interface drag & drop + bouton parcourir
+   - Upload centré en mode vide (avant chargement)
+
+2. **Visualisation waveform**
+   - Forme d'onde audio comme composant central de l'interface
+   - Navigation directe sur la waveform (clic pour positionner)
+   - Curseur de lecture animé sur la waveform
+   - Marqueurs A/B et zone de boucle superposés sur la waveform
+
+3. **Lecture audio**
+   - Contrôles Play/Pause
+   - Affichage temps courant / durée totale (MM:SS)
+   - Interaction tactile optimisée
+
+4. **Boucle A/B**
+   - Boutons "Set A" et "Set B" pour définir les bornes
+   - Bouton "Loop ON/OFF" pour activer/désactiver
+   - Marqueurs visuels A et B sur la waveform
+   - Zone colorée entre A et B
+   - Bouton "Reset Loop"
+
+5. **Modification de la tonalité (Pitch Shift)**
+   - Plage : -6 à +6 demi-tons
+   - Slider avec affichage de la valeur courante
+   - Application en temps réel
+   - Bouton "Reset Pitch"
+
+6. **Ajustement de la vitesse**
+   - Presets : 0.5x, 0.75x, 1.0x uniquement
+   - Vitesse par défaut : 1.0x
+   - Sans altération de la tonalité
+   - Affichage de la vitesse courante
+
+7. **Contrôle du volume**
+   - Slider de volume (0% à 100%)
+   - Bouton mute/unmute avec icônes 🔊/🔇
+
+### Technologies Audio Looper
+
+- **Audio processing** : Tone.js (pitch shift, time stretch, boucle)
+- **Waveform visualization** : Canvas API ou wavesurfer.js
+- **Architecture** : `src/app/features/audio-looper/`
+
+### Design Audio Looper
+
+- **Boutons textuels uniquement** : Tous les boutons de contrôle sans icônes (sauf volume)
+- **Waveform central** : Élément graphique principal de l'interface
+- **Révélation progressive** : Interface révèle progressivement les contrôles après upload
+- **Minimalisme** : Interface épurée centrée sur l'onde audio
+
+### Navigation entre modules
+
+- Système de navigation (onglets ou boutons) pour basculer entre YouTube Looper et Audio Looper
+- Navigation fluide sans rechargement de page
+- Chaque module s'affiche dans un écran distinct
 
 ## Contraintes YouTube
 
@@ -120,12 +191,25 @@ L’objectif est de fournir un outil **simple, efficace et ergonomique** pour r�
 - **Persistance**: localStorage
 - **Architecture**: Moderne Angular CLI avec application builder
 
-## Fonctionnalités Principales
+## Fonctionnalités Principales Globales
 
-- Lecture de vidéos YouTube intégrées avec l'utilisation de Youtube AOI IFrame
+### Module YouTube Looper
+- Lecture de vidéos YouTube intégrées avec l'utilisation de Youtube API IFrame
 - Création et gestion d'une liste de boucles sur des segments de la vidéo chargée
 - Interface responsive
-- pas de tests à générer
+- Pas de tests à générer
+
+### Module Audio Looper
+- Upload et lecture de fichiers audio locaux (MP3, WAV, OGG, M4A)
+- Visualisation waveform interactive
+- Contrôle avancé : pitch shift (±6 demi-tons), vitesse (0.5x, 0.75x, 1.0x), volume
+- Boucle A/B avec marqueurs visuels sur waveform
+- Interface responsive centrée sur la waveform
+- Pas de tests à générer
+
+### Spécifications du PRD
+Le PRD complet pour le module Audio Looper est disponible dans :
+- `.taskmaster/docs/PRD-audio-uploader.md` (sera renommé PRD-audio-looper.md)
 
 ## Development Commands
 
