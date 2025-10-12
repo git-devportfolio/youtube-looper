@@ -1,15 +1,4 @@
 <div class="audio-looper-container">
-  <div class="audio-looper-placeholder">
-    <h2>Audio Looper</h2>
-    <p>Module en développement...</p>
-    <p class="text-muted">Fonctionnalités à venir :</p>
-    <ul>
-      <li>Upload de fichiers audio locaux</li>
-      <li>Visualisation waveform interactive</li>
-      <li>Boucle A/B avec marqueurs visuels</li>
-      <li>Contrôle de tonalité (pitch shift)</li>
-      <li>Ajustement de vitesse sans altération</li>
-      <li>Contrôle de volume</li>
-    </ul>
-  </div>
+  <!-- Composant d'upload de fichier -->
+  <app-file-upload (fileSelected)="onFileSelected($event)"></app-file-upload>
 </div>

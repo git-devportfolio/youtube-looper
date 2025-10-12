@@ -1,1 +1,74 @@
-<p>file-upload works!</p>
+<div class="file-upload">
+  <!-- Zone de drag & drop -->
+  <div
+    class="upload-zone"
+    [class.upload-zone--dragging]="isDragging()"
+    [class.upload-zone--error]="error() !== null"
+    (dragover)="onDragOver($event)"
+    (dragleave)="onDragLeave($event)"
+    (drop)="onDrop($event)"
+    (click)="openFileSelector()"
+  >
+    <!-- Icône -->
+    <div class="upload-zone__icon">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <polyline points="17 8 12 3 7 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <line x1="12" y1="3" x2="12" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+
+    <!-- Titre -->
+    <h2 class="upload-zone__title">
+      @if (isDragging()) {
+        Déposez votre fichier audio
+      } @else {
+        Charger un fichier audio
+      }
+    </h2>
+
+    <!-- Description -->
+    <p class="upload-zone__description">
+      Glissez-déposez votre fichier ou cliquez pour parcourir
+    </p>
+
+    <!-- Formats supportés -->
+    <p class="upload-zone__formats">
+      Formats supportés : MP3, WAV, OGG, M4A (max. 10 Mo)
+    </p>
+
+    <!-- Input caché -->
+    <input
+      type="file"
+      id="fileInput"
+      accept=".mp3,.wav,.ogg,.m4a,audio/mpeg,audio/wav,audio/ogg,audio/m4a"
+      (change)="onFileSelected($event)"
+      class="upload-zone__input"
+      aria-label="Sélectionner un fichier audio"
+    />
+  </div>
+
+  <!-- Message d'erreur -->
+  @if (error()) {
+    <div class="error-message" role="alert">
+      <div class="error-message__content">
+        <svg class="error-message__icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+          <line x1="12" y1="8" x2="12" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <line x1="12" y1="16" x2="12.01" y2="16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <span class="error-message__text">{{ error()!.message }}</span>
+      </div>
+      <button
+        class="error-message__close"
+        (click)="clearError()"
+        aria-label="Fermer le message d'erreur"
+      >
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+  }
+</div>
