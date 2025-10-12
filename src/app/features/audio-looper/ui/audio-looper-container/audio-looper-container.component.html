@@ -1,4 +1,11 @@
 <div class="audio-looper-container">
   <!-- Composant d'upload de fichier -->
   <app-file-upload (fileSelected)="onFileSelected($event)"></app-file-upload>
+
+  <!-- Affichage de la waveform après chargement -->
+  @if (isReady()) {
+    <div class="audio-looper-container__waveform">
+      <app-waveform-display [audioBuffer]="audioBuffer()"></app-waveform-display>
+    </div>
+  }
 </div>

@@ -1,1 +1,19 @@
-<p>waveform-display works!</p>
+<div class="waveform-display">
+  <!-- Loader pendant la génération -->
+  @if (isGenerating()) {
+    <div class="waveform-display__loader">
+      <div class="loader-spinner"></div>
+      <p class="loader-text">Génération de la waveform...</p>
+    </div>
+  }
+
+  <!-- Canvas pour la waveform -->
+  <div class="waveform-display__container">
+    <canvas
+      #waveformCanvas
+      class="waveform-display__canvas"
+      (click)="onCanvasClick($event)"
+      aria-label="Forme d'onde audio"
+    ></canvas>
+  </div>
+</div>

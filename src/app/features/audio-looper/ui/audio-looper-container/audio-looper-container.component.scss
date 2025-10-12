@@ -2,17 +2,37 @@
   width: 100%;
   min-height: 60vh;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: var(--spacing-xl);
   padding: var(--spacing-xl);
 
   @media (max-width: 768px) {
     padding: var(--spacing-lg);
     min-height: 50vh;
+    gap: var(--spacing-lg);
   }
 
   @media (max-width: 480px) {
     padding: var(--spacing-md);
     min-height: 40vh;
+    gap: var(--spacing-md);
+  }
+
+  // Zone waveform
+  &__waveform {
+    width: 100%;
+    max-width: 1024px;
+    height: 200px;
+    margin-top: var(--spacing-lg);
+
+    @media (max-width: 768px) {
+      height: 150px;
+    }
+
+    @media (max-width: 480px) {
+      height: 120px;
+    }
   }
 }
