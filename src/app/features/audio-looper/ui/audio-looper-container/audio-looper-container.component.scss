@@ -3,36 +3,343 @@
   min-height: 60vh;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: var(--spacing-xl);
   padding: var(--spacing-xl);
+  position: relative;
+  transition: all 0.4s ease;
 
   @media (max-width: 768px) {
     padding: var(--spacing-lg);
     min-height: 50vh;
-    gap: var(--spacing-lg);
   }
 
   @media (max-width: 480px) {
     padding: var(--spacing-md);
     min-height: 40vh;
-    gap: var(--spacing-md);
   }
 
-  // Zone waveform
-  &__waveform {
-    width: 100%;
-    max-width: 1024px;
-    height: 200px;
-    margin-top: var(--spacing-lg);
+  // État vide : contenu centré
+  &[data-state="empty"] {
+    align-items: center;
+    justify-content: center;
+  }
+
+  // États chargement et erreur : contenu centré
+  &[data-state="loading"],
+  &[data-state="error"] {
+    align-items: center;
+    justify-content: center;
+  }
+
+  // État chargé : layout en colonnes
+  &[data-state="loaded"] {
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: var(--spacing-lg);
+  }
+}
+
+// Upload centré (état vide)
+.centered-upload {
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// État de chargement
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-xl);
+}
+
+.loading-spinner {
+  width: 60px;
+  height: 60px;
+  border: 4px solid var(--border-color);
+  border-top-color: var(--primary-color);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+
+  @media (max-width: 480px) {
+    width: 48px;
+    height: 48px;
+    border-width: 3px;
+  }
+}
+
+.loading-text {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  text-align: center;
+  margin: 0;
+
+  @media (max-width: 480px) {
+    font-size: 0.9375rem;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// Layout chargé (révélation progressive)
+.loaded-layout {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  animation: slideUp 0.4s ease-out;
+
+  @media (max-width: 768px) {
+    gap: var(--spacing-md);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Upload minimisé (en haut après chargement)
+.minimized-upload {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md) var(--spacing-lg);
+  background-color: var(--background-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  animation: slideDown 0.4s ease-out 0.1s backwards;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+
+  &__info {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    flex: 1;
+    min-width: 0; // Pour permettre l'ellipsis
+  }
+
+  &__icon {
+    width: 24px;
+    height: 24px;
+    color: var(--primary-color);
+    flex-shrink: 0;
+
+    @media (max-width: 480px) {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  &__filename {
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    @media (max-width: 480px) {
+      font-size: 0.875rem;
+    }
+  }
+
+  &__button {
+    padding: var(--spacing-sm) var(--spacing-lg);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    background-color: transparent;
+    border: 2px solid var(--primary-color);
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    flex-shrink: 0;
 
     @media (max-width: 768px) {
-      height: 150px;
+      width: 100%;
     }
 
     @media (max-width: 480px) {
-      height: 120px;
+      font-size: 0.875rem;
+      padding: var(--spacing-xs) var(--spacing-md);
+    }
+
+    &:hover {
+      background-color: var(--primary-color);
+      color: white;
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+
+    &:focus {
+      outline: 2px solid var(--primary-color);
+      outline-offset: 2px;
+    }
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Section waveform
+.waveform-section {
+  width: 100%;
+  height: 200px;
+  animation: fadeInUp 0.4s ease-out 0.2s backwards;
+
+  @media (max-width: 768px) {
+    height: 150px;
+  }
+
+  @media (max-width: 480px) {
+    height: 120px;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Section des contrôles (placeholder pour futures tâches)
+.controls-section {
+  width: 100%;
+  min-height: 100px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  animation: fadeInUp 0.4s ease-out 0.3s backwards;
+
+  @media (max-width: 768px) {
+    min-height: 80px;
+  }
+}
+
+// État erreur
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-xl);
+  max-width: 500px;
+  text-align: center;
+
+  &__icon {
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: rgba(239, 68, 68, 0.1);
+    color: var(--error-color, #ef4444);
+
+    @media (max-width: 480px) {
+      width: 64px;
+      height: 64px;
+    }
+
+    svg {
+      width: 50%;
+      height: 50%;
+    }
+  }
+
+  &__title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+
+    @media (max-width: 480px) {
+      font-size: 1.25rem;
+    }
+  }
+
+  &__message {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin: 0;
+
+    @media (max-width: 480px) {
+      font-size: 0.9375rem;
+    }
+  }
+
+  &__button {
+    padding: var(--spacing-md) var(--spacing-xl);
+    font-size: 1rem;
+    font-weight: 600;
+    color: white;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-md);
+
+    @media (max-width: 480px) {
+      font-size: 0.9375rem;
+      padding: var(--spacing-sm) var(--spacing-lg);
+    }
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+
+    &:focus {
+      outline: 2px solid var(--primary-color);
+      outline-offset: 2px;
     }
   }
 }
