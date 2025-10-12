@@ -41,9 +41,12 @@
         <app-waveform-display [audioBuffer]="audioBuffer()"></app-waveform-display>
       </div>
 
-      <!-- Zone des contrôles (à implémenter dans les prochaines tâches) -->
+      <!-- Zone des contrôles -->
       <div class="controls-section">
-        <!-- Les contrôles de lecture seront ajoutés ici -->
+        <!-- Lecteur audio avec Play/Pause et affichage du temps -->
+        <app-audio-player></app-audio-player>
+
+        <!-- Les autres contrôles seront ajoutés dans les prochaines tâches -->
       </div>
     </div>
   }

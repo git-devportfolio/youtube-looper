@@ -874,8 +874,9 @@
         "dependencies": [
           "6"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-10-12T14:08:42.553Z"
       },
       {
         "id": "8",
@@ -984,9 +985,9 @@
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2025-10-12T13:43:01.165Z",
+      "lastModified": "2025-10-12T14:08:42.556Z",
       "taskCount": 15,
-      "completedCount": 6,
+      "completedCount": 7,
       "tags": [
         "audio-looper"
       ]

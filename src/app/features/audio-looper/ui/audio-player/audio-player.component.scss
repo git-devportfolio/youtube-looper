@@ -1,0 +1,136 @@
+.audio-player {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-md);
+  background-color: var(--background-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+
+  @media (max-width: 768px) {
+    gap: var(--spacing-md);
+    padding: var(--spacing-sm);
+  }
+
+  @media (max-width: 480px) {
+    gap: var(--spacing-sm);
+  }
+
+  // Bouton Play/Pause
+  &__play-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-md);
+    flex-shrink: 0;
+
+    @media (max-width: 768px) {
+      width: 48px;
+      height: 48px;
+    }
+
+    @media (max-width: 480px) {
+      width: 44px;
+      height: 44px;
+    }
+
+    &:hover:not(:disabled) {
+      transform: scale(1.05);
+      box-shadow: var(--shadow-lg);
+    }
+
+    &:active:not(:disabled) {
+      transform: scale(0.98);
+    }
+
+    &:focus {
+      outline: 2px solid var(--primary-color);
+      outline-offset: 2px;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      background: var(--background-tertiary);
+    }
+
+    // État "playing" - effet pulsation
+    &--playing {
+      animation: pulse 2s ease-in-out infinite;
+    }
+  }
+
+  // Icône
+  &__icon {
+    width: 24px;
+    height: 24px;
+
+    @media (max-width: 768px) {
+      width: 20px;
+      height: 20px;
+    }
+
+    @media (max-width: 480px) {
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  // Affichage du temps
+  &__time-display {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    font-family: 'Courier New', monospace;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--text-primary);
+
+    @media (max-width: 768px) {
+      font-size: 1rem;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 0.9375rem;
+    }
+  }
+
+  &__current-time {
+    color: var(--primary-color);
+  }
+
+  &__separator {
+    color: var(--text-muted);
+  }
+
+  &__duration {
+    color: var(--text-secondary);
+  }
+}
+
+// Animation pulse pour le bouton play
+@keyframes pulse {
+  0%, 100% {
+    box-shadow: var(--shadow-md);
+  }
+  50% {
+    box-shadow: 0 0 0 4px rgba(var(--primary-color-rgb, 59, 130, 246), 0.3);
+  }
+}
+
+// Amélioration pour les zones tactiles
+@media (hover: none) and (pointer: coarse) {
+  .audio-player__play-button {
+    min-width: 48px;
+    min-height: 48px;
+  }
+}

@@ -1,1 +1,33 @@
-<p>audio-player works!</p>
+<div class="audio-player">
+  <!-- Bouton Play/Pause -->
+  <button
+    class="audio-player__play-button"
+    [class.audio-player__play-button--playing]="isPlaying()"
+    [disabled]="!isReady()"
+    (click)="togglePlayPause()"
+    type="button"
+    [attr.aria-label]="isPlaying() ? 'Pause' : 'Play'"
+  >
+    <!-- Icône Play -->
+    @if (!isPlaying()) {
+      <svg class="audio-player__icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M5 3l14 9-14 9V3z" fill="currentColor"/>
+      </svg>
+    }
+
+    <!-- Icône Pause -->
+    @if (isPlaying()) {
+      <svg class="audio-player__icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="6" y="4" width="4" height="16" fill="currentColor"/>
+        <rect x="14" y="4" width="4" height="16" fill="currentColor"/>
+      </svg>
+    }
+  </button>
+
+  <!-- Affichage des temps -->
+  <div class="audio-player__time-display">
+    <span class="audio-player__current-time">{{ formattedCurrentTime() }}</span>
+    <span class="audio-player__separator">/</span>
+    <span class="audio-player__duration">{{ formattedDuration() }}</span>
+  </div>
+</div>

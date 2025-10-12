@@ -1,6 +1,6 @@
 import { Component, ElementRef, ViewChild, AfterViewInit, OnDestroy, inject, input, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { WaveformService } from '../../services';
+import { WaveformService, AudioPlayerService } from '../../services';
 
 @Component({
   selector: 'app-waveform-display',
@@ -12,8 +12,10 @@ export class WaveformDisplayComponent implements AfterViewInit, OnDestroy {
   @ViewChild('waveformCanvas', { static: false }) canvasRef!: ElementRef<HTMLCanvasElement>;
 
   private readonly waveformService = inject(WaveformService);
+  private readonly audioPlayerService = inject(AudioPlayerService);
   private resizeObserver?: ResizeObserver;
   private canvasInitialized = false;
+  private animationFrameId?: number;
 
   // Input pour l'AudioBuffer
   readonly audioBuffer = input<AudioBuffer | null>(null);
@@ -36,6 +38,21 @@ export class WaveformDisplayComponent implements AfterViewInit, OnDestroy {
         this.generateAndDrawWaveform(buffer);
       } else {
         this.clearWaveform();
+      }
+    });
+
+    // Effect pour démarrer/arrêter l'animation du curseur
+    effect(() => {
+      const isPlaying = this.audioPlayerService.isPlaying();
+
+      if (isPlaying && this.canvasInitialized) {
+        this.startCursorAnimation();
+      } else {
+        this.stopCursorAnimation();
+        // Redessiner une dernière fois pour afficher le curseur à la position finale
+        if (this.canvasInitialized) {
+          this.redrawWaveform();
+        }
       }
     });
   }
@@ -64,6 +81,9 @@ export class WaveformDisplayComponent implements AfterViewInit, OnDestroy {
     if (this.resizeObserver) {
       this.resizeObserver.disconnect();
     }
+
+    // Arrêter l'animation
+    this.stopCursorAnimation();
   }
 
   /**
@@ -126,13 +146,78 @@ export class WaveformDisplayComponent implements AfterViewInit, OnDestroy {
   }
 
   /**
-   * Redessine la waveform
+   * Redessine la waveform avec le curseur de lecture
    */
   private redrawWaveform(): void {
     if (this.peaks().length > 0) {
       const canvas = this.canvasRef.nativeElement;
       this.waveformService.drawWaveform(canvas);
+      this.drawPlaybackCursor();
     }
+  }
+
+  /**
+   * Démarre l'animation du curseur (60 FPS)
+   */
+  private startCursorAnimation(): void {
+    this.stopCursorAnimation(); // S'assurer qu'il n'y a pas déjà une animation en cours
+
+    const animate = () => {
+      this.redrawWaveform();
+      this.animationFrameId = requestAnimationFrame(animate);
+    };
+
+    this.animationFrameId = requestAnimationFrame(animate);
+  }
+
+  /**
+   * Arrête l'animation du curseur
+   */
+  private stopCursorAnimation(): void {
+    if (this.animationFrameId !== undefined) {
+      cancelAnimationFrame(this.animationFrameId);
+      this.animationFrameId = undefined;
+    }
+  }
+
+  /**
+   * Dessine le curseur de lecture sur la waveform
+   */
+  private drawPlaybackCursor(): void {
+    const canvas = this.canvasRef.nativeElement;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const duration = this.audioPlayerService.duration();
+    const currentTime = this.audioPlayerService.currentTime();
+
+    if (duration === 0) return;
+
+    // Calculer la position X du curseur en fonction du temps
+    const dpr = window.devicePixelRatio || 1;
+    const width = canvas.width / dpr;
+    const height = canvas.height / dpr;
+    const cursorX = (currentTime / duration) * width;
+
+    // Dessiner le curseur (ligne verticale)
+    ctx.save();
+    ctx.strokeStyle = '#ef4444'; // Rouge vif
+    ctx.lineWidth = 2;
+    ctx.shadowColor = '#ef4444';
+    ctx.shadowBlur = 4;
+
+    ctx.beginPath();
+    ctx.moveTo(cursorX, 0);
+    ctx.lineTo(cursorX, height);
+    ctx.stroke();
+
+    // Dessiner un petit cercle en haut du curseur
+    ctx.fillStyle = '#ef4444';
+    ctx.beginPath();
+    ctx.arc(cursorX, 8, 4, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.restore();
   }
 
   /**
