@@ -13,10 +13,10 @@ Le module doit offrir les fonctionnalités suivantes :
 
 ## 2. Contexte
 
-L'application YouTube Looper existe déjà et permet de :
+L'application YouTube Looper existe déjà dans cette solution et permet de :
 - Charger une vidéo YouTube via URL
 - Boucler un segment vidéo (définition de bornes start/end)
-- Ajuster la vitesse de lecturef
+- Ajuster la vitesse de lecture
 - Interface responsive et épurée
 
 Le nouveau module **Audio Looper** viendra en **complément** du module YouTube Looper. Il sera accessible via un **système de navigation par onglets ou boutons** permettant de basculer entre :
@@ -83,7 +83,13 @@ Les deux modules partagent des concepts similaires (boucle A/B, vitesse, timelin
 **Description** : L'utilisateur peut ralentir ou accélérer la lecture sans altérer la tonalité.
 
 **Comportement attendu** :
-- Presets rapides : boutons 0.5x, 0.75x, 1.0x (uniquement ces trois valeurs)
+- **Presets rapides** : Trois boutons d'accès rapide (0.5x, 0.75x, 1.0x) pour les valeurs les plus courantes
+- **Stepper de vitesse** : Composant stepper [ - | valeur | + ] permettant :
+  - Ajustement précis de la vitesse par incréments de 0.1x
+  - Plage disponible : 0.4x à 2.0x
+  - Boutons - et + pour diminuer/augmenter la vitesse
+  - Affichage de la valeur courante au centre (ex. "0.6x", "1.2x")
+  - Clic sur les boutons presets rapides met à jour automatiquement le stepper
 - Vitesse par défaut : 1.0x (vitesse normale)
 - Affichage de la vitesse courante (ex. "1.0x")
 - Application en temps réel
@@ -166,6 +172,7 @@ Les deux modules partagent des concepts similaires (boucle A/B, vitesse, timelin
 │  Pitch: [-6 ←─────0─────→ +6] (0 semitones)   │
 │                                                 │
 │  Speed: [0.5x] [0.75x] [1.0x]                  │
+│         [ - | 1.0x | + ]  (stepper: 0.4-2.0x)  │
 │                                                 │
 │  Volume: [🔊 ──────75%──────] [🔇]             │
 │                                                 │
@@ -248,7 +255,9 @@ Les deux modules partagent des concepts similaires (boucle A/B, vitesse, timelin
 - Taille maximale fichier : 10 Mo (10 485 760 octets)
 - Formats audio supportés : MP3, WAV, OGG, M4A
 - Plage pitch shift : -6 à +6 demi-tons
-- Presets vitesse : 0.5x, 0.75x, 1.0x
+- Vitesse :
+  - Presets rapides : 0.5x, 0.75x, 1.0x
+  - Stepper : 0.4x à 2.0x avec incréments de 0.1x
 
 ## 6. Critères d'acceptation
 
@@ -296,9 +305,15 @@ Les deux modules partagent des concepts similaires (boucle A/B, vitesse, timelin
 
 ### 6.6 Ajustement de la vitesse
 
-- ✅ Boutons presets 0.5x, 0.75x, 1.0x fonctionnels (uniquement ces trois valeurs)
+- ✅ Boutons presets 0.5x, 0.75x, 1.0x fonctionnels pour accès rapide
+- ✅ Stepper de vitesse [ - | valeur | + ] fonctionnel :
+  - Plage : 0.4x à 2.0x
+  - Incréments de 0.1x
+  - Boutons - et + ajustent la vitesse
+  - Affichage de la valeur courante au centre
+  - Synchronisation avec les boutons presets
 - ✅ La vitesse par défaut au chargement est 1.0x (vitesse normale)
-- ✅ La vitesse courante est affichée (ex. "0.75x")
+- ✅ La vitesse courante est affichée (ex. "0.5x", "0.6x", "1.2x")
 - ✅ Le changement de vitesse est appliqué en temps réel sans altérer la tonalité
 
 ### 6.7 Contrôle du volume
@@ -340,6 +355,21 @@ Les deux modules partagent des concepts similaires (boucle A/B, vitesse, timelin
 ---
 
 ## Notes pour l'implémentation
+
+### Principe de développement itératif
+
+**IMPORTANT** : Chaque tâche/sous-tâche doit être :
+- **Testable manuellement** : L'application doit compiler et être fonctionnelle après chaque tâche
+- **Validable par l'utilisateur** : Chaque étape doit pouvoir être testée en lançant `npm start`
+- **Incrémentale** : Chaque livrable ajoute une fonctionnalité visible et testable
+- **Sans régression** : Les fonctionnalités précédentes doivent continuer à fonctionner
+
+**Workflow de validation** :
+1. Implémenter la tâche
+2. Lancer `npm run build` pour vérifier qu'il n'y a pas d'erreurs de compilation
+3. Lancer `npm start` pour tester manuellement la fonctionnalité
+4. Valider que la fonctionnalité fonctionne comme attendu
+5. Passer à la tâche suivante uniquement après validation
 
 ### Découpage en tâches suggéré
 
@@ -420,7 +450,3 @@ src/app/features/audio-looper/
 │   └── index.ts
 └── index.ts
 ```
-
----
-
-**Ce PRD est prêt à être utilisé par TaskMaster AI pour générer les tâches de développement.**

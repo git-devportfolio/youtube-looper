@@ -779,5 +779,13 @@
       "updated": "2025-09-14T20:14:12.635Z",
       "description": "Tasks for master context"
     }
+  },
+  "audio-looper": {
+    "tasks": [],
+    "metadata": {
+      "created": "2025-10-12T06:38:38.057Z",
+      "updated": "2025-10-12T06:38:38.057Z",
+      "description": "Tag created on 12/10/2025"
+    }
   }
 }
