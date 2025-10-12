@@ -1,0 +1,16 @@
+<nav class="module-nav" role="navigation" aria-label="Navigation des modules">
+  <div class="module-nav__container">
+    <div class="module-nav__tabs">
+      @for (item of navItems; track item.route) {
+        <a
+          [routerLink]="item.route"
+          routerLinkActive="module-nav__tab--active"
+          class="module-nav__tab"
+          [attr.aria-label]="'Aller au module ' + item.label"
+        >
+          {{ item.label }}
+        </a>
+      }
+    </div>
+  </div>
+</nav>

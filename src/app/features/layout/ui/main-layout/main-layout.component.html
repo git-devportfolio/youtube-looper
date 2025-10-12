@@ -1,16 +1,16 @@
 <div class="main-layout">
   <!-- Header -->
   <app-header class="main-layout__header"></app-header>
-  
+
+  <!-- Navigation entre modules -->
+  <app-module-nav></app-module-nav>
+
   <!-- Contenu principal -->
   <main class="main-layout__main">
     <div class="container">
       <div class="main-layout__content">
         <!-- Zone pour le contenu dynamique (router-outlet) -->
         <router-outlet></router-outlet>
-        
-        <!-- Interface utilisateur principale -->
-        <app-main></app-main>
       </div>
     </div>
   </main>

@@ -783,203 +783,208 @@
   "audio-looper": {
     "tasks": [
       {
-        "id": 1,
+        "id": "1",
         "title": "Mise en place de la navigation entre modules YouTube Looper et Audio Looper",
         "description": "Créer un système de navigation (onglets ou boutons) permettant de basculer entre les modules YouTube Looper existant et le nouveau module Audio Looper",
         "details": "Implémenter un composant de navigation avec deux onglets/boutons: 'YouTube Looper' et 'Audio Looper'. Utiliser Angular Router pour la navigation entre les modules. Créer les routes appropriées dans app.routes.ts. Ajouter les styles SCSS pour les onglets avec état actif/inactif. Assurer une navigation fluide sans rechargement de page. Positionner la navigation en haut de l'application selon le mockup fourni.",
         "testStrategy": "Vérifier que les onglets sont visibles en haut de l'application, que le clic sur chaque onglet change la vue sans rechargement, que l'onglet actif est visuellement distinct, et que la navigation fonctionne sur mobile et desktop.",
         "priority": "high",
         "dependencies": [],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-10-12T07:05:42.042Z"
       },
       {
-        "id": 2,
+        "id": "2",
         "title": "Création de la structure de base du module Audio Looper",
         "description": "Créer l'architecture de base du module Audio Looper avec les composants principaux et la structure de dossiers recommandée",
         "details": "Créer la structure de dossiers selon l'architecture Angular suggérée dans src/app/features/audio-looper/. Générer les composants principaux: audio-looper-container, file-upload, audio-player, loop-controls, pitch-control, speed-control, volume-control. Chaque composant doit avoir son propre dossier avec fichiers .ts, .html, .scss et index.ts. Implémenter les barrel exports dans tous les index.ts. Créer les services de base: audio-player.service.ts, tone-engine.service.ts, waveform.service.ts. Utiliser strictement les standalone components Angular 19.2.",
         "testStrategy": "Vérifier que tous les composants sont générés correctement, que la structure de dossiers respecte les conventions, que les imports via barrel exports fonctionnent, et que l'application compile sans erreur avec ng build.",
         "priority": "high",
         "dependencies": [
-          1
+          "1"
         ],
         "status": "pending",
         "subtasks": []
       },
       {
-        "id": 3,
+        "id": "3",
         "title": "Installation et configuration de Tone.js",
         "description": "Installer Tone.js et configurer l'environnement audio pour le traitement des fichiers audio",
         "details": "Installer les dépendances: npm install tone et npm install --save-dev @types/tone. Créer le service tone-engine.service.ts avec les méthodes de base pour initialiser le contexte audio Tone.js. Implémenter les méthodes pour charger un fichier audio, contrôler la lecture (play/pause), et gérer le volume. Configurer le service comme singleton avec inject() selon les conventions Angular. Ajouter la gestion d'erreurs pour les cas où l'audio n'est pas supporté par le navigateur.",
         "testStrategy": "Vérifier que Tone.js est correctement installé, que le service s'initialise sans erreur, que le contexte audio se démarre correctement (gestion des politiques autoplay), et qu'un fichier audio basique peut être chargé via Tone.Player.",
         "priority": "high",
         "dependencies": [
-          2
+          "2"
         ],
         "status": "pending",
         "subtasks": []
       },
       {
-        "id": 4,
+        "id": "4",
         "title": "Implémentation du composant d'upload centré en mode vide",
         "description": "Créer le composant file-upload avec zone drag & drop centrée et validation des fichiers audio",
         "details": "Implémenter le composant file-upload avec zone de drag & drop et bouton 'Parcourir'. Centrer verticalement et horizontalement la zone d'upload quand aucun fichier n'est chargé (selon mockup). Valider les formats supportés: MP3, WAV, OGG, M4A. Limiter la taille à 10 Mo (10 485 760 octets). Afficher des messages d'erreur clairs pour formats non supportés ou fichiers trop volumineux. Utiliser les directives Angular pour le drag & drop (dragover, dragleave, drop). Implémenter les styles SCSS responsive pour mobile/desktop avec zone tactile suffisante.",
         "testStrategy": "Tester le drag & drop de fichiers valides et invalides, vérifier les messages d'erreur, confirmer la limitation de taille, valider le centrage sur différentes tailles d'écran, et s'assurer que l'upload fonctionne sur mobile et desktop.",
         "priority": "high",
         "dependencies": [
-          3
+          "3"
         ],
         "status": "pending",
         "subtasks": []
       },
       {
-        "id": 5,
+        "id": "5",
         "title": "Création du composant waveform-display pour visualisation de l'onde audio",
         "description": "Développer le composant central de visualisation de la forme d'onde audio avec Canvas API",
         "details": "Créer le composant waveform-display comme élément graphique principal. Utiliser Canvas API ou wavesurfer.js pour générer et afficher la forme d'onde. Implémenter la méthode de génération de waveform à partir d'un fichier audio chargé via Tone.js. Dimensionner le canvas pour être responsive et touch-friendly (minimum 48px de hauteur sur mobile). Créer le service waveform.service.ts pour la logique de génération et de rendu. Optimiser les performances pour des fichiers jusqu'à 10 MB. Ajouter un loader pendant la génération de la waveform (moins d'1 seconde requis).",
         "testStrategy": "Vérifier que la waveform s'affiche correctement après upload d'un fichier audio, que la génération prend moins d'1 seconde, que le canvas est responsive sur tous les écrans, et que la visualisation est claire et lisible.",
         "priority": "high",
         "dependencies": [
-          4
+          "4"
         ],
         "status": "pending",
         "subtasks": []
       },
       {
-        "id": 6,
+        "id": "6",
         "title": "Implémentation de la révélation progressive de l'interface",
         "description": "Créer le système de transition fluide entre l'état vide (upload centré) et l'état chargé (waveform + contrôles)",
         "details": "Implémenter la logique de révélation progressive dans audio-looper-container. En mode vide: afficher uniquement la zone d'upload centrée. Après chargement réussi: animation de transition pour faire apparaître la waveform au centre et les contrôles autour. Minimiser la zone d'upload vers le haut avec nom du fichier et bouton 'Change File'. Utiliser les animations CSS/Angular pour les transitions fluides. Gérer les états: vide, chargement, chargé, erreur. Appliquer les styles selon le mockup fourni avec layout adaptatif.",
         "testStrategy": "Vérifier les transitions fluides entre états, valider que l'upload se minimise correctement après chargement, confirmer que les contrôles apparaissent progressivement, et tester l'expérience utilisateur complète sur mobile et desktop.",
         "priority": "medium",
         "dependencies": [
-          5
+          "5"
         ],
         "status": "pending",
         "subtasks": []
       },
       {
-        "id": 7,
+        "id": "7",
         "title": "Développement du lecteur audio de base avec curseur sur waveform",
         "description": "Implémenter les contrôles de lecture de base (play/pause) avec curseur de lecture animé sur la waveform",
         "details": "Créer le composant audio-player avec boutons Play/Pause. Implémenter l'affichage du temps courant et durée totale au format MM:SS. Développer le curseur de lecture comme ligne verticale se déplaçant sur la waveform en temps réel (60 FPS). Connecter le lecteur audio avec Tone.js Player. Synchroniser la position du curseur avec la position de lecture audio. Gérer les états play/pause avec feedback visuel immédiat. Optimiser les performances pour animation fluide du curseur.",
         "testStrategy": "Tester la lecture/pause, vérifier la synchronisation curseur-audio, valider l'affichage des temps, confirmer la fluidité de l'animation du curseur à 60 FPS, et s'assurer du bon fonctionnement sur mobile.",
         "priority": "high",
         "dependencies": [
-          6
+          "6"
         ],
         "status": "pending",
         "subtasks": []
       },
       {
-        "id": 8,
+        "id": "8",
         "title": "Implémentation de la navigation directe sur la waveform",
         "description": "Permettre à l'utilisateur de cliquer sur la waveform pour se positionner à un instant précis",
         "details": "Ajouter la gestion des événements de clic sur le canvas de la waveform. Calculer la position temporelle en fonction de la position X du clic. Implémenter la méthode pour déplacer la lecture à la position cliquée via Tone.js. Optimiser pour le tactile mobile avec zone de touch suffisamment large. Ajouter un feedback visuel lors du clic (highlight temporaire). Gérer les cas limites (clic en dehors de la durée audio). Assurer une réactivité immédiate pour une expérience utilisateur fluide.",
         "testStrategy": "Tester les clics sur différentes parties de la waveform, vérifier la précision du positionnement temporel, valider l'interaction tactile sur mobile, et confirmer le feedback visuel lors des interactions.",
         "priority": "medium",
         "dependencies": [
-          7
+          "7"
         ],
         "status": "pending",
         "subtasks": []
       },
       {
-        "id": 9,
+        "id": "9",
         "title": "Création du système de boucle A/B avec marqueurs visuels",
         "description": "Implémenter les contrôles de boucle A/B avec marqueurs et zone colorée superposés sur la waveform",
         "details": "Développer le composant loop-controls avec boutons 'Set A', 'Set B', 'Loop ON/OFF', 'Reset Loop'. Implémenter les marqueurs visuels A et B comme lignes verticales colorées superposées sur la waveform. Créer la zone colorée entre A et B directement sur l'onde audio (overlay). Intégrer avec Tone.js pour la lecture en boucle automatique (setLoopPoints). Gérer les états de boucle active/inactive avec indicateur visuel 'Loop Active'. Assurer que la lecture saute automatiquement de B vers A pendant la boucle.",
         "testStrategy": "Tester la définition des points A et B, vérifier l'affichage des marqueurs sur la waveform, valider la zone colorée entre A et B, confirmer la lecture en boucle automatique, et tester le reset des points.",
         "priority": "high",
         "dependencies": [
-          8
+          "8"
         ],
         "status": "pending",
         "subtasks": []
       },
       {
-        "id": 10,
+        "id": "10",
         "title": "Implémentation du contrôle de tonalité (pitch shift)",
         "description": "Créer le composant de contrôle de la tonalité avec slider -6 à +6 demi-tons utilisant Tone.PitchShift",
         "details": "Développer le composant pitch-control avec slider ou input numérique pour la plage -6 à +6 demi-tons. Intégrer Tone.PitchShift dans le tone-engine.service pour modifier la tonalité en temps réel. Afficher la valeur courante (ex. '+3 demi-tons', '-5 demi-tons'). Implémenter le bouton 'Reset Pitch' pour revenir à 0. Appliquer les changements instantanément pendant la lecture. Optimiser les performances pour éviter les latences audibles. Utiliser les bonnes pratiques Tone.js pour les effets audio.",
         "testStrategy": "Tester le slider sur toute la plage -6 à +6, vérifier l'application en temps réel de la tonalité, valider l'affichage de la valeur courante, confirmer le fonctionnement du reset, et s'assurer de l'absence de latence perceptible.",
         "priority": "medium",
         "dependencies": [
-          9
+          "9"
         ],
         "status": "pending",
         "subtasks": []
       },
       {
-        "id": 11,
+        "id": "11",
         "title": "Développement du contrôle de vitesse avec presets et stepper",
         "description": "Créer le composant de contrôle de vitesse avec boutons presets (0.5x, 0.75x, 1.0x) et stepper précis (0.4x-2.0x)",
         "details": "Implémenter le composant speed-control avec boutons presets rapides: 0.5x, 0.75x, 1.0x. Développer le stepper [- | valeur | +] pour ajustements précis de 0.4x à 2.0x par incréments de 0.1x. Synchroniser les presets avec le stepper (clic preset met à jour le stepper). Utiliser Tone.js pour modifier la vitesse sans altérer la tonalité. Afficher la vitesse courante (ex. '0.6x', '1.2x'). Appliquer les changements en temps réel. Définir 1.0x comme vitesse par défaut au chargement.",
         "testStrategy": "Tester les boutons presets, valider le stepper sur toute la plage 0.4x-2.0x, vérifier la synchronisation preset-stepper, confirmer que la tonalité n'est pas altérée, et tester l'application en temps réel.",
         "priority": "medium",
         "dependencies": [
-          10
+          "10"
         ],
         "status": "pending",
         "subtasks": []
       },
       {
-        "id": 12,
+        "id": "12",
         "title": "Implémentation du contrôle de volume avec slider et mute",
         "description": "Créer le composant de contrôle du volume avec slider 0-100% et bouton mute/unmute",
         "details": "Développer le composant volume-control avec slider de volume (0% à 100%). Implémenter le bouton mute/unmute avec icônes 🔊/🔇 (seul composant avec icônes selon les spécifications). Intégrer avec Tone.Volume ou player.volume.value dans tone-engine.service. Gérer les états muet/actif avec changement d'icône. Appliquer les changements de volume en temps réel. Mémoriser le niveau de volume avant mute pour restauration. Utiliser les styles SCSS cohérents avec l'application.",
         "testStrategy": "Tester le slider de volume sur toute la plage 0-100%, vérifier le fonctionnement mute/unmute, valider les changements d'icônes, confirmer l'application en temps réel, et tester la mémorisation du volume avant mute.",
         "priority": "medium",
         "dependencies": [
-          11
+          "11"
         ],
         "status": "pending",
         "subtasks": []
       },
       {
-        "id": 13,
+        "id": "13",
         "title": "Optimisation responsive et interactions tactiles",
         "description": "Optimiser l'interface pour mobile et tablette avec interactions tactiles améliorées",
         "details": "Adapter tous les composants pour responsive design (desktop 1920×1080 à 1280×720, tablet 768×1024, mobile 375×667 à 414×896). Optimiser la waveform pour interaction tactile avec zone minimum 48px de hauteur. Améliorer les contrôles pour usage tactile (taille des boutons, espacement). Tester en mode portrait et paysage. Assurer que l'onde audio reste le composant central sur toutes les tailles d'écran. Ajuster les styles SCSS avec breakpoints appropriés. Optimiser les performances sur appareils mobiles.",
         "testStrategy": "Tester sur différentes tailles d'écran (desktop, tablet, mobile), valider les interactions tactiles, vérifier le comportement en portrait/paysage, confirmer la lisibilité et ergonomie sur mobile, et tester les performances sur appareils mobiles.",
         "priority": "medium",
         "dependencies": [
-          12
+          "12"
         ],
         "status": "pending",
         "subtasks": []
       },
       {
-        "id": 14,
+        "id": "14",
         "title": "Finalisation des styles et cohérence visuelle",
         "description": "Finaliser les styles SCSS pour assurer la cohérence avec le module YouTube Looper et le design épuré",
         "details": "Harmoniser tous les styles SCSS avec ceux du module YouTube Looper existant. Appliquer le design minimaliste et épuré selon les spécifications. Implémenter les boutons textuels uniquement (sauf volume). Finaliser les états visuels (erreur, chargement, actif, inactif) pour qu'ils soient clairs. Optimiser la hiérarchie visuelle avec l'onde audio comme élément central. Ajuster les couleurs, typographie, espacement selon la charte graphique. Valider l'accessibilité et les contrastes.",
         "testStrategy": "Comparer visuellement avec le module YouTube Looper, vérifier la cohérence des styles, valider le design minimaliste, tester tous les états visuels, et confirmer la lisibilité sur différents écrans.",
         "priority": "low",
         "dependencies": [
-          13
+          "13"
         ],
         "status": "pending",
         "subtasks": []
       },
       {
-        "id": 15,
+        "id": "15",
         "title": "Tests manuels complets et optimisations finales",
         "description": "Effectuer les tests manuels complets de toutes les fonctionnalités et optimiser les performances",
         "details": "Effectuer des tests exhaustifs de tous les critères d'acceptation. Tester avec différents formats de fichiers audio (MP3, WAV, OGG, M4A). Valider les performances: chargement <2s pour 10MB, génération waveform <1s, effets temps réel sans latence, animation curseur 60 FPS. Vérifier la gestion d'erreurs avec fichiers corrompus ou non supportés. Tester la lecture en boucle fluide sans coupures. Optimiser le code pour les performances finales. Corriger les bugs identifiés lors des tests.",
         "testStrategy": "Effectuer une checklist complète des critères d'acceptation, mesurer les performances avec chronomètre, tester avec fichiers de différentes tailles et formats, valider tous les cas d'erreur, et confirmer que toutes les fonctionnalités répondent aux spécifications.",
         "priority": "high",
         "dependencies": [
-          14
+          "14"
         ],
         "status": "pending",
         "subtasks": []
       }
     ],
     "metadata": {
-      "created": "2025-10-12T06:38:38.057Z",
-      "updated": "2025-10-12T06:47:36.634Z",
-      "description": "Tasks for audio-looper context"
+      "version": "1.0.0",
+      "lastModified": "2025-10-12T07:05:42.046Z",
+      "taskCount": 15,
+      "completedCount": 1,
+      "tags": [
+        "audio-looper"
+      ]
     }
   }
 }
