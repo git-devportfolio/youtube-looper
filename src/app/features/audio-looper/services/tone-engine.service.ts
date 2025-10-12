@@ -9,6 +9,8 @@ export class ToneEngineService {
   private player: Tone.Player | null = null;
   private pitchShift: Tone.PitchShift | null = null;
   private gainNode: Tone.Gain | null = null;
+  private startTime: number = 0; // Timestamp de démarrage de la lecture
+  private startOffset: number = 0; // Position de départ dans l'audio (en secondes)
 
   // Signals pour les contrôles audio
   readonly pitch = signal<number>(0); // -6 à +6 demi-tons
@@ -107,7 +109,9 @@ export class ToneEngineService {
     }
 
     try {
-      this.player.start();
+      // Démarrer depuis la position actuelle (startOffset)
+      this.player.start(undefined, this.startOffset);
+      this.startTime = Tone.now();
       this.isPlaying.set(true);
       this.startTimeUpdate();
     } catch (error) {
@@ -122,6 +126,11 @@ export class ToneEngineService {
     if (!this.player) return;
 
     try {
+      // Calculer la position actuelle avant d'arrêter
+      const elapsed = (Tone.now() - this.startTime) * this.playbackRate();
+      this.startOffset = Math.min(this.startOffset + elapsed, this.duration());
+      this.currentTime.set(this.startOffset);
+
       this.player.stop();
       this.isPlaying.set(false);
     } catch (error) {
@@ -136,16 +145,23 @@ export class ToneEngineService {
     if (!this.player || !this.isReady()) return;
 
     try {
+      // Limiter le temps entre 0 et la durée
+      const clampedTime = Math.max(0, Math.min(time, this.duration()));
+
       const wasPlaying = this.isPlaying();
+
       if (wasPlaying) {
         this.player.stop();
       }
 
-      this.player.seek(time);
-      this.currentTime.set(time);
+      // Mettre à jour la position de départ
+      this.startOffset = clampedTime;
+      this.currentTime.set(clampedTime);
 
       if (wasPlaying) {
-        this.player.start();
+        // Redémarrer depuis la nouvelle position
+        this.player.start(undefined, this.startOffset);
+        this.startTime = Tone.now();
       }
     } catch (error) {
       console.error('Erreur lors du déplacement de la tête de lecture:', error);
@@ -243,13 +259,16 @@ export class ToneEngineService {
         return;
       }
 
-      // Calculer le temps courant basé sur le transport Tone.js
-      const currentSeconds = Tone.Transport.seconds;
+      // Calculer le temps courant basé sur le temps écoulé depuis le démarrage
+      const elapsed = (Tone.now() - this.startTime) * this.playbackRate();
+      const currentSeconds = this.startOffset + elapsed;
       this.currentTime.set(currentSeconds);
 
       // Vérifier si on a atteint la fin
       if (currentSeconds >= this.duration()) {
         this.isPlaying.set(false);
+        this.startOffset = 0;
+        this.currentTime.set(0);
         clearInterval(updateInterval);
       }
     }, 100); // Mise à jour toutes les 100ms

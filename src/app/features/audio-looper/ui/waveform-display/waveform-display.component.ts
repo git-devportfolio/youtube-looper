@@ -237,15 +237,65 @@ export class WaveformDisplayComponent implements AfterViewInit, OnDestroy {
   }
 
   /**
-   * Gère le clic sur le canvas (pour navigation future)
+   * Gère le clic sur le canvas pour naviguer dans l'audio
    */
   onCanvasClick(event: MouseEvent): void {
-    // Cette méthode sera utilisée plus tard pour la navigation
+    // Ne rien faire si l'audio n'est pas prêt
+    if (!this.audioPlayerService.isReady()) {
+      return;
+    }
+
     const canvas = this.canvasRef.nativeElement;
     const rect = canvas.getBoundingClientRect();
     const x = event.clientX - rect.left;
+    const canvasWidth = rect.width;
 
-    console.log('Clic sur la waveform à la position X:', x);
-    // TODO: Implémenter la navigation lors de tâches futures
+    // Calculer la position temporelle en fonction du clic
+    const clickRatio = Math.max(0, Math.min(1, x / canvasWidth));
+    const duration = this.audioPlayerService.duration();
+    const targetTime = clickRatio * duration;
+
+    // Déplacer la lecture à la position cliquée
+    this.audioPlayerService.seekTo(targetTime);
+
+    // Redessiner immédiatement pour afficher le curseur à la nouvelle position
+    this.redrawWaveform();
+
+    // Feedback visuel temporaire (highlight)
+    this.showClickFeedback(x);
+  }
+
+  /**
+   * Affiche un feedback visuel temporaire lors du clic
+   */
+  private showClickFeedback(x: number): void {
+    const canvas = this.canvasRef.nativeElement;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const dpr = window.devicePixelRatio || 1;
+    const height = canvas.height / dpr;
+
+    // Dessiner un flash temporaire
+    ctx.save();
+    ctx.strokeStyle = 'rgba(59, 130, 246, 0.6)'; // Bleu primaire avec transparence
+    ctx.lineWidth = 3;
+    ctx.shadowColor = 'rgba(59, 130, 246, 0.8)';
+    ctx.shadowBlur = 8;
+
+    ctx.beginPath();
+    ctx.moveTo(x, 0);
+    ctx.lineTo(x, height);
+    ctx.stroke();
+
+    ctx.restore();
+
+    // Le flash disparaîtra naturellement lors du prochain redraw
+    // Forcer un redraw après un court délai si pas en lecture
+    if (!this.audioPlayerService.isPlaying()) {
+      setTimeout(() => {
+        this.redrawWaveform();
+      }, 150);
+    }
   }
 }

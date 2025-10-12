@@ -30,6 +30,15 @@
     height: 100%;
     cursor: pointer;
     touch-action: none;
+    transition: opacity 0.2s ease;
+
+    &:hover {
+      opacity: 0.95;
+    }
+
+    &:active {
+      opacity: 0.9;
+    }
 
     &:focus {
       outline: 2px solid var(--primary-color);
@@ -95,7 +104,7 @@
   }
 }
 
-// Accessibilité - zone tactile suffisante sur mobile
+// Accessibilitï¿½ - zone tactile suffisante sur mobile
 @media (hover: none) and (pointer: coarse) {
   .waveform-display {
     min-height: 100px;
