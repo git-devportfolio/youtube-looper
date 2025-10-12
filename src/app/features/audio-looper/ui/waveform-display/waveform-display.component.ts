@@ -1,11 +1,166 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild, AfterViewInit, OnDestroy, inject, input, effect } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { WaveformService } from '../../services';
 
 @Component({
   selector: 'app-waveform-display',
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './waveform-display.component.html',
   styleUrl: './waveform-display.component.scss'
 })
-export class WaveformDisplayComponent {
+export class WaveformDisplayComponent implements AfterViewInit, OnDestroy {
+  @ViewChild('waveformCanvas', { static: false }) canvasRef!: ElementRef<HTMLCanvasElement>;
 
+  private readonly waveformService = inject(WaveformService);
+  private resizeObserver?: ResizeObserver;
+  private canvasInitialized = false;
+
+  // Input pour l'AudioBuffer
+  readonly audioBuffer = input<AudioBuffer | null>(null);
+
+  // Signals du service
+  readonly isGenerating = this.waveformService.isGenerating;
+  readonly peaks = this.waveformService.peaks;
+
+  constructor() {
+    // Effect pour regénérer la waveform quand l'AudioBuffer change
+    effect(() => {
+      const buffer = this.audioBuffer();
+
+      // Vérifier que le canvas est initialisé avant de dessiner
+      if (!this.canvasInitialized) {
+        return;
+      }
+
+      if (buffer) {
+        this.generateAndDrawWaveform(buffer);
+      } else {
+        this.clearWaveform();
+      }
+    });
+  }
+
+  ngAfterViewInit(): void {
+    // Initialiser le canvas
+    this.initCanvas();
+
+    // Marquer le canvas comme initialisé
+    this.canvasInitialized = true;
+
+    // Observer le redimensionnement
+    this.setupResizeObserver();
+
+    // Traiter l'audioBuffer si déjà présent, sinon dessiner le placeholder
+    const buffer = this.audioBuffer();
+    if (buffer) {
+      this.generateAndDrawWaveform(buffer);
+    } else {
+      this.drawPlaceholder();
+    }
+  }
+
+  ngOnDestroy(): void {
+    // Nettoyer l'observer
+    if (this.resizeObserver) {
+      this.resizeObserver.disconnect();
+    }
+  }
+
+  /**
+   * Initialise le canvas avec les bonnes dimensions
+   */
+  private initCanvas(): void {
+    const canvas = this.canvasRef.nativeElement;
+    const container = canvas.parentElement;
+
+    if (container) {
+      // Définir les dimensions du canvas
+      canvas.width = container.clientWidth;
+      canvas.height = container.clientHeight;
+
+      // Adapter pour les écrans haute résolution
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = container.clientWidth * dpr;
+      canvas.height = container.clientHeight * dpr;
+
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.scale(dpr, dpr);
+      }
+
+      // Appliquer les dimensions CSS
+      canvas.style.width = container.clientWidth + 'px';
+      canvas.style.height = container.clientHeight + 'px';
+    }
+  }
+
+  /**
+   * Configure l'observer de redimensionnement
+   */
+  private setupResizeObserver(): void {
+    const canvas = this.canvasRef.nativeElement;
+
+    this.resizeObserver = new ResizeObserver(() => {
+      this.initCanvas();
+      this.redrawWaveform();
+    });
+
+    if (canvas.parentElement) {
+      this.resizeObserver.observe(canvas.parentElement);
+    }
+  }
+
+  /**
+   * Génère et dessine la waveform
+   */
+  private async generateAndDrawWaveform(audioBuffer: AudioBuffer): Promise<void> {
+    try {
+      const canvas = this.canvasRef.nativeElement;
+      const targetWidth = Math.floor(canvas.width / (window.devicePixelRatio || 1));
+
+      await this.waveformService.generateWaveform(audioBuffer, targetWidth);
+      this.redrawWaveform();
+    } catch (error) {
+      console.error('Erreur lors de la génération de la waveform:', error);
+    }
+  }
+
+  /**
+   * Redessine la waveform
+   */
+  private redrawWaveform(): void {
+    if (this.peaks().length > 0) {
+      const canvas = this.canvasRef.nativeElement;
+      this.waveformService.drawWaveform(canvas);
+    }
+  }
+
+  /**
+   * Dessine le placeholder
+   */
+  private drawPlaceholder(): void {
+    const canvas = this.canvasRef.nativeElement;
+    this.waveformService.drawPlaceholder(canvas);
+  }
+
+  /**
+   * Efface la waveform
+   */
+  private clearWaveform(): void {
+    this.waveformService.clearWaveform();
+    this.drawPlaceholder();
+  }
+
+  /**
+   * Gère le clic sur le canvas (pour navigation future)
+   */
+  onCanvasClick(event: MouseEvent): void {
+    // Cette méthode sera utilisée plus tard pour la navigation
+    const canvas = this.canvasRef.nativeElement;
+    const rect = canvas.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+
+    console.log('Clic sur la waveform à la position X:', x);
+    // TODO: Implémenter la navigation lors de tâches futures
+  }
 }
