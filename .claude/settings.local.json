@@ -8,7 +8,8 @@
       "Bash(task-master set-status:*)",
       "Bash(npm run build:gh-pages:*)",
       "Bash(npm run deploy:gh-pages:*)",
-      "Bash(ng generate component:*)"
+      "Bash(ng generate component:*)",
+      "Bash(task-master next)"
     ],
     "deny": [],
     "ask": []
