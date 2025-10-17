@@ -240,6 +240,14 @@ src/app/features/audio-looper/ui/
 - Pourcentage numérique
 - Optionnel : Icône spinner animé
 
+**Spécifications de design et responsivité** :
+- L'interface utilise les styles SCSS existants de l'application
+- Le design est cohérent avec le module audio-looper
+- L'interface est épurée et minimaliste
+- L'interface s'adapte correctement sur desktop, tablette et mobile
+- Les contrôles sont utilisables sur écran tactile
+- Le layout reste lisible et ergonomique sur toutes les tailles d'écran
+
 ### 4.3 Gestion de l'état pendant le traitement
 
 **Cas 1 : Lecture en cours pendant le traitement**
@@ -957,9 +965,9 @@ Chaque tâche doit respecter les principes suivants :
 - Tester le remplacement de buffer
 
 ### Tâche 5 : UI - Indicateur de progression
-- Modifier `pitch-control.component.html` (ajouter l'indicateur)
-- Modifier `pitch-control.component.scss` (styles de l'indicateur)
-- Modifier `pitch-control.component.ts` (injecter RubberbandEngine)
+- Créer `rubberband-pitch-control.component.html` (ajouter l'indicateur)
+- Créer `rubberband-pitch-control.component.scss` (styles de l'indicateur)
+- Créer `rubberband-pitch-control.component.ts` (injecter RubberbandEngine)
 - Tester l'affichage de l'indicateur
 
 ### Tâche 6 : Régénération de la waveform
