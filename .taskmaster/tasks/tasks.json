@@ -1010,8 +1010,73 @@
         "dependencies": [
           "2"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Créer la structure du fichier Web Worker rubberband",
+            "description": "Créer le fichier rubberband.worker.ts avec la structure de base et les interfaces TypeScript",
+            "dependencies": [],
+            "details": "Créer src/app/features/audio-looper/services/workers/rubberband.worker.ts avec les interfaces pour les messages entrants et sortants (RubberbandWorkerMessage, RubberbandWorkerResponse). Définir les types pour les commandes (LOAD, PROCESS) et les réponses (READY, PROGRESS, COMPLETE, ERROR). Implémenter la structure de base du Worker avec addEventListener('message') et la fonction postMessage.",
+            "status": "done",
+            "testStrategy": "Vérifier que le fichier TypeScript compile sans erreur et que la structure de base du Worker est correctement définie.",
+            "updatedAt": "2025-10-17T17:34:15.950Z",
+            "parentId": "undefined"
+          },
+          {
+            "id": 2,
+            "title": "Implémenter le chargement asynchrone de rubberband-wasm",
+            "description": "Ajouter la logique de chargement du module WebAssembly avec importScripts et initialisation",
+            "dependencies": [
+              1
+            ],
+            "details": "Implémenter la fonction loadRubberbandModule() qui utilise importScripts pour charger rubberband-wasm depuis /assets/rubberband/. Configurer le module avec locateFile pointant vers le bon répertoire des assets. Gérer les erreurs de chargement et envoyer un message READY au thread principal une fois l'initialisation terminée. S'inspirer de la logique dans .ai/rubberband-wasm/worker.js.",
+            "status": "done",
+            "testStrategy": "Tester le Worker en envoyant un message de test et vérifier qu'il répond avec ready: true après avoir chargé rubberband-wasm correctement.",
+            "parentId": "undefined",
+            "updatedAt": "2025-10-17T17:34:19.282Z"
+          },
+          {
+            "id": 3,
+            "title": "Implémenter la phase Study du traitement audio",
+            "description": "Créer la logique de la phase Study qui analyse l'audio avant le traitement (0-50% du progrès)",
+            "dependencies": [
+              2
+            ],
+            "details": "Implémenter la fonction processStudyPhase() qui utilise l'API rubberband pour analyser le buffer audio. Configurer les paramètres pitch et tempo reçus dans le message. Implémenter les callbacks de progression pour la phase Study (0% à 50%). Utiliser un throttling de 250ms pour les messages de progression. Gérer les erreurs spécifiques à cette phase et les communiquer au thread principal.",
+            "status": "done",
+            "testStrategy": "Tester avec un buffer audio simple et vérifier que les messages de progression sont envoyés correctement entre 0% et 50%. Vérifier les console.logs pour s'assurer que la phase Study s'exécute.",
+            "parentId": "undefined",
+            "updatedAt": "2025-10-17T17:34:22.379Z"
+          },
+          {
+            "id": 4,
+            "title": "Implémenter la phase Process du traitement audio",
+            "description": "Créer la logique de la phase Process qui génère l'audio traité (50-100% du progrès)",
+            "dependencies": [
+              3
+            ],
+            "details": "Implémenter la fonction processProcessPhase() qui génère le buffer audio final avec les modifications de pitch et tempo. Continuer les callbacks de progression pour la phase Process (50% à 100%). Récupérer le buffer audio traité et l'envoyer au thread principal via un message COMPLETE. Implémenter la gestion mémoire pour libérer les ressources utilisées par rubberband après traitement.",
+            "status": "done",
+            "testStrategy": "Tester le traitement complet d'un buffer audio et vérifier que le buffer final est retourné. Vérifier que les messages de progression vont bien de 50% à 100% et que la phase Process s'exécute correctement.",
+            "parentId": "undefined",
+            "updatedAt": "2025-10-17T17:34:25.457Z"
+          },
+          {
+            "id": 5,
+            "title": "Implémenter la gestion des erreurs et l'orchestration générale",
+            "description": "Ajouter la gestion complète des erreurs et coordonner les phases Study et Process",
+            "dependencies": [
+              4
+            ],
+            "details": "Implémenter la fonction principale processAudio() qui orchestre les phases Study et Process en séquence. Ajouter la gestion globale des erreurs avec try-catch et messages ERROR appropriés. Implémenter le throttling des messages de progression à 250ms maximum. Ajouter la validation des paramètres d'entrée (buffer, pitch, tempo) et la gestion des cas d'erreur. Nettoyer les ressources et gérer l'arrêt propre du Worker.",
+            "status": "done",
+            "testStrategy": "Tester les cas d'erreur (paramètres invalides, échec de chargement) et vérifier que les messages ERROR sont envoyés. Tester le traitement complet et s'assurer que toutes les ressources sont libérées correctement.",
+            "parentId": "undefined",
+            "updatedAt": "2025-10-17T17:34:28.603Z"
+          }
+        ],
+        "updatedAt": "2025-10-17T17:34:28.603Z"
       },
       {
         "id": "4",
@@ -1172,9 +1237,9 @@
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2025-10-17T17:09:54.331Z",
+      "lastModified": "2025-10-17T17:34:28.606Z",
       "taskCount": 15,
-      "completedCount": 2,
+      "completedCount": 3,
       "tags": [
         "rubberband-wasm-pitch"
       ]
