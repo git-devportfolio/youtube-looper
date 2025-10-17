@@ -19,9 +19,7 @@
         "details": "Créer un service YouTubePlayerService utilisant l'API YouTube IFrame Player. Charger dynamiquement le script YouTube API dans index.html ou via le service. Implémenter les méthodes de base : loadVideo(), playVideo(), pauseVideo(), getCurrentTime(), getDuration(). Utiliser les signals Angular pour gérer l'état du lecteur. Gérer les événements onReady, onStateChange. Ajouter la gestion d'erreurs pour les vidéos privées/indisponibles.",
         "testStrategy": "Tester le chargement d'une vidéo YouTube valide, vérifier que les contrôles natifs fonctionnent, tester avec une URL invalide pour confirmer la gestion d'erreur.",
         "priority": "high",
-        "dependencies": [
-          1
-        ],
+        "dependencies": [],
         "status": "done",
         "subtasks": [
           {
@@ -139,9 +137,7 @@
         "details": "Créer UrlInputComponent avec un formulaire réactif Angular. Implémenter la validation d'URL YouTube avec regex pour détecter les formats youtube.com/watch?v= et youtu.be/. Ajouter auto-focus avec ViewChild et ngAfterViewInit. Créer un placeholder avec exemple d'URL. Utiliser debounceTime pour éviter les validations excessives. Intégrer avec YouTubePlayerService pour charger automatiquement les vidéos valides. Afficher des messages d'erreur clairs pour les URLs invalides.",
         "testStrategy": "Tester avec différents formats d'URLs YouTube (youtube.com, youtu.be, avec/sans paramètres), vérifier l'auto-focus, valider les messages d'erreur pour URLs invalides.",
         "priority": "high",
-        "dependencies": [
-          2
-        ],
+        "dependencies": [],
         "status": "done",
         "subtasks": []
       },
@@ -152,9 +148,7 @@
         "details": "Créer VideoPlayerComponent qui utilise YouTubePlayerService. Implémenter l'affichage du lecteur IFrame avec les contrôles natifs YouTube activés (controls: 1). Gérer les états de chargement, erreur, et lecture. Utiliser signals pour réagir aux changements d'état. Implémenter la communication bidirectionnelle avec le service pour exposer les méthodes nécessaires (getCurrentTime, getDuration, etc.). Responsive design pour différentes tailles d'écran.",
         "testStrategy": "Vérifier l'affichage correct de la vidéo, tester les contrôles natifs (play, pause, volume, plein écran), valider la responsivité sur mobile/desktop.",
         "priority": "high",
-        "dependencies": [
-          3
-        ],
+        "dependencies": [],
         "status": "done",
         "subtasks": [
           {
@@ -219,9 +213,7 @@
         "details": "Créer LoopService avec signals pour gérer startTime, endTime, isLoopActive. Implémenter la logique de surveillance temporelle avec interval pour vérifier la position courante. Quand currentTime >= endTime, rediriger vers startTime. Méthodes : setStartTime(), setEndTime(), toggleLoop(), getCurrentLoop(). Utiliser takeUntilDestroyed pour nettoyer les intervalles. Intégrer avec YouTubePlayerService pour contrôler la position de la vidéo. Gérer un seul loop actif à la fois (V1).",
         "testStrategy": "Tester la création d'une boucle avec start/end, vérifier que la vidéo redémarre automatiquement à startTime après avoir atteint endTime, valider l'activation/désactivation de la boucle.",
         "priority": "high",
-        "dependencies": [
-          4
-        ],
+        "dependencies": [],
         "status": "done",
         "subtasks": []
       },
@@ -232,9 +224,7 @@
         "details": "Créer TimelineComponent avec une barre de progression visuelle. Implémenter deux poignées draggables (start/end) avec HTML5 drag & drop ou mouse events. Afficher le temps au-dessus de chaque poignée pendant le drag. Zone colorée entre start et end pour visualiser la boucle. Synchroniser avec LoopService pour mettre à jour les temps. Responsive avec touch events pour mobile. Contraintes : startTime < endTime, bornes dans la durée de la vidéo.",
         "testStrategy": "Tester le drag des poignées, vérifier l'affichage des temps, valider la zone colorée, tester sur écran tactile, vérifier les contraintes de validation.",
         "priority": "medium",
-        "dependencies": [
-          5
-        ],
+        "dependencies": [],
         "status": "done",
         "subtasks": [
           {
@@ -299,9 +289,7 @@
         "details": "Créer LoopControlsComponent avec trois boutons principaux : 'Set Start' (définit startTime à la position courante ET repositionne automatiquement la vidéo sur cette position), 'Set End' (définit endTime à la position courante), 'Toggle Loop' (active/désactive la boucle). NOUVEAU : Le bouton play démarre la lecture depuis startTime et boucle automatiquement entre start et end définis par Set Start/Set End. Design des boutons discret et élégant qui s'intègre parfaitement dans la page existante et au workflow avec la timeline. Boutons tactiles ≥44px selon les guidelines. Intégrer avec LoopService et YouTubePlayerService. Feedback immédiat sur les actions utilisateur.",
         "testStrategy": "Tester chaque bouton individuellement, NOUVEAU : valider que 'Set Start' repositionne automatiquement la vidéo, tester que play démarre depuis startTime et boucle automatiquement, vérifier que 'Set Start/End' utilisent la position courante, valider l'indicateur visuel de boucle, tester la taille tactile des boutons, valider l'intégration design avec la timeline existante.",
         "priority": "medium",
-        "dependencies": [
-          6
-        ],
+        "dependencies": [],
         "status": "done",
         "subtasks": [
           {
@@ -366,9 +354,7 @@
         "details": "Créer SpeedControlComponent avec trois boutons presets pour les vitesses courantes (0.5x, 0.75x, 1x). Ajouter un dropdown/select pour vitesses supplémentaires (0.25x, 0.375x, 1.25x, 1.5x, 1.75x, 2x). Afficher la vitesse courante avec un indicateur visuel. Utiliser l'API YouTube setPlaybackRate(). Persister la vitesse sélectionnée dans localStorage. Intégrer avec YouTubePlayerService pour synchroniser l'état.",
         "testStrategy": "Tester chaque preset de vitesse, vérifier le menu déroulant, valider l'affichage de la vitesse courante, tester la persistance localStorage.",
         "priority": "medium",
-        "dependencies": [
-          4
-        ],
+        "dependencies": [],
         "status": "done",
         "subtasks": [
           {
@@ -434,10 +420,7 @@
         "details": "Créer StorageService pour gérer localStorage. Sauvegarder : URL courante, startTime/endTime de la boucle, vitesse de lecture, état de la boucle (active/inactive). Implémenter auto-save lors des changements d'état. Ajouter une méthode de restauration au démarrage de l'application. Gérer les cas d'erreur (localStorage indisponible, données corrompues). Nettoyer les anciennes données si nécessaire. Utiliser JSON.stringify/parse pour les objets complexes.",
         "testStrategy": "Tester la sauvegarde automatique des paramètres, vérifier la restauration au rechargement de la page, valider la gestion des erreurs localStorage, tester avec plusieurs vidéos.",
         "priority": "low",
-        "dependencies": [
-          7,
-          8
-        ],
+        "dependencies": [],
         "status": "pending",
         "subtasks": []
       },
@@ -448,9 +431,7 @@
         "details": "Implémenter CSS Grid/Flexbox pour layout responsive. Breakpoints : mobile (<768px), tablet (768px-1024px), desktop (>1024px). Optimiser pour orientation paysage sur tablette. Ajouter navigation clavier (tab index, focus visible). Implémenter couleurs contrastées selon WCAG AA. Ajouter aria-labels pour tous les contrôles. Tailles tactiles minimum 44px. Tester avec screen readers. Ajouter un toggle dark/light mode pour améliorer la lisibilité.",
         "testStrategy": "Tester sur différents appareils (mobile, tablette, desktop), valider la navigation clavier, vérifier les contrastes de couleur, tester avec lecteur d'écran, valider les orientations portrait/paysage.",
         "priority": "medium",
-        "dependencies": [
-          9
-        ],
+        "dependencies": [],
         "status": "done",
         "subtasks": [
           {
@@ -516,9 +497,7 @@
         "details": "Créer MainLayoutComponent avec structure HTML sémantique (header, main, footer). Implémenter HeaderComponent avec titre 'YouTube Looper' et ThemeToggleComponent pour basculer dark/light mode. Créer les variables CSS custom properties dans styles.scss pour les deux thèmes : couleurs primaires, secondaires, backgrounds, textes, bordures. Utiliser CSS Grid pour le layout principal responsive. Header fixe en haut avec flexbox pour titre/toggle alignés. Zone main flexible pour accueillir les futurs composants (URL input, vidéo, contrôles). Footer minimaliste en bas avec liens essentiels. Implémenter ThemeService avec signals pour gérer l'état du thème et persister la préférence dans localStorage. Appliquer les classes CSS dynamiquement selon le thème sélectionné.",
         "testStrategy": "Vérifier l'affichage correct des trois zones (header, main, footer), tester le basculement des thèmes avec changement visuel immédiat, valider la persistance du thème au rechargement, contrôler la responsivité sur mobile/desktop, vérifier que les variables CSS sont correctement appliquées pour chaque thème.",
         "status": "done",
-        "dependencies": [
-          1
-        ],
+        "dependencies": [],
         "priority": "medium",
         "subtasks": [
           {
@@ -639,8 +618,6 @@
         "testStrategy": "Vérifier l'intégration correcte des composants UrlInputComponent et VideoPlayerComponent, tester la responsivité sur tous les breakpoints (mobile, tablet, desktop), valider l'affichage cohérent du thème dark/light, contrôler que les zones préparées sont correctement positionnées et dimensionnées, tester la navigation entre saisie URL et lecture vidéo, vérifier que le layout s'adapte aux différentes orientations d'écran, valider l'accessibilité avec navigation clavier, tester sur différents navigateurs (Chrome, Firefox, Safari, Edge).",
         "status": "done",
         "dependencies": [
-          3,
-          4,
           11
         ],
         "priority": "medium",
@@ -709,8 +686,6 @@
         "description": "Implémenter la liaison entre TimelineComponent et LoopService pour que les changements des poignées draggables mettent automatiquement à jour les bornes de boucle et activent la surveillance de boucle en temps réel avec contrôle automatique de la position de lecture.",
         "status": "done",
         "dependencies": [
-          5,
-          6,
           12
         ],
         "priority": "medium",
@@ -998,140 +973,18 @@
     }
   },
   "rubberband-wasm-pitch": {
-    "tasks": [
-      {
-        "id": 1,
-        "title": "Préparation des assets rubberband-wasm",
-        "description": "Copier et configurer les fichiers WebAssembly de rubberband dans le projet Angular",
-        "details": "Copier rubberband.wasm (265 KB) et rubberband.umd.min.js (6.7 KB) depuis .ai/rubberband-wasm/ vers public/assets/rubberband/. Vérifier la configuration dans angular.json pour que les assets soient copiés correctement lors du build. Créer la structure de dossiers src/app/features/audio-looper/services/workers/ pour accueillir le Web Worker.",
-        "testStrategy": "Lancer npm run build et vérifier que les fichiers sont présents dans dist/assets/rubberband/. Vérifier l'accessibilité via HTTP à /assets/rubberband/rubberband.wasm et /assets/rubberband/rubberband.umd.min.js",
-        "priority": "high",
-        "dependencies": [],
-        "status": "pending",
-        "subtasks": []
-      },
-      {
-        "id": 2,
-        "title": "Création des interfaces TypeScript pour le Web Worker",
-        "description": "Définir les types et interfaces pour la communication entre le service Angular et le Web Worker rubberband",
-        "details": "Créer rubberband-worker.types.ts avec les interfaces RubberbandWorkerInput (channelBuffers, sampleRate, pitch, tempo) et RubberbandWorkerOutput (channelBuffers, ready, status, progress, error). Définir les constantes pour les messages de statut et les seuils de progression. Utiliser Float32Array pour les données audio et respecter le format attendu par rubberband-wasm.",
-        "testStrategy": "Vérifier la compilation TypeScript sans erreurs. Tester l'importation des types dans d'autres fichiers. Valider la cohérence des types avec l'API rubberband-wasm documentée",
-        "priority": "medium",
-        "dependencies": [
-          1
-        ],
-        "status": "pending",
-        "subtasks": []
-      },
-      {
-        "id": 3,
-        "title": "Implémentation du Web Worker rubberband",
-        "description": "Créer le Web Worker qui gère le traitement audio via rubberband-wasm avec les phases Study et Process",
-        "details": "Créer rubberband.worker.ts qui charge rubberband-wasm avec importScripts, initialise le module avec la bonne configuration (locateFile pour le .wasm), implémente les phases Study (0-50%) et Process (50-100%) avec reporting de progression throttlé à 250ms. Gérer les erreurs et les cas limites. Utiliser l'algorithme de la démo fonctionnelle dans .ai/rubberband-wasm/worker.js comme référence.",
-        "testStrategy": "Tester le Worker isolément avec des messages de test. Vérifier le chargement correct de rubberband-wasm. Tester avec un petit fichier audio et valider la qualité de sortie. Mesurer les performances de traitement",
-        "priority": "high",
-        "dependencies": [
-          2
-        ],
-        "status": "pending",
-        "subtasks": []
-      },
-      {
-        "id": 4,
-        "title": "Création du RubberbandEngineService",
-        "description": "Développer le service Angular qui orchestre le traitement audio via le Web Worker avec cache et debouncing",
-        "details": "Créer RubberbandEngineService avec les signals pitch, playbackRate, isProcessing, processingProgress, processingStatus. Implémenter le cache Map<string, AudioBuffer> avec clés basées sur pitch/tempo. Ajouter le debounce de 500ms pour éviter les traitements multiples. Gérer la communication bidirectionnelle avec le Worker. Implémenter les méthodes loadOriginalBuffer(), setPitch(), setPlaybackRate(), getProcessedBuffer(), clearCache().",
-        "testStrategy": "Tester le service en isolation avec mocks. Vérifier le fonctionnement du cache (hit/miss). Tester le debouncing avec plusieurs changements rapides. Valider la mise à jour des signals pendant le traitement",
-        "priority": "high",
-        "dependencies": [
-          3
-        ],
-        "status": "pending",
-        "subtasks": []
-      },
-      {
-        "id": 5,
-        "title": "Intégration rubberband dans ToneEngineService",
-        "description": "Modifier ToneEngineService pour utiliser RubberbandEngineService et gérer le remplacement des buffers audio",
-        "details": "Injecter RubberbandEngineService dans ToneEngineService. Stocker le buffer audio original lors du chargement. Implémenter replaceAudioBuffer() qui preserve la position de lecture et l'état (playing/paused). Ajouter adjustLoopPoints() pour ajuster les marqueurs A/B si la durée change. Modifier setPitch() pour déclencher le traitement rubberband en plus de Tone.js. Gérer la souscription aux buffers traités.",
-        "testStrategy": "Tester le chargement d'un fichier et le stockage du buffer original. Tester le remplacement de buffer pendant la lecture. Vérifier la préservation de la position et de l'état. Tester l'ajustement des loop points",
-        "priority": "high",
-        "dependencies": [
-          4
-        ],
-        "status": "pending",
-        "subtasks": []
-      },
-      {
-        "id": 6,
-        "title": "Mise à jour de l'interface PitchControlComponent",
-        "description": "Ajouter l'indicateur de progression et les messages de statut au composant de contrôle du pitch",
-        "details": "Modifier pitch-control.component.html pour ajouter l'indicateur de progression avec barre, pourcentage et message de statut. Utiliser les directives @if pour l'affichage conditionnel. Injecter RubberbandEngineService dans le composant. Ajouter les styles SCSS pour l'indicateur (barre de progression, icône spinner, textes). Gérer l'état visuel pendant le traitement.",
-        "testStrategy": "Tester l'affichage de l'indicateur pendant un traitement. Vérifier la mise à jour en temps réel du pourcentage et du statut. Tester la disparition de l'indicateur en fin de traitement. Valider le responsive design",
-        "priority": "medium",
-        "dependencies": [
-          5
-        ],
-        "status": "pending",
-        "subtasks": []
-      },
-      {
-        "id": 7,
-        "title": "Régénération automatique de la waveform",
-        "description": "Modifier WaveformDisplayComponent pour régénérer la waveform après changement de buffer",
-        "details": "Utiliser effect() pour écouter les changements de duration dans ToneEngineService. Implémenter regenerateWaveform() qui récupère le nouveau buffer et redessine la waveform sur le canvas. Préserver les marqueurs A/B et la position du curseur de lecture. Optimiser la performance en évitant les régénérations inutiles. Gérer les cas de buffer null ou vide.",
-        "testStrategy": "Tester la régénération après changement de pitch. Vérifier la préservation des marqueurs A/B. Tester la performance avec différentes tailles de fichiers. Valider l'affichage correct de la nouvelle waveform",
-        "priority": "medium",
-        "dependencies": [
-          6
-        ],
-        "status": "pending",
-        "subtasks": []
-      },
-      {
-        "id": 8,
-        "title": "Tests de continuité de lecture et gestion des erreurs",
-        "description": "Tester et optimiser la continuité de lecture pendant les traitements et implémenter la gestion d'erreurs",
-        "details": "Tester la lecture continue pendant le traitement rubberband. Optimiser le remplacement de buffer pour minimiser les micro-interruptions. Implémenter la gestion d'erreurs : Worker qui ne se charge pas, traitement qui échoue, fichiers trop volumineux. Ajouter des fallbacks vers Tone.js en cas d'échec rubberband. Tester l'annulation de traitement si nouveau pitch pendant un traitement en cours.",
-        "testStrategy": "Tests manuels de continuité : lancer lecture puis changer pitch. Tests d'erreurs : fichiers corrompus, Worker défaillant. Mesurer les temps de traitement sur différentes tailles. Tester l'annulation de traitement",
-        "priority": "medium",
-        "dependencies": [
-          7
-        ],
-        "status": "pending",
-        "subtasks": []
-      },
-      {
-        "id": 9,
-        "title": "Validation qualité audio et performances",
-        "description": "Effectuer des tests approfondis de qualité audio et optimiser les performances du système",
-        "details": "Tester la qualité audio sur la plage complète -6 à +6 demi-tons avec différents types de fichiers (MP3, WAV, OGG). Comparer avec Tone.js PitchShift pour valider l'amélioration. Optimiser les performances : temps de traitement, utilisation mémoire. Tester avec des fichiers de différentes tailles (1MB à 10MB). Valider l'absence d'artefacts audibles (chipmunk, robot, distorsion).",
-        "testStrategy": "Tests d'écoute comparatifs Tone.js vs Rubberband. Mesures de performance avec files volumineux. Tests de charge mémoire. Validation avec différents genres musicaux (vocal, instrumental, électronique)",
-        "priority": "high",
-        "dependencies": [
-          8
-        ],
-        "status": "pending",
-        "subtasks": []
-      },
-      {
-        "id": 10,
-        "title": "Documentation et finalisation",
-        "description": "Finaliser la documentation technique, effectuer les tests finaux et préparer la mise en production",
-        "details": "Documenter l'API des nouveaux services avec JSDoc. Mettre à jour CLAUDE.md avec les nouvelles fonctionnalités. Effectuer un build de production et vérifier l'absence d'erreurs TypeScript/compilation. Tester l'application complète end-to-end. Valider tous les critères d'acceptation du PRD. Optimiser les imports et la taille des bundles. Préparer les notes de version.",
-        "testStrategy": "Build de production sans erreurs. Tests E2E complets sur différents navigateurs. Validation de tous les critères d'acceptation. Tests de performance en production. Vérification de la taille des bundles",
-        "priority": "low",
-        "dependencies": [
-          9
-        ],
-        "status": "pending",
-        "subtasks": []
-      }
-    ],
+    "tasks": [],
     "metadata": {
-      "created": "2025-10-14T16:01:57.213Z",
-      "updated": "2025-10-14T20:18:48.297Z",
-      "description": "Tasks for rubberband-wasm-pitch context"
+      "version": "1.0.0",
+      "lastModified": "2025-10-15T15:29:20.142Z",
+      "taskCount": 10,
+      "completedCount": 1,
+      "tags": [
+        "rubberband-wasm-pitch"
+      ],
+      "created": "2025-10-15T17:07:18.108Z",
+      "description": "Tasks for rubberband-wasm-pitch context",
+      "updated": "2025-10-15T17:07:18.108Z"
     }
   }
 }
