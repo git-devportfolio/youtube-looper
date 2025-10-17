@@ -392,17 +392,17 @@ Avec la structure en sous-répertoires, les imports SCSS doivent être ajustés 
 
 4. **Format du message de commit** :
 ```bash
-git commit -m "feat: implement task X.Y - description courte
+git commit -m "feat: implémentation tâche X.Y - description courte
 
 Description détaillée des changements:
 - Fonctionnalité 1 implémentée
 - Amélioration technique 2
 
-Technical improvements:
+Améliorations techniques:
 - Détails techniques spécifiques
 - Optimisations réalisées
 
-🤖 Generated with [Claude Code](https://claude.ai/code)
+🤖 Généré avec [Claude Code](https://claude.com/claude-code)
 
 Co-Authored-By: Claude <noreply@anthropic.com>"
 ```
