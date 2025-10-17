@@ -975,203 +975,208 @@
   "rubberband-wasm-pitch": {
     "tasks": [
       {
-        "id": 1,
+        "id": "1",
         "title": "Préparation des assets statiques rubberband-wasm",
         "description": "Copier les fichiers rubberband.wasm et rubberband.umd.min.js dans public/assets/rubberband/ et vérifier leur accessibilité après build",
         "details": "Créer le dossier public/assets/rubberband/ et y copier les fichiers depuis .ai/rubberband-wasm/: rubberband.wasm (265 KB) et rubberband.umd.min.js (6.7 KB). Vérifier dans angular.json que les assets sont correctement configurés pour être copiés vers dist/assets/rubberband/. Tester l'accessibilité des fichiers après ng build en vérifiant qu'ils sont présents dans dist/assets/rubberband/.",
         "testStrategy": "Lancer ng build et vérifier que les fichiers rubberband.wasm et rubberband.umd.min.js sont présents dans dist/assets/rubberband/. Accéder aux URLs /assets/rubberband/rubberband.wasm et /assets/rubberband/rubberband.umd.min.js via le serveur de développement.",
         "priority": "high",
         "dependencies": [],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-10-17T17:02:30.535Z"
       },
       {
-        "id": 2,
+        "id": "2",
         "title": "Création des interfaces TypeScript pour le Web Worker",
         "description": "Créer les types TypeScript pour les messages d'entrée et de sortie du Web Worker rubberband",
         "details": "Créer le fichier src/app/features/audio-looper/services/workers/rubberband-worker.types.ts avec les interfaces RubberbandWorkerInput (channelBuffers: Float32Array[], sampleRate: number, pitch: number, tempo: number) et RubberbandWorkerOutput (channelBuffers?: Float32Array[], ready?: boolean, status?: string, progress?: number, error?: string). Créer aussi le fichier index.ts pour exporter les types.",
         "testStrategy": "Vérifier que les types sont correctement exportés et importables. Compiler le projet avec ng build pour s'assurer qu'il n'y a pas d'erreurs TypeScript.",
         "priority": "medium",
         "dependencies": [
-          1
+          "1"
         ],
         "status": "pending",
         "subtasks": []
       },
       {
-        "id": 3,
+        "id": "3",
         "title": "Implémentation du Web Worker rubberband",
         "description": "Créer le Web Worker qui charge rubberband-wasm et traite l'audio avec les phases Study et Process",
         "details": "Créer src/app/features/audio-looper/services/workers/rubberband.worker.ts. Implémenter le chargement asynchrone de rubberband-wasm via importScripts, l'initialisation du module avec locateFile pointant vers /assets/rubberband/. Implémenter le traitement audio avec phase Study (0-50%) et phase Process (50-100%), throttling des messages de progression (250ms), et gestion des erreurs. Utiliser la logique inspirée de .ai/rubberband-wasm/worker.js.",
         "testStrategy": "Tester le Worker isolément en envoyant un message de test et vérifier qu'il charge rubberband-wasm correctement (message ready: true). Tester le traitement d'un buffer audio simple avec des console.logs pour vérifier les phases Study et Process.",
         "priority": "high",
         "dependencies": [
-          2
+          "2"
         ],
         "status": "pending",
         "subtasks": []
       },
       {
-        "id": 4,
+        "id": "4",
         "title": "Création du RubberbandEngineService",
         "description": "Créer le service Angular qui orchestre le traitement audio via le Web Worker avec cache et debounce",
         "details": "Créer src/app/features/audio-looper/services/rubberband-engine.service.ts avec injection Injectable providedIn: 'root'. Implémenter les signals pitch, playbackRate, isProcessing, processingProgress, processingStatus. Implémenter le cache Map<string, AudioBuffer> avec clés basées sur pitch et tempo. Implémenter le debounce 500ms pour éviter les traitements multiples. Créer l'API publique: loadOriginalBuffer(), setPitch(), setPlaybackRate(), getProcessedBuffer() Observable, clearCache().",
         "testStrategy": "Tester l'injection du service, la mise à jour des signals, le fonctionnement du cache (même paramètres = pas de retraitement), et le debounce en modifiant rapidement le pitch. Vérifier que getProcessedBuffer() émet correctement les buffers traités.",
         "priority": "high",
         "dependencies": [
-          3
+          "3"
         ],
         "status": "pending",
         "subtasks": []
       },
       {
-        "id": 5,
+        "id": "5",
         "title": "Intégration RubberbandEngineService dans ToneEngineService",
         "description": "Modifier ToneEngineService pour injecter RubberbandEngineService et gérer le remplacement de buffer",
         "details": "Dans src/app/features/audio-looper/services/tone-engine.service.ts, injecter RubberbandEngineService. Ajouter la propriété originalAudioBuffer pour stocker le buffer original. Modifier loadAudioFile() pour envoyer le buffer à rubberband via loadOriginalBuffer() et s'abonner à getProcessedBuffer(). Implémenter replaceAudioBuffer() qui préserve la position de lecture et l'état playing/paused lors du remplacement. Implémenter adjustLoopPoints() pour ajuster les marqueurs A/B selon la nouvelle durée.",
         "testStrategy": "Tester le chargement d'un fichier audio et vérifier que le buffer original est envoyé à rubberband. Tester le remplacement de buffer en s'assurant que la position de lecture et l'état sont conservés. Vérifier que les marqueurs A/B restent valides après traitement.",
         "priority": "high",
         "dependencies": [
-          4
+          "4"
         ],
         "status": "pending",
         "subtasks": []
       },
       {
-        "id": 6,
+        "id": "6",
         "title": "Création du composant RubberbandPitchControlComponent",
         "description": "Créer le composant UI pour le contrôle du pitch avec slider et indicateur de progression",
         "details": "Créer src/app/features/audio-looper/ui/rubberband-pitch-control/ avec les fichiers component.ts, component.html, component.scss et index.ts. Implémenter le template avec slider -6 à +6, affichage de la valeur courante, bouton Reset Pitch, et indicateur de progression conditionnel (@if). Injecter ToneEngineService et RubberbandEngineService. Implémenter onPitchChange() qui appelle toneEngine.setPitch(). Utiliser les signals pour l'affichage réactif.",
         "testStrategy": "Tester l'affichage du composant, le fonctionnement du slider, la mise à jour de la valeur affichée, le bouton Reset, et l'apparition/disparition de l'indicateur de progression pendant le traitement.",
         "priority": "medium",
         "dependencies": [
-          5
+          "5"
         ],
         "status": "pending",
         "subtasks": []
       },
       {
-        "id": 7,
+        "id": "7",
         "title": "Styling SCSS du composant RubberbandPitchControlComponent",
         "description": "Implémenter les styles SCSS pour le contrôle pitch avec design responsive et indicateur de progression",
         "details": "Dans rubberband-pitch-control.component.scss, créer les styles pour .pitch-control avec header (label + valeur), slider-container, bouton reset, et section processing. Implémenter la barre de progression animée avec .progress-bar et .progress-fill. Assurer la cohérence avec les styles existants du module audio-looper. Implémenter le responsive design pour mobile, tablette et desktop. Utiliser les variables SCSS existantes si disponibles.",
         "testStrategy": "Tester l'affichage sur différentes tailles d'écran (mobile, tablette, desktop). Vérifier que l'indicateur de progression s'anime correctement et que les contrôles sont utilisables sur écran tactile. Vérifier la cohérence visuelle avec les autres composants du module.",
         "priority": "medium",
         "dependencies": [
-          6
+          "6"
         ],
         "status": "pending",
         "subtasks": []
       },
       {
-        "id": 8,
+        "id": "8",
         "title": "Intégration du composant dans AudioLooperContainerComponent",
         "description": "Ajouter RubberbandPitchControlComponent dans le template du container principal",
         "details": "Dans src/app/features/audio-looper/ui/audio-looper-container/audio-looper-container.component.html, ajouter <app-rubberband-pitch-control></app-rubberband-pitch-control> après le commentaire '<!-- Les autres contrôles seront ajoutés dans les prochaines tâches -->'. Importer le composant dans audio-looper-container.component.ts via le fichier index.ts. Vérifier que le composant s'affiche correctement dans l'interface.",
         "testStrategy": "Charger l'application, naviguer vers le module Audio Looper, et vérifier que le contrôle pitch rubberband s'affiche correctement dans la section des contrôles. Tester l'interaction avec le slider et vérifier qu'il n'y a pas d'erreurs dans la console.",
         "priority": "medium",
         "dependencies": [
-          7
+          "7"
         ],
         "status": "pending",
         "subtasks": []
       },
       {
-        "id": 9,
+        "id": "9",
         "title": "Modification de WaveformDisplayComponent pour la régénération",
         "description": "Modifier WaveformDisplayComponent pour régénérer automatiquement la waveform lors du changement de buffer",
         "details": "Dans src/app/features/audio-looper/ui/waveform-display/waveform-display.component.ts, ajouter un effect() qui écoute les changements de duration du ToneEngineService. Implémenter regenerateWaveform() qui récupère le nouveau buffer via this.player.buffer.get() et redessine la waveform. Conserver les marqueurs A/B et la position du curseur de lecture. Utiliser effect() d'Angular pour réagir automatiquement aux changements.",
         "testStrategy": "Charger un fichier audio, modifier le pitch, et vérifier que la waveform se régénère automatiquement après le traitement. Vérifier que les marqueurs A/B et le curseur de lecture restent aux bonnes positions. Tester avec différents changements de pitch.",
         "priority": "medium",
         "dependencies": [
-          8
+          "8"
         ],
         "status": "pending",
         "subtasks": []
       },
       {
-        "id": 10,
+        "id": "10",
         "title": "Implémentation du cache et optimisation des performances",
         "description": "Optimiser le système de cache du RubberbandEngineService et améliorer les performances",
         "details": "Dans rubberband-engine.service.ts, optimiser la logique de cache avec getCacheKey() basé sur pitch et tempo. Implémenter clearCache() pour la gestion mémoire. Optimiser le debounce pour éviter les traitements inutiles. Ajouter la gestion de l'annulation des traitements en cours (Worker.terminate()). Implémenter le throttling des messages de progression (250ms) côté service.",
         "testStrategy": "Tester le cache en changeant plusieurs fois le pitch et en revenant aux valeurs précédentes (doit être instantané). Tester l'annulation en changeant rapidement le pitch plusieurs fois. Vérifier que les performances restent fluides même avec des fichiers de 10MB.",
         "priority": "medium",
         "dependencies": [
-          9
+          "9"
         ],
         "status": "pending",
         "subtasks": []
       },
       {
-        "id": 11,
+        "id": "11",
         "title": "Gestion des erreurs et fallback",
         "description": "Implémenter la gestion d'erreurs pour le chargement de rubberband-wasm et le traitement audio",
         "details": "Ajouter la gestion d'erreurs dans le Web Worker pour le chargement de rubberband-wasm (fichiers manquants, erreurs WASM). Dans RubberbandEngineService, implémenter la gestion des erreurs de traitement et des timeouts. Ajouter des messages d'erreur utilisateur clairs dans le composant UI. Implémenter un fallback vers Tone.js PitchShift en cas d'échec de rubberband. Ajouter des logs console pour le debugging.",
         "testStrategy": "Tester avec des fichiers corrompus, simuler l'indisponibilité des assets rubberband, et vérifier que l'application reste utilisable avec des messages d'erreur clairs. Vérifier que le fallback vers Tone.js fonctionne correctement.",
         "priority": "medium",
         "dependencies": [
-          10
+          "10"
         ],
         "status": "pending",
         "subtasks": []
       },
       {
-        "id": 12,
+        "id": "12",
         "title": "Tests de compatibilité cross-browser et WebAssembly",
         "description": "Tester la compatibilité rubberband-wasm sur différents navigateurs et implémenter les détections nécessaires",
         "details": "Tester rubberband-wasm sur Chrome, Firefox, Safari et Edge. Implémenter la détection du support WebAssembly au démarrage. Ajouter des messages informatifs si WebAssembly n'est pas supporté. Tester sur mobile (iOS Safari, Chrome Android). Implémenter des polyfills si nécessaire. Vérifier les performances sur différentes plateformes.",
         "testStrategy": "Tester l'application sur Chrome, Firefox, Safari et Edge (desktop et mobile). Vérifier que rubberband-wasm se charge correctement et que le traitement audio fonctionne. Tester sur des appareils moins puissants pour vérifier les performances.",
         "priority": "medium",
         "dependencies": [
-          11
+          "11"
         ],
         "status": "pending",
         "subtasks": []
       },
       {
-        "id": 13,
+        "id": "13",
         "title": "Synchronisation avec les autres contrôles audio",
         "description": "Assurer la compatibilité entre le pitch rubberband et les autres contrôles (vitesse, volume, loop)",
         "details": "Vérifier que le contrôle de vitesse (playback rate) fonctionne correctement avec les buffers traités par rubberband. Tester la compatibilité avec le contrôle de volume et les marqueurs de boucle A/B. Implémenter la synchronisation entre ToneEngineService et RubberbandEngineService pour éviter les conflits. Tester les interactions entre tous les contrôles audio simultanément.",
         "testStrategy": "Charger un fichier, modifier le pitch avec rubberband, puis tester tous les autres contrôles (vitesse 0.5x/0.75x/1.0x, volume, boucle A/B, lecture/pause, seek). Vérifier qu'il n'y a pas de conflits ou de comportements inattendus.",
         "priority": "medium",
         "dependencies": [
-          12
+          "12"
         ],
         "status": "pending",
         "subtasks": []
       },
       {
-        "id": 14,
+        "id": "14",
         "title": "Tests de qualité audio et validation des algorithmes",
         "description": "Effectuer des tests approfondis de qualité audio pour valider l'amélioration par rapport à Tone.js",
         "details": "Tester le pitch shift de -6 à +6 demi-tons avec différents types de fichiers audio (voix, musique, instruments). Comparer la qualité audio entre Tone.js PitchShift et rubberband-wasm. Vérifier l'absence d'artefacts (distorsion, phasing, effet chipmunk). Tester avec des fichiers de différentes qualités (MP3 128kbps, 320kbps, WAV). Documenter les améliorations de qualité observées.",
         "testStrategy": "Préparer des fichiers de test variés (guitare, piano, voix, musique complète). Tester chaque valeur de pitch (-6 à +6) et comparer avec Tone.js. Écouter attentivement pour détecter les artefacts. Faire valider la qualité audio par un utilisateur musical si possible.",
         "priority": "high",
         "dependencies": [
-          13
+          "13"
         ],
         "status": "pending",
         "subtasks": []
       },
       {
-        "id": 15,
+        "id": "15",
         "title": "Documentation et nettoyage du code",
         "description": "Ajouter la documentation technique, nettoyer le code et effectuer la validation finale",
         "details": "Ajouter des commentaires JSDoc aux méthodes principales de RubberbandEngineService et du Web Worker. Nettoyer les console.logs de debug. Optimiser les imports et vérifier qu'il n'y a pas de code mort. Mettre à jour les fichiers index.ts pour les exports. Effectuer un build de production final et vérifier les performances. Préparer un commit atomique avec un message détaillé.",
         "testStrategy": "Lancer ng build --configuration production et vérifier qu'il n'y a aucune erreur. Tester l'application buildée pour s'assurer que toutes les fonctionnalités marchent en mode production. Vérifier que la taille du bundle reste raisonnable avec l'ajout de rubberband-wasm.",
         "priority": "low",
         "dependencies": [
-          14
+          "14"
         ],
         "status": "pending",
         "subtasks": []
       }
     ],
     "metadata": {
-      "created": "2025-10-15T17:07:18.108Z",
-      "updated": "2025-10-17T13:58:52.206Z",
-      "description": "Tasks for rubberband-wasm-pitch context"
+      "version": "1.0.0",
+      "lastModified": "2025-10-17T17:02:30.538Z",
+      "taskCount": 15,
+      "completedCount": 1,
+      "tags": [
+        "rubberband-wasm-pitch"
+      ]
     }
   }
 }
