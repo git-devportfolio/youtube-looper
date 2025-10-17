@@ -2,21 +2,29 @@
 
 ## 1. Objectif
 
-Améliorer le module Audio Looper existant en remplaçant le pitch shift basique de Tone.js par l'algorithme de qualité professionnelle **rubberband-wasm**. Cette amélioration permettra aux utilisateurs de modifier la tonalité de leurs fichiers audio de -6 à +6 demi-tons **sans dégradation de qualité**, même sur de grands changements de pitch.
+Améliorer le module Audio Looper existant en ajoutant le pitch shift de l'algorithme de qualité professionnelle **rubberband-wasm**. Cette amélioration permettra aux utilisateurs de modifier la tonalité de leurs fichiers audio de -6 à +6 demi-tons **sans dégradation de qualité**, même sur de grands changements de pitch.
 
 ## 2. Contexte
 
 ### 2.1 Situation actuelle
 
-Le module Audio Looper utilise actuellement **Tone.js PitchShift** pour le contrôle du pitch (non encore implémenté) :
+Le module Audio Looper utilise actuellement **Tone.js PitchShift** pour le contrôle du pitch :
 - ✅ Temps réel instantané (pas de latence)
 - ✅ Réactivité immédiate
 - ❌ Qualité moyenne sur changements > ±3 demi-tons
 - ❌ Artefacts audibles (distorsion, phasing, chipmunk effect)
 
 **Fichiers existants :**
-- `src/app/features/audio-looper/ui/pitch-control/` - UI du contrôle pitch (slider -6 à +6)
+- `src/app/features/audio-looper/ui/pitch-control/` - UI du contrôle pitch Tone.js (slider -6 à +6) - **NON intégré dans l'UI actuellement**
 - `src/app/features/audio-looper/services/tone-engine.service.ts` - Gestion audio avec Tone.js
+
+**Note importante sur l'architecture des composants :**
+- Il existera **deux composants de contrôle de pitch distincts** :
+  1. **`PitchControlComponent`** (existant) : Contrôle pitch basé sur Tone.js PitchShift
+  2. **`RubberbandPitchControlComponent`** (à créer) : Contrôle pitch basé sur rubberband-wasm
+- **Seul le `RubberbandPitchControlComponent` sera intégré** dans `audio-looper-container.component.html` pour l'instant
+- Le `PitchControlComponent` (Tone.js) sera intégré ultérieurement
+- Cette approche permet de comparer facilement les deux moteurs de pitch à l'avenir
 
 ### 2.2 Solution cible : Rubberband-WASM
 
@@ -47,13 +55,13 @@ Une démo HTML/JS fonctionnelle existe dans `.ai/rubberband-wasm/` :
 ### 3.1 Architecture cible
 
 ```
-┌─────────────────────────────────────────┐
-│   PitchControlComponent (UI)           │
-│   - Slider -6 à +6 demi-tons           │
-│   - Affichage valeur courante          │
-│   - Bouton Reset                       │
-│   - Indicateur de progression          │
-└──────────────┬──────────────────────────┘
+┌──────────────────────────────────────────────┐
+│   RubberbandPitchControlComponent (UI)      │
+│   - Slider -6 à +6 demi-tons                │
+│   - Affichage valeur courante               │
+│   - Bouton Reset                            │
+│   - Indicateur de progression               │
+└──────────────┬───────────────────────────────┘
                │
                ▼
 ┌─────────────────────────────────────────┐
@@ -108,6 +116,16 @@ src/app/features/audio-looper/services/
 └── rubberband-engine.service.ts  # Orchestration rubberband
 ```
 
+**Composant UI** :
+```
+src/app/features/audio-looper/ui/
+└── rubberband-pitch-control/     # Nouveau composant spécifique rubberband
+    ├── index.ts
+    ├── rubberband-pitch-control.component.ts
+    ├── rubberband-pitch-control.component.html
+    └── rubberband-pitch-control.component.scss
+```
+
 #### Fichiers à modifier
 
 **ToneEngineService** (`tone-engine.service.ts`) :
@@ -116,11 +134,6 @@ src/app/features/audio-looper/services/
 - Gérer le remplacement du buffer après traitement
 - Synchroniser la position de lecture lors du changement de buffer
 
-**PitchControlComponent** (`pitch-control.component.ts`) :
-- Afficher un indicateur de progression pendant le traitement
-- Afficher le statut de traitement ("Studying...", "Processing...")
-- Gérer l'état "en traitement" (optionnel : désactiver le slider)
-
 **AudioPlayerComponent** (`audio-player.component.ts`) :
 - Gérer la lecture fluide lors du changement de buffer
 - Conserver la position de lecture lors du remplacement
@@ -128,6 +141,11 @@ src/app/features/audio-looper/services/
 **WaveformDisplayComponent** (`waveform-display.component.ts`) :
 - Régénérer la waveform après traitement rubberband (le buffer change)
 - Conserver les marqueurs A/B et la position de lecture
+
+**AudioLooperContainerComponent** (`audio-looper-container.component.html`) :
+- Ajouter le composant `<app-rubberband-pitch-control></app-rubberband-pitch-control>`
+- **Emplacement précis** : Insérer après le commentaire `<!-- Les autres contrôles seront ajoutés dans les prochaines tâches -->`
+- Cet emplacement se trouve dans la section `.controls-section` après `<app-audio-player></app-audio-player>`
 
 ### 3.3 Hors périmètre
 
@@ -193,7 +211,7 @@ src/app/features/audio-looper/services/
    - Cache hit → Remplacement instantané du buffer
    - Aucun traitement nécessaire
 
-### 4.2 Interface utilisateur (PitchControlComponent)
+### 4.2 Interface utilisateur (RubberbandPitchControlComponent)
 
 **État normal (pas de traitement)** :
 ```
@@ -609,7 +627,7 @@ export class ToneEngineService {
 }
 ```
 
-### 5.4 PitchControlComponent - Modifications
+### 5.4 RubberbandPitchControlComponent - Création
 
 **Template HTML** (ajout de l'indicateur de progression) :
 ```html
@@ -670,7 +688,7 @@ export class ToneEngineService {
 
 **Component TypeScript** :
 ```typescript
-export class PitchControlComponent {
+export class RubberbandPitchControlComponent {
   readonly toneEngine = inject(ToneEngineService);
   readonly rubberbandEngine = inject(RubberbandEngineService);
 
@@ -765,29 +783,6 @@ function semitonesToPitchScale(semitones: number): number {
 | +3        | 1.189207    | ~118.9%     |
 | +6        | 1.414214    | ~141.4%     |
 
-### 6.2 Tempo Factor (Conversion playback rate → tempo)
-
-**Formule** :
-```
-tempo = 1 / playbackRate
-```
-
-**Implémentation** :
-```typescript
-function playbackRateToTempo(rate: number): number {
-  return 1 / rate;
-}
-```
-
-**Exemples** :
-| Playback Rate | Tempo | Effet          |
-|---------------|-------|----------------|
-| 0.5x          | 2.0   | Audio 2x long  |
-| 0.75x         | 1.333 | Audio 33% long |
-| 1.0x          | 1.0   | Normal         |
-
-**Note** : Dans Rubberband, le tempo représente le facteur d'étirement temporel, pas la vitesse de lecture.
-
 ## 7. Critères d'acceptation
 
 ### 7.1 Infrastructure
@@ -826,7 +821,7 @@ function playbackRateToTempo(rate: number): number {
 - ✅ L'état (playing/paused) est conservé lors du remplacement
 - ✅ Les marqueurs A/B sont conservés (ajustés si nécessaire)
 
-### 7.5 PitchControlComponent - UI
+### 7.5 RubberbandPitchControlComponent - UI
 
 - ✅ Le slider -6 à +6 fonctionne
 - ✅ La valeur courante s'affiche (ex: "+3 semitones")
@@ -893,47 +888,15 @@ function playbackRateToTempo(rate: number): number {
 - Streaming audio par chunks
 - Préchargement des buffers (valeurs ±1, ±2, etc.)
 
-## 9. Tests manuels
+## 9. Validation et tests
 
-### 9.1 Test de base
+### Tests essentiels à effectuer après implémentation
 
-1. Lancer l'application : `npm start`
-2. Aller sur l'onglet "Audio Looper"
-3. Uploader un fichier MP3 (ex: `test-song.mp3`)
-4. Attendre le chargement
-5. Cliquer sur Play → Écouter l'audio normal
-6. Déplacer le slider Pitch à +3
-7. Attendre la fin du traitement (~2-3 secondes)
-8. Écouter l'audio avec pitch +3 → Qualité audio professionnelle
-
-### 9.2 Test du cache
-
-1. Déplacer le slider à +5 (traitement ~3 secondes)
-2. Déplacer le slider à +3 (traitement instantané, cache hit)
-3. Déplacer le slider à +5 (traitement instantané, cache hit)
-
-### 9.3 Test de la continuité de lecture
-
-1. Lancer la lecture d'un fichier
-2. Pendant la lecture, changer le pitch à -3
-3. Vérifier que la lecture continue sans interruption
-4. Attendre la fin du traitement
-5. Vérifier que la lecture se poursuit avec le nouveau pitch
-
-### 9.4 Test des marqueurs A/B
-
-1. Définir des marqueurs A (10s) et B (20s)
-2. Activer la boucle
-3. Changer le pitch à +6
-4. Vérifier que les marqueurs A/B restent visibles
-5. Vérifier que la boucle fonctionne après le traitement
-
-### 9.5 Test de build
-
-1. Lancer `npm run build`
-2. Vérifier qu'il n'y a pas d'erreurs TypeScript
-3. Vérifier que les fichiers sont dans `dist/assets/rubberband/`
-4. Vérifier que le Worker est bundlé séparément
+- ✅ **Test de base** : Pitch shift de -6 à +6 demi-tons avec qualité audio professionnelle
+- ✅ **Test du cache** : Retour instantané aux valeurs déjà traitées (pas de retraitement)
+- ✅ **Test de continuité** : Lecture sans interruption pendant le traitement en arrière-plan
+- ✅ **Test des marqueurs A/B** : Conservation et fonctionnement de la boucle après changement de pitch
+- ✅ **Test de build** : Compilation réussie (`npm run build`) et assets correctement déployés dans `dist/`
 
 ## 10. Documentation technique
 
@@ -951,6 +914,21 @@ function playbackRateToTempo(rate: number): number {
 - **PRD rubberband-wasm** : `.ai/rubberband-wasm/PRD-Rubberband-wasm.md`
 
 ## 11. Découpage en tâches suggéré
+
+### Méthodologie de développement
+
+Chaque tâche doit respecter les principes suivants :
+
+- **Testable manuellement** : L'application doit compiler (`ng build` ou `npm run build`) et être fonctionnelle après chaque tâche
+- **Incrémentale** : Chaque livrable ajoute une fonctionnalité visible et testable. On ne passe pas à la tâche suivante et on ne commit pas avant d'avoir obtenu la validation manuelle
+- **Sans régression** : Les fonctionnalités précédemment implémentées doivent continuer à fonctionner correctement
+
+**Workflow par tâche** :
+1. Implémenter la fonctionnalité décrite dans la tâche
+2. Lancer un build (`ng build` ou `npm run build`) pour vérifier qu'il n'y a pas d'erreurs TypeScript ou de compilation
+3. Tester manuellement la fonctionnalité dans le navigateur (`ng serve`)
+4. Valider que toutes les fonctionnalités existantes fonctionnent toujours (non-régression)
+5. Attendre la validation manuelle de l'utilisateur avant de continuer
 
 ### Tâche 1 : Préparation des assets
 - Copier `rubberband.wasm` et `rubberband.umd.min.js` dans `public/assets/rubberband/`
