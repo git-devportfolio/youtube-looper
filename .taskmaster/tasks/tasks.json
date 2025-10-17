@@ -1088,8 +1088,73 @@
         "dependencies": [
           "3"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Créer la structure de base du RubberbandEngineService",
+            "description": "Créer le fichier src/app/features/audio-looper/services/rubberband-engine.service.ts avec la classe Injectable et les imports nécessaires",
+            "dependencies": [],
+            "details": "Créer le fichier rubberband-engine.service.ts avec le décorateur @Injectable({providedIn: 'root'}). Importer Injectable et signal depuis @angular/core, Observable et Subject depuis rxjs. Importer les types RubberbandWorkerInput et RubberbandWorkerOutput depuis workers/rubberband-worker.types. Définir la structure de base de la classe avec constructor vide.",
+            "status": "done",
+            "testStrategy": "Vérifier que le service peut être injecté dans un composant de test et que la structure de base compile sans erreur.",
+            "updatedAt": "2025-10-17T20:15:44.823Z",
+            "parentId": "undefined"
+          },
+          {
+            "id": 2,
+            "title": "Implémenter les signals d'état du service",
+            "description": "Ajouter tous les signals requis pour l'état du service : pitch, playbackRate, isProcessing, processingProgress, processingStatus",
+            "dependencies": [
+              1
+            ],
+            "details": "Créer les signals readonly suivants : pitch = signal<number>(0) pour les demi-tons (-6 à +6), playbackRate = signal<number>(1.0) pour la vitesse (0.5x, 0.75x, 1.0x), isProcessing = signal<boolean>(false) pour l'état de traitement, processingProgress = signal<number>(0) pour le pourcentage (0-100), processingStatus = signal<string>('') pour le statut textuel du traitement.",
+            "status": "done",
+            "testStrategy": "Tester que tous les signals sont accessibles en lecture et que leurs valeurs par défaut sont correctes. Vérifier que les signals sont réactifs aux changements.",
+            "parentId": "undefined",
+            "updatedAt": "2025-10-17T20:17:30.673Z"
+          },
+          {
+            "id": 3,
+            "title": "Implémenter le système de cache avec Map",
+            "description": "Créer le cache Map<string, AudioBuffer> avec la fonction getCacheKey basée sur pitch et tempo pour éviter les retraitements",
+            "dependencies": [
+              2
+            ],
+            "details": "Créer une propriété private audioCache = new Map<string, AudioBuffer>(). Implémenter la méthode privée getCacheKey(pitch: number, tempo: number): string qui retourne une clé unique basée sur la combinaison pitch-tempo (ex: 'p2_t0.75'). Implémenter clearCache(): void qui vide complètement le cache. Ajouter des méthodes privées hasCache() et getFromCache() pour vérifier et récupérer les buffers cachés.",
+            "status": "done",
+            "testStrategy": "Tester que le cache stocke et récupère correctement les AudioBuffer avec les bonnes clés. Vérifier que clearCache() vide effectivement le cache et que des paramètres identiques utilisent le cache.",
+            "parentId": "undefined",
+            "updatedAt": "2025-10-17T20:20:23.229Z"
+          },
+          {
+            "id": 4,
+            "title": "Implémenter le debounce et la gestion du Web Worker",
+            "description": "Ajouter le système de debounce 500ms et la création/gestion du Web Worker rubberband pour éviter les traitements multiples",
+            "dependencies": [
+              3
+            ],
+            "details": "Créer une propriété private debounceTimer: number | null = null. Implémenter la logique de debounce avec clearTimeout/setTimeout de 500ms dans les méthodes de changement de paramètres. Créer une propriété private worker: Worker | null = null. Implémenter createWorker() qui instancie le Worker depuis './workers/rubberband.worker.ts'. Implémenter destroyWorker() qui termine le worker existant. Ajouter la gestion des messages worker.onmessage pour recevoir les résultats.",
+            "status": "done",
+            "testStrategy": "Tester que le debounce fonctionne en appelant rapidement setPitch() et vérifier qu'un seul traitement est déclenché après 500ms. Vérifier que le Worker est correctement créé et détruit.",
+            "parentId": "undefined",
+            "updatedAt": "2025-10-17T20:25:45.702Z"
+          },
+          {
+            "id": 5,
+            "title": "Implémenter l'API publique du service",
+            "description": "Créer les méthodes publiques loadOriginalBuffer(), setPitch(), setPlaybackRate(), getProcessedBuffer() Observable, et finaliser l'intégration",
+            "dependencies": [
+              4
+            ],
+            "details": "Implémenter loadOriginalBuffer(buffer: AudioBuffer): void qui stocke le buffer original. Implémenter setPitch(semitones: number): void qui met à jour le signal et déclenche le traitement avec debounce. Implémenter setPlaybackRate(rate: number): void similaire pour la vitesse. Implémenter getProcessedBuffer(): Observable<AudioBuffer> qui retourne un Observable émettant les buffers traités. Créer une propriété private processedBufferSubject = new Subject<AudioBuffer>(). Intégrer la logique complète de traitement avec vérification du cache, envoi au Worker, et émission du résultat.",
+            "status": "done",
+            "testStrategy": "Tester l'API complète : charger un buffer original, modifier le pitch/tempo, vérifier que getProcessedBuffer() émet le buffer traité. Tester que les paramètres identiques utilisent le cache et que les nouveaux paramètres déclenchent un nouveau traitement.",
+            "parentId": "undefined",
+            "updatedAt": "2025-10-17T20:29:11.633Z"
+          }
+        ],
+        "updatedAt": "2025-10-17T20:29:11.633Z"
       },
       {
         "id": "5",
@@ -1237,9 +1302,9 @@
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2025-10-17T17:34:28.606Z",
+      "lastModified": "2025-10-17T20:29:11.639Z",
       "taskCount": 15,
-      "completedCount": 3,
+      "completedCount": 4,
       "tags": [
         "rubberband-wasm-pitch"
       ]
