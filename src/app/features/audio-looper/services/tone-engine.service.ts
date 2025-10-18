@@ -1,16 +1,22 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, signal, inject } from '@angular/core';
 import * as Tone from 'tone';
+import { RubberbandEngineService } from './rubberband-engine.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ToneEngineService {
+  // Injection du service Rubberband
+  private readonly rubberbandEngine = inject(RubberbandEngineService);
   // Tone.js player et effets
   private player: Tone.Player | null = null;
   private pitchShift: Tone.PitchShift | null = null;
   private gainNode: Tone.Gain | null = null;
   private startTime: number = 0; // Timestamp de démarrage de la lecture
   private startOffset: number = 0; // Position de départ dans l'audio (en secondes)
+
+  // Buffer audio original (pour Rubberband processing)
+  private originalAudioBuffer: AudioBuffer | null = null;
 
   // Signals pour les contrôles audio
   readonly pitch = signal<number>(0); // -6 à +6 demi-tons
@@ -79,6 +85,12 @@ export class ToneEngineService {
           this.isReady.set(true);
           this.duration.set(this.player!.buffer.duration);
           console.log('Fichier audio chargé:', file.name);
+
+          // Stocker le buffer original et l'envoyer à Rubberband
+          if (this.player?.buffer) {
+            this.originalAudioBuffer = this.player.buffer.get() as AudioBuffer;
+            this.rubberbandEngine.loadOriginalBuffer(this.originalAudioBuffer);
+          }
         }
       });
 
@@ -88,6 +100,11 @@ export class ToneEngineService {
 
       // Connecter la chaîne audio: Player -> PitchShift -> Gain -> Destination
       this.player.chain(this.pitchShift, this.gainNode, Tone.getDestination());
+
+      // S'abonner aux buffers traités de Rubberband
+      this.rubberbandEngine.getProcessedBuffer().subscribe(processedBuffer => {
+        this.replaceAudioBuffer(processedBuffer);
+      });
 
       // Attendre que le fichier soit chargé
       await Tone.loaded();
@@ -272,6 +289,116 @@ export class ToneEngineService {
         clearInterval(updateInterval);
       }
     }, 100); // Mise à jour toutes les 100ms
+  }
+
+  /**
+   * Ajuste les points de boucle A/B selon la nouvelle durée du buffer
+   * Préserve les proportions si possible, sinon les marque comme invalides
+   * @param newDuration Nouvelle durée du buffer audio en secondes
+   */
+  private adjustLoopPoints(newDuration: number): void {
+    const currentLoopStart = this.loopStart();
+    const currentLoopEnd = this.loopEnd();
+
+    // Si aucune boucle n'est définie, rien à faire
+    if (currentLoopStart === null || currentLoopEnd === null) {
+      return;
+    }
+
+    // Si la durée originale n'est pas disponible, on ne peut pas ajuster
+    if (!this.originalAudioBuffer) {
+      console.warn('[ToneEngineService] No original buffer for loop adjustment');
+      return;
+    }
+
+    const originalDuration = this.originalAudioBuffer.duration;
+    const ratio = newDuration / originalDuration;
+
+    // Calculer les nouveaux points de boucle proportionnellement
+    const newLoopStart = currentLoopStart * ratio;
+    const newLoopEnd = currentLoopEnd * ratio;
+
+    // Valider que les nouveaux points sont dans la plage valide
+    if (newLoopStart >= 0 && newLoopEnd <= newDuration && newLoopStart < newLoopEnd) {
+      this.loopStart.set(newLoopStart);
+      this.loopEnd.set(newLoopEnd);
+
+      // Mettre à jour le player si la boucle est active
+      if (this.player && this.isLooping()) {
+        this.player.loopStart = newLoopStart;
+        this.player.loopEnd = newLoopEnd;
+      }
+
+      console.log('[ToneEngineService] Loop points adjusted', {
+        originalDuration,
+        newDuration,
+        ratio,
+        oldStart: currentLoopStart,
+        oldEnd: currentLoopEnd,
+        newStart: newLoopStart,
+        newEnd: newLoopEnd
+      });
+    } else {
+      // Si les points ajustés sont invalides, réinitialiser la boucle
+      console.warn('[ToneEngineService] Adjusted loop points invalid, resetting loop');
+      this.resetLoop();
+    }
+  }
+
+  /**
+   * Remplace le buffer audio du player tout en préservant l'état de lecture
+   * @param newBuffer Nouveau AudioBuffer à utiliser
+   */
+  private replaceAudioBuffer(newBuffer: AudioBuffer): void {
+    if (!this.player) {
+      console.warn('[ToneEngineService] No player to replace buffer');
+      return;
+    }
+
+    try {
+      // Sauvegarder l'état actuel
+      const wasPlaying = this.isPlaying();
+      const currentPosition = this.currentTime();
+
+      // Arrêter la lecture si en cours
+      if (wasPlaying) {
+        this.player.stop();
+      }
+
+      // Remplacer le buffer
+      const toneBuffer = new Tone.ToneAudioBuffer(newBuffer);
+      this.player.buffer = toneBuffer;
+
+      // Mettre à jour la durée
+      const newDuration = newBuffer.duration;
+      this.duration.set(newDuration);
+
+      // Ajuster les points de boucle si nécessaire
+      this.adjustLoopPoints(newDuration);
+
+      // Ajuster la position de lecture si elle dépasse la nouvelle durée
+      if (currentPosition > newDuration) {
+        this.startOffset = 0;
+        this.currentTime.set(0);
+      } else {
+        this.startOffset = currentPosition;
+      }
+
+      // Restaurer la lecture si elle était en cours
+      if (wasPlaying) {
+        this.player.start(undefined, this.startOffset);
+        this.startTime = Tone.now();
+        this.startTimeUpdate();
+      }
+
+      console.log('[ToneEngineService] Buffer replaced successfully', {
+        newDuration,
+        wasPlaying,
+        currentPosition
+      });
+    } catch (error) {
+      console.error('[ToneEngineService] Error replacing buffer:', error);
+    }
   }
 
   /**

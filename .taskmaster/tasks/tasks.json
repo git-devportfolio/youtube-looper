@@ -1166,8 +1166,73 @@
         "dependencies": [
           "4"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Injection RubberbandEngineService dans ToneEngineService",
+            "description": "Injecter RubberbandEngineService dans ToneEngineService via le constructeur ou la fonction inject()",
+            "dependencies": [],
+            "details": "Dans src/app/features/audio-looper/services/tone-engine.service.ts, ajouter l'injection de RubberbandEngineService en utilisant la fonction inject() pour respecter les conventions Angular modernes. Déclarer la propriété private rubberbandEngine = inject(RubberbandEngineService).",
+            "status": "done",
+            "testStrategy": "Vérifier que le service s'injecte correctement sans erreurs et qu'il est accessible dans les méthodes de ToneEngineService",
+            "updatedAt": "2025-10-18T06:36:55.330Z",
+            "parentId": "undefined"
+          },
+          {
+            "id": 2,
+            "title": "Ajout de la propriété originalAudioBuffer",
+            "description": "Ajouter une propriété pour stocker le buffer audio original avant traitement",
+            "dependencies": [
+              1
+            ],
+            "details": "Ajouter la propriété private originalAudioBuffer: AudioBuffer | null = null dans ToneEngineService. Cette propriété servira à conserver une référence vers le buffer audio original pour pouvoir le repasser au Web Worker rubberband lors des changements de paramètres.",
+            "status": "done",
+            "testStrategy": "Vérifier que la propriété est correctement déclarée et initialisée à null",
+            "parentId": "undefined",
+            "updatedAt": "2025-10-18T06:38:13.423Z"
+          },
+          {
+            "id": 3,
+            "title": "Modification de loadAudioFile() pour intégration rubberband",
+            "description": "Modifier la méthode loadAudioFile() pour envoyer le buffer à rubberband et s'abonner aux résultats",
+            "dependencies": [
+              2
+            ],
+            "details": "Dans loadAudioFile(), après la création du buffer audio, stocker le buffer dans originalAudioBuffer. Appeler rubberbandEngine.loadOriginalBuffer(buffer) pour envoyer le buffer au Web Worker. S'abonner à rubberbandEngine.getProcessedBuffer() pour recevoir les buffers traités. Gérer les cas d'erreur et de progression du traitement.",
+            "status": "done",
+            "testStrategy": "Tester le chargement d'un fichier audio et vérifier que le buffer original est correctement stocké et envoyé au service rubberband",
+            "parentId": "undefined",
+            "updatedAt": "2025-10-18T06:43:00.823Z"
+          },
+          {
+            "id": 4,
+            "title": "Implémentation de replaceAudioBuffer()",
+            "description": "Créer une méthode qui remplace le buffer audio en préservant l'état de lecture",
+            "dependencies": [
+              3
+            ],
+            "details": "Implémenter la méthode replaceAudioBuffer(newBuffer: AudioBuffer) qui sauvegarde la position de lecture actuelle et l'état playing/paused, remplace le buffer de la source Tone.js, puis restaure la position et l'état. Gérer les cas où la nouvelle durée est plus courte que la position actuelle.",
+            "status": "done",
+            "testStrategy": "Tester le remplacement de buffer en s'assurant que la lecture continue à la même position relative et que l'état playing/paused est conservé",
+            "parentId": "undefined",
+            "updatedAt": "2025-10-18T06:46:08.637Z"
+          },
+          {
+            "id": 5,
+            "title": "Implémentation de adjustLoopPoints()",
+            "description": "Créer une méthode pour ajuster les marqueurs A/B selon la nouvelle durée après traitement",
+            "dependencies": [
+              4
+            ],
+            "details": "Implémenter adjustLoopPoints(oldDuration: number, newDuration: number) qui calcule le ratio de changement de durée et ajuste proportionnellement les marqueurs A/B. Vérifier que les nouveaux points restent dans les limites du buffer. Émettre les nouveaux points via les signals appropriés.",
+            "status": "done",
+            "testStrategy": "Vérifier que les marqueurs A/B sont correctement ajustés proportionnellement à la nouvelle durée et restent dans les limites valides du buffer traité",
+            "parentId": "undefined",
+            "updatedAt": "2025-10-18T06:46:57.165Z"
+          }
+        ],
+        "updatedAt": "2025-10-18T06:46:57.165Z"
       },
       {
         "id": "6",
@@ -1302,9 +1367,9 @@
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2025-10-17T20:29:11.639Z",
+      "lastModified": "2025-10-18T06:46:57.168Z",
       "taskCount": 15,
-      "completedCount": 4,
+      "completedCount": 5,
       "tags": [
         "rubberband-wasm-pitch"
       ]
