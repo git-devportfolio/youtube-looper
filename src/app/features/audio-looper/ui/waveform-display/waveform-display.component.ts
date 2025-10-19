@@ -200,12 +200,14 @@ export class WaveformDisplayComponent implements AfterViewInit, OnDestroy {
   }
 
   /**
-   * Redessine la waveform avec le curseur de lecture
+   * Redessine la waveform avec la zone de boucle, les marqueurs A/B et le curseur de lecture
    */
   private redrawWaveform(): void {
     if (this.peaks().length > 0) {
       const canvas = this.canvasRef.nativeElement;
       this.waveformService.drawWaveform(canvas);
+      this.drawLoopRegion();
+      this.drawLoopMarkers();
       this.drawPlaybackCursor();
     }
   }
@@ -231,6 +233,148 @@ export class WaveformDisplayComponent implements AfterViewInit, OnDestroy {
     if (this.animationFrameId !== undefined) {
       cancelAnimationFrame(this.animationFrameId);
       this.animationFrameId = undefined;
+    }
+  }
+
+  /**
+   * Dessine la zone colorée entre les points A et B
+   */
+  private drawLoopRegion(): void {
+    const canvas = this.canvasRef.nativeElement;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const duration = this.audioPlayerService.duration();
+    if (duration === 0) return;
+
+    const loopStart = this.toneEngineService.loopStart();
+    const loopEnd = this.toneEngineService.loopEnd();
+
+    // Ne dessiner que si les deux points sont définis
+    if (loopStart === null || loopEnd === null) return;
+
+    const dpr = window.devicePixelRatio || 1;
+    const width = canvas.width / dpr;
+    const height = canvas.height / dpr;
+
+    const regionStartX = (loopStart / duration) * width;
+    const regionEndX = (loopEnd / duration) * width;
+    const regionWidth = regionEndX - regionStartX;
+
+    // Dessiner la zone semi-transparente
+    ctx.save();
+
+    // Si la boucle est active, utiliser une couleur plus intense
+    const isLooping = this.toneEngineService.isLooping();
+    const fillColor = isLooping
+      ? 'rgba(34, 197, 94, 0.15)'  // Vert plus intense si actif
+      : 'rgba(59, 130, 246, 0.1)';  // Bleu léger si inactif
+
+    ctx.fillStyle = fillColor;
+    ctx.fillRect(regionStartX, 0, regionWidth, height);
+
+    // Ajouter un dégradé sur les bords pour un effet visuel
+    const gradientLeft = ctx.createLinearGradient(regionStartX, 0, regionStartX + 20, 0);
+    gradientLeft.addColorStop(0, isLooping ? 'rgba(34, 197, 94, 0.3)' : 'rgba(59, 130, 246, 0.2)');
+    gradientLeft.addColorStop(1, 'rgba(0, 0, 0, 0)');
+    ctx.fillStyle = gradientLeft;
+    ctx.fillRect(regionStartX, 0, 20, height);
+
+    const gradientRight = ctx.createLinearGradient(regionEndX - 20, 0, regionEndX, 0);
+    gradientRight.addColorStop(0, 'rgba(0, 0, 0, 0)');
+    gradientRight.addColorStop(1, isLooping ? 'rgba(34, 197, 94, 0.3)' : 'rgba(59, 130, 246, 0.2)');
+    ctx.fillStyle = gradientRight;
+    ctx.fillRect(regionEndX - 20, 0, 20, height);
+
+    ctx.restore();
+  }
+
+  /**
+   * Dessine les marqueurs A et B de la boucle sur la waveform
+   */
+  private drawLoopMarkers(): void {
+    const canvas = this.canvasRef.nativeElement;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const duration = this.audioPlayerService.duration();
+    if (duration === 0) return;
+
+    const loopStart = this.toneEngineService.loopStart();
+    const loopEnd = this.toneEngineService.loopEnd();
+
+    const dpr = window.devicePixelRatio || 1;
+    const width = canvas.width / dpr;
+    const height = canvas.height / dpr;
+
+    // Dessiner le marqueur A (vert)
+    if (loopStart !== null) {
+      const markerAX = (loopStart / duration) * width;
+
+      ctx.save();
+      ctx.strokeStyle = '#22c55e'; // Vert
+      ctx.lineWidth = 2;
+      ctx.shadowColor = '#22c55e';
+      ctx.shadowBlur = 4;
+
+      // Ligne verticale
+      ctx.beginPath();
+      ctx.moveTo(markerAX, 0);
+      ctx.lineTo(markerAX, height);
+      ctx.stroke();
+
+      // Label 'A' en haut
+      ctx.fillStyle = '#22c55e';
+      ctx.font = 'bold 14px sans-serif';
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'top';
+      ctx.fillText('A', markerAX + 4, 4);
+
+      // Triangle en haut
+      ctx.fillStyle = '#22c55e';
+      ctx.beginPath();
+      ctx.moveTo(markerAX, 0);
+      ctx.lineTo(markerAX - 6, 10);
+      ctx.lineTo(markerAX + 6, 10);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.restore();
+    }
+
+    // Dessiner le marqueur B (bleu)
+    if (loopEnd !== null) {
+      const markerBX = (loopEnd / duration) * width;
+
+      ctx.save();
+      ctx.strokeStyle = '#3b82f6'; // Bleu
+      ctx.lineWidth = 2;
+      ctx.shadowColor = '#3b82f6';
+      ctx.shadowBlur = 4;
+
+      // Ligne verticale
+      ctx.beginPath();
+      ctx.moveTo(markerBX, 0);
+      ctx.lineTo(markerBX, height);
+      ctx.stroke();
+
+      // Label 'B' en haut
+      ctx.fillStyle = '#3b82f6';
+      ctx.font = 'bold 14px sans-serif';
+      ctx.textAlign = 'right';
+      ctx.textBaseline = 'top';
+      ctx.fillText('B', markerBX - 4, 4);
+
+      // Triangle en haut
+      ctx.fillStyle = '#3b82f6';
+      ctx.beginPath();
+      ctx.moveTo(markerBX, 0);
+      ctx.lineTo(markerBX - 6, 10);
+      ctx.lineTo(markerBX + 6, 10);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.restore();
     }
   }
 

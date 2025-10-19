@@ -266,7 +266,7 @@ export class ToneEngineService {
   }
 
   /**
-   * Met à jour le temps courant périodiquement
+   * Met à jour le temps courant périodiquement et gère la boucle A/B
    */
   private startTimeUpdate(): void {
     const updateInterval = setInterval(() => {
@@ -280,12 +280,33 @@ export class ToneEngineService {
       const currentSeconds = this.startOffset + elapsed;
       this.currentTime.set(currentSeconds);
 
-      // Vérifier si on a atteint la fin
-      if (currentSeconds >= this.duration()) {
-        this.isPlaying.set(false);
-        this.startOffset = 0;
-        this.currentTime.set(0);
-        clearInterval(updateInterval);
+      // Gestion de la boucle A/B manuelle
+      if (this.isLooping() && this.loopStart() !== null && this.loopEnd() !== null) {
+        const loopEnd = this.loopEnd()!;
+
+        // Si on a atteint ou dépassé le point B, revenir au point A
+        if (currentSeconds >= loopEnd) {
+          const loopStart = this.loopStart()!;
+
+          // Arrêter la lecture actuelle
+          this.player.stop();
+
+          // Redémarrer depuis le point A
+          this.startOffset = loopStart;
+          this.currentTime.set(loopStart);
+          this.player.start(undefined, loopStart);
+          this.startTime = Tone.now();
+
+          console.log(`[Loop] Retour au point A: ${loopStart.toFixed(2)}s`);
+        }
+      } else {
+        // Vérifier si on a atteint la fin (comportement normal sans boucle)
+        if (currentSeconds >= this.duration()) {
+          this.isPlaying.set(false);
+          this.startOffset = 0;
+          this.currentTime.set(0);
+          clearInterval(updateInterval);
+        }
       }
     }, 100); // Mise à jour toutes les 100ms
   }

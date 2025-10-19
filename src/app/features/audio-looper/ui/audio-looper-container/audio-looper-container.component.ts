@@ -5,13 +5,14 @@ import { FileUploadComponent } from '../file-upload';
 import { WaveformDisplayComponent } from '../waveform-display';
 import { AudioPlayerComponent } from '../audio-player';
 import { RubberbandPitchControlComponent } from '../rubberband-pitch-control';
+import { LoopControlsComponent } from '../loop-controls';
 import { AudioPlayerService, ToneEngineService, WaveformService } from '../../services';
 
 type LoadingState = 'empty' | 'loading' | 'loaded' | 'error';
 
 @Component({
   selector: 'app-audio-looper-container',
-  imports: [CommonModule, FileUploadComponent, WaveformDisplayComponent, AudioPlayerComponent, RubberbandPitchControlComponent],
+  imports: [CommonModule, FileUploadComponent, WaveformDisplayComponent, AudioPlayerComponent, RubberbandPitchControlComponent, LoopControlsComponent],
   templateUrl: './audio-looper-container.component.html',
   styleUrl: './audio-looper-container.component.scss',
   animations: [

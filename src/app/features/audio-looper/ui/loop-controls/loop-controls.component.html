@@ -1,1 +1,55 @@
-<p>loop-controls works!</p>
+<div class="loop-controls">
+  <div class="loop-controls__header">
+    <h3 class="loop-controls__title">A/B Loop</h3>
+    @if (isLooping()) {
+      <span class="loop-controls__status">Loop Active</span>
+    }
+  </div>
+
+  <div class="loop-controls__buttons">
+    <button
+      class="loop-controls__button loop-controls__button--set-a"
+      (click)="setPointA()"
+      type="button"
+      [attr.aria-label]="'Set loop start point at ' + currentTime() + ' seconds'"
+    >
+      Set A
+      @if (loopStart() !== null) {
+        <span class="loop-controls__time">{{ loopStart()!.toFixed(2) }}s</span>
+      }
+    </button>
+
+    <button
+      class="loop-controls__button loop-controls__button--set-b"
+      (click)="setPointB()"
+      type="button"
+      [attr.aria-label]="'Set loop end point at ' + currentTime() + ' seconds'"
+    >
+      Set B
+      @if (loopEnd() !== null) {
+        <span class="loop-controls__time">{{ loopEnd()!.toFixed(2) }}s</span>
+      }
+    </button>
+
+    <button
+      class="loop-controls__button loop-controls__button--toggle"
+      [class.loop-controls__button--active]="isLooping()"
+      (click)="toggleLoop()"
+      [disabled]="!hasLoopPoints()"
+      type="button"
+      [attr.aria-label]="loopButtonLabel()"
+    >
+      {{ loopButtonLabel() }}
+    </button>
+
+    <button
+      class="loop-controls__button loop-controls__button--reset"
+      (click)="resetLoop()"
+      [disabled]="!hasLoopPoints()"
+      type="button"
+      aria-label="Reset loop points"
+    >
+      Reset Loop
+    </button>
+  </div>
+</div>

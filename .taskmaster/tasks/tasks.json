@@ -758,7 +758,7 @@
   "audio-looper": {
     "tasks": [
       {
-        "id": 1,
+        "id": "1",
         "title": "Mise en place de la navigation entre modules YouTube Looper et Audio Looper",
         "description": "Créer un système de navigation (onglets ou boutons) permettant de basculer entre les modules YouTube Looper existant et le nouveau module Audio Looper",
         "details": "Implémenter un composant de navigation avec deux onglets/boutons: 'YouTube Looper' et 'Audio Looper'. Utiliser Angular Router pour la navigation entre les modules. Créer les routes appropriées dans app.routes.ts. Ajouter les styles SCSS pour les onglets avec état actif/inactif. Assurer une navigation fluide sans rechargement de page. Positionner la navigation en haut de l'application selon le mockup fourni.",
@@ -770,7 +770,7 @@
         "updatedAt": "2025-10-12T07:05:42.042Z"
       },
       {
-        "id": 2,
+        "id": "2",
         "title": "Création de la structure de base du module Audio Looper",
         "description": "Créer l'architecture de base du module Audio Looper avec les composants principaux et la structure de dossiers recommandée",
         "details": "Créer la structure de dossiers selon l'architecture Angular suggérée dans src/app/features/audio-looper/. Générer les composants principaux: audio-looper-container, file-upload, audio-player, loop-controls, pitch-control, speed-control, volume-control. Chaque composant doit avoir son propre dossier avec fichiers .ts, .html, .scss et index.ts. Implémenter les barrel exports dans tous les index.ts. Créer les services de base: audio-player.service.ts, tone-engine.service.ts, waveform.service.ts. Utiliser strictement les standalone components Angular 19.2.",
@@ -784,7 +784,7 @@
         "updatedAt": "2025-10-12T09:43:29.007Z"
       },
       {
-        "id": 3,
+        "id": "3",
         "title": "Installation et configuration de Tone.js",
         "description": "Installer Tone.js et configurer l'environnement audio pour le traitement des fichiers audio",
         "details": "Installer les dépendances: npm install tone et npm install --save-dev @types/tone. Créer le service tone-engine.service.ts avec les méthodes de base pour initialiser le contexte audio Tone.js. Implémenter les méthodes pour charger un fichier audio, contrôler la lecture (play/pause), et gérer le volume. Configurer le service comme singleton avec inject() selon les conventions Angular. Ajouter la gestion d'erreurs pour les cas où l'audio n'est pas supporté par le navigateur.",
@@ -798,7 +798,7 @@
         "updatedAt": "2025-10-12T10:08:02.189Z"
       },
       {
-        "id": 4,
+        "id": "4",
         "title": "Implémentation du composant d'upload centré en mode vide",
         "description": "Créer le composant file-upload avec zone drag & drop centrée et validation des fichiers audio",
         "details": "Implémenter le composant file-upload avec zone de drag & drop et bouton 'Parcourir'. Centrer verticalement et horizontalement la zone d'upload quand aucun fichier n'est chargé (selon mockup). Valider les formats supportés: MP3, WAV, OGG, M4A. Limiter la taille à 10 Mo (10 485 760 octets). Afficher des messages d'erreur clairs pour formats non supportés ou fichiers trop volumineux. Utiliser les directives Angular pour le drag & drop (dragover, dragleave, drop). Implémenter les styles SCSS responsive pour mobile/desktop avec zone tactile suffisante.",
@@ -812,7 +812,7 @@
         "updatedAt": "2025-10-12T10:43:12.111Z"
       },
       {
-        "id": 5,
+        "id": "5",
         "title": "Création du composant waveform-display pour visualisation de l'onde audio",
         "description": "Développer le composant central de visualisation de la forme d'onde audio avec Canvas API",
         "details": "Créer le composant waveform-display comme élément graphique principal. Utiliser Canvas API ou wavesurfer.js pour générer et afficher la forme d'onde. Implémenter la méthode de génération de waveform à partir d'un fichier audio chargé via Tone.js. Dimensionner le canvas pour être responsive et touch-friendly (minimum 48px de hauteur sur mobile). Créer le service waveform.service.ts pour la logique de génération et de rendu. Optimiser les performances pour des fichiers jusqu'à 10 MB. Ajouter un loader pendant la génération de la waveform (moins d'1 seconde requis).",
@@ -826,7 +826,7 @@
         "updatedAt": "2025-10-12T11:27:55.525Z"
       },
       {
-        "id": 6,
+        "id": "6",
         "title": "Implémentation de la révélation progressive de l'interface",
         "description": "Créer le système de transition fluide entre l'état vide (upload centré) et l'état chargé (waveform + contrôles)",
         "details": "Implémenter la logique de révélation progressive dans audio-looper-container. En mode vide: afficher uniquement la zone d'upload centrée. Après chargement réussi: animation de transition pour faire apparaître la waveform au centre et les contrôles autour. Minimiser la zone d'upload vers le haut avec nom du fichier et bouton 'Change File'. Utiliser les animations CSS/Angular pour les transitions fluides. Gérer les états: vide, chargement, chargé, erreur. Appliquer les styles selon le mockup fourni avec layout adaptatif.",
@@ -840,7 +840,7 @@
         "updatedAt": "2025-10-12T13:43:01.161Z"
       },
       {
-        "id": 7,
+        "id": "7",
         "title": "Développement du lecteur audio de base avec curseur sur waveform",
         "description": "Implémenter les contrôles de lecture de base (play/pause) avec curseur de lecture animé sur la waveform",
         "details": "Créer le composant audio-player avec boutons Play/Pause. Implémenter l'affichage du temps courant et durée totale au format MM:SS. Développer le curseur de lecture comme ligne verticale se déplaçant sur la waveform en temps réel (60 FPS). Connecter le lecteur audio avec Tone.js Player. Synchroniser la position du curseur avec la position de lecture audio. Gérer les états play/pause avec feedback visuel immédiat. Optimiser les performances pour animation fluide du curseur.",
@@ -854,7 +854,7 @@
         "updatedAt": "2025-10-12T14:08:42.553Z"
       },
       {
-        "id": 8,
+        "id": "8",
         "title": "Implémentation de la navigation directe sur la waveform",
         "description": "Permettre à l'utilisateur de cliquer sur la waveform pour se positionner à un instant précis",
         "details": "Ajouter la gestion des événements de clic sur le canvas de la waveform. Calculer la position temporelle en fonction de la position X du clic. Implémenter la méthode pour déplacer la lecture à la position cliquée via Tone.js. Optimiser pour le tactile mobile avec zone de touch suffisamment large. Ajouter un feedback visuel lors du clic (highlight temporaire). Gérer les cas limites (clic en dehors de la durée audio). Assurer une réactivité immédiate pour une expérience utilisateur fluide.",
@@ -868,7 +868,7 @@
         "updatedAt": "2025-10-12T17:34:36.106Z"
       },
       {
-        "id": 9,
+        "id": "9",
         "title": "Création du système de boucle A/B avec marqueurs visuels",
         "description": "Implémenter les contrôles de boucle A/B avec marqueurs et zone colorée superposés sur la waveform",
         "details": "Développer le composant loop-controls avec boutons 'Set A', 'Set B', 'Loop ON/OFF', 'Reset Loop'. Implémenter les marqueurs visuels A et B comme lignes verticales colorées superposées sur la waveform. Créer la zone colorée entre A et B directement sur l'onde audio (overlay). Intégrer avec Tone.js pour la lecture en boucle automatique (setLoopPoints). Gérer les états de boucle active/inactive avec indicateur visuel 'Loop Active'. Assurer que la lecture saute automatiquement de B vers A pendant la boucle.",
@@ -877,11 +877,76 @@
         "dependencies": [
           "8"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Créer le composant loop-controls avec boutons de base",
+            "description": "Développer le composant Angular loop-controls avec les quatre boutons principaux: 'Set A', 'Set B', 'Loop ON/OFF', et 'Reset Loop'",
+            "dependencies": [],
+            "details": "Créer le composant loop-controls dans src/app/features/audio-looper/ui/loop-controls/ avec template HTML contenant les 4 boutons selon les conventions du projet (boutons textuels uniquement). Implémenter la logique de base pour les événements de clic. Définir les états internes pour les points A et B (null par défaut) et l'état de boucle active (false par défaut). Ajouter les styles SCSS pour l'apparence des boutons selon le design minimaliste du projet.",
+            "status": "done",
+            "testStrategy": "Vérifier que les 4 boutons s'affichent correctement, valider les événements de clic, confirmer les styles selon le design, et tester la responsivité sur mobile et desktop.",
+            "updatedAt": "2025-10-19T21:02:18.939Z",
+            "parentId": "undefined"
+          },
+          {
+            "id": 2,
+            "title": "Implémenter la logique de définition des points A et B",
+            "description": "Développer la fonctionnalité pour capturer et stocker les positions temporelles des points A et B lors des clics sur 'Set A' et 'Set B'",
+            "dependencies": [
+              1
+            ],
+            "details": "Intégrer le service audio-player-service pour obtenir la position de lecture courante. Implémenter les méthodes setPointA() et setPointB() qui stockent la position temporelle actuelle. Ajouter la validation: point A doit être antérieur au point B. Gérer les cas d'erreur (aucun audio chargé, points invalides). Émettre des événements vers le composant parent pour synchroniser l'état avec la waveform. Implémenter la logique de reset qui remet les points à null.",
+            "status": "done",
+            "testStrategy": "Tester la définition des points A et B à différentes positions, valider la validation A < B, vérifier le comportement sans audio chargé, et confirmer le reset des points.",
+            "parentId": "undefined",
+            "updatedAt": "2025-10-19T21:05:19.916Z"
+          },
+          {
+            "id": 3,
+            "title": "Développer les marqueurs visuels A et B sur la waveform",
+            "description": "Implémenter l'affichage des marqueurs A et B comme lignes verticales colorées superposées sur le canvas de la waveform",
+            "dependencies": [
+              2
+            ],
+            "details": "Modifier le composant waveform-display pour ajouter une couche de marqueurs au-dessus de l'onde audio. Implémenter la méthode drawMarkers() qui dessine des lignes verticales colorées aux positions des points A (rouge) et B (bleu). Calculer les positions X des marqueurs en fonction de la durée audio et des timestamps. Ajouter des labels 'A' et 'B' au-dessus des marqueurs. Gérer la mise à jour en temps réel des marqueurs lors des changements de points. Optimiser pour éviter les redraws inutiles.",
+            "status": "done",
+            "testStrategy": "Vérifier l'affichage des marqueurs aux bonnes positions, valider les couleurs et labels, confirmer la mise à jour lors des changements de points, et tester la performance sur différents fichiers audio.",
+            "parentId": "undefined",
+            "updatedAt": "2025-10-19T21:06:34.530Z"
+          },
+          {
+            "id": 4,
+            "title": "Créer la zone colorée entre les points A et B",
+            "description": "Implémenter l'overlay coloré qui met en évidence la zone de boucle entre les marqueurs A et B sur la waveform",
+            "dependencies": [
+              3
+            ],
+            "details": "Ajouter la méthode drawLoopZone() dans waveform-display qui dessine un rectangle semi-transparent entre les positions A et B. Utiliser une couleur d'overlay appropriée (ex: rgba(255, 255, 0, 0.2) pour jaune transparent). Calculer dynamiquement la largeur et position de la zone en fonction des points A et B. Gérer l'affichage conditionnel: zone visible uniquement si A et B sont définis. Assurer que la zone se met à jour lors des changements de points. Maintenir la performance en évitant les redraws excessifs.",
+            "status": "done",
+            "testStrategy": "Valider l'affichage de la zone colorée entre A et B, vérifier la transparence et la couleur, confirmer la mise à jour dynamique lors des changements de points, et tester que la zone disparaît lors du reset.",
+            "parentId": "undefined",
+            "updatedAt": "2025-10-19T21:07:41.414Z"
+          },
+          {
+            "id": 5,
+            "title": "Intégrer la lecture en boucle automatique avec Tone.js",
+            "description": "Implémenter la logique de lecture en boucle utilisant Tone.js Player avec saut automatique de B vers A",
+            "dependencies": [
+              4
+            ],
+            "details": "Modifier le service audio-player-service pour supporter les boucles avec Tone.js Player.setLoopPoints(). Implémenter la méthode enableLoop() qui active la boucle entre les points A et B. Gérer l'événement de fin de segment pour faire sauter la lecture de B vers A automatiquement. Ajouter la logique toggleLoop() pour activer/désactiver la boucle depuis le bouton 'Loop ON/OFF'. Implémenter l'indicateur visuel 'Loop Active' dans l'interface. Synchroniser l'état de boucle avec les composants visuels. Gérer les cas d'erreur (points non définis, audio non chargé).",
+            "status": "done",
+            "testStrategy": "Tester l'activation/désactivation de la boucle, vérifier le saut automatique de B vers A, valider l'indicateur 'Loop Active', confirmer la synchronisation avec les marqueurs visuels, et tester avec différents segments de boucle.",
+            "parentId": "undefined",
+            "updatedAt": "2025-10-19T21:08:59.173Z"
+          }
+        ],
+        "updatedAt": "2025-10-19T21:08:59.173Z"
       },
       {
-        "id": 10,
+        "id": "10",
         "title": "Implémentation du contrôle de tonalité (pitch shift)",
         "description": "Créer le composant de contrôle de la tonalité avec slider -6 à +6 demi-tons utilisant Tone.PitchShift",
         "details": "Développer le composant pitch-control avec slider ou input numérique pour la plage -6 à +6 demi-tons. Intégrer Tone.PitchShift dans le tone-engine.service pour modifier la tonalité en temps réel. Afficher la valeur courante (ex. '+3 demi-tons', '-5 demi-tons'). Implémenter le bouton 'Reset Pitch' pour revenir à 0. Appliquer les changements instantanément pendant la lecture. Optimiser les performances pour éviter les latences audibles. Utiliser les bonnes pratiques Tone.js pour les effets audio.",
@@ -894,7 +959,7 @@
         "subtasks": []
       },
       {
-        "id": 11,
+        "id": "11",
         "title": "Développement du contrôle de vitesse avec presets et stepper",
         "description": "Créer le composant de contrôle de vitesse avec boutons presets (0.5x, 0.75x, 1.0x) et stepper précis (0.4x-2.0x)",
         "details": "Implémenter le composant speed-control avec boutons presets rapides: 0.5x, 0.75x, 1.0x. Développer le stepper [- | valeur | +] pour ajustements précis de 0.4x à 2.0x par incréments de 0.1x. Synchroniser les presets avec le stepper (clic preset met à jour le stepper). Utiliser Tone.js pour modifier la vitesse sans altérer la tonalité. Afficher la vitesse courante (ex. '0.6x', '1.2x'). Appliquer les changements en temps réel. Définir 1.0x comme vitesse par défaut au chargement.",
@@ -907,7 +972,7 @@
         "subtasks": []
       },
       {
-        "id": 12,
+        "id": "12",
         "title": "Implémentation du contrôle de volume avec slider et mute",
         "description": "Créer le composant de contrôle du volume avec slider 0-100% et bouton mute/unmute",
         "details": "Développer le composant volume-control avec slider de volume (0% à 100%). Implémenter le bouton mute/unmute avec icônes 🔊/🔇 (seul composant avec icônes selon les spécifications). Intégrer avec Tone.Volume ou player.volume.value dans tone-engine.service. Gérer les états muet/actif avec changement d'icône. Appliquer les changements de volume en temps réel. Mémoriser le niveau de volume avant mute pour restauration. Utiliser les styles SCSS cohérents avec l'application.",
@@ -920,7 +985,7 @@
         "subtasks": []
       },
       {
-        "id": 13,
+        "id": "13",
         "title": "Optimisation responsive et interactions tactiles",
         "description": "Optimiser l'interface pour mobile et tablette avec interactions tactiles améliorées",
         "details": "Adapter tous les composants pour responsive design (desktop 1920×1080 à 1280×720, tablet 768×1024, mobile 375×667 à 414×896). Optimiser la waveform pour interaction tactile avec zone minimum 48px de hauteur. Améliorer les contrôles pour usage tactile (taille des boutons, espacement). Tester en mode portrait et paysage. Assurer que l'onde audio reste le composant central sur toutes les tailles d'écran. Ajuster les styles SCSS avec breakpoints appropriés. Optimiser les performances sur appareils mobiles.",
@@ -933,7 +998,7 @@
         "subtasks": []
       },
       {
-        "id": 14,
+        "id": "14",
         "title": "Finalisation des styles et cohérence visuelle",
         "description": "Finaliser les styles SCSS pour assurer la cohérence avec le module YouTube Looper et le design épuré",
         "details": "Harmoniser tous les styles SCSS avec ceux du module YouTube Looper existant. Appliquer le design minimaliste et épuré selon les spécifications. Implémenter les boutons textuels uniquement (sauf volume). Finaliser les états visuels (erreur, chargement, actif, inactif) pour qu'ils soient clairs. Optimiser la hiérarchie visuelle avec l'onde audio comme élément central. Ajuster les couleurs, typographie, espacement selon la charte graphique. Valider l'accessibilité et les contrastes.",
@@ -946,7 +1011,7 @@
         "subtasks": []
       },
       {
-        "id": 15,
+        "id": "15",
         "title": "Tests manuels complets et optimisations finales",
         "description": "Effectuer les tests manuels complets de toutes les fonctionnalités et optimiser les performances",
         "details": "Effectuer des tests exhaustifs de tous les critères d'acceptation. Tester avec différents formats de fichiers audio (MP3, WAV, OGG, M4A). Valider les performances: chargement <2s pour 10MB, génération waveform <1s, effets temps réel sans latence, animation curseur 60 FPS. Vérifier la gestion d'erreurs avec fichiers corrompus ou non supportés. Tester la lecture en boucle fluide sans coupures. Optimiser le code pour les performances finales. Corriger les bugs identifiés lors des tests.",
@@ -961,21 +1026,18 @@
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2025-10-12T17:34:36.108Z",
+      "lastModified": "2025-10-19T21:08:59.176Z",
       "taskCount": 15,
-      "completedCount": 8,
+      "completedCount": 9,
       "tags": [
         "audio-looper"
-      ],
-      "created": "2025-10-14T16:01:57.210Z",
-      "description": "Tasks for audio-looper context",
-      "updated": "2025-10-14T16:01:57.210Z"
+      ]
     }
   },
   "rubberband-wasm-pitch": {
     "tasks": [
       {
-        "id": "1",
+        "id": 1,
         "title": "Préparation des assets statiques rubberband-wasm",
         "description": "Copier les fichiers rubberband.wasm et rubberband.umd.min.js dans public/assets/rubberband/ et vérifier leur accessibilité après build",
         "details": "Créer le dossier public/assets/rubberband/ et y copier les fichiers depuis .ai/rubberband-wasm/: rubberband.wasm (265 KB) et rubberband.umd.min.js (6.7 KB). Vérifier dans angular.json que les assets sont correctement configurés pour être copiés vers dist/assets/rubberband/. Tester l'accessibilité des fichiers après ng build en vérifiant qu'ils sont présents dans dist/assets/rubberband/.",
@@ -987,7 +1049,7 @@
         "updatedAt": "2025-10-17T17:02:30.535Z"
       },
       {
-        "id": "2",
+        "id": 2,
         "title": "Création des interfaces TypeScript pour le Web Worker",
         "description": "Créer les types TypeScript pour les messages d'entrée et de sortie du Web Worker rubberband",
         "details": "Créer le fichier src/app/features/audio-looper/services/workers/rubberband-worker.types.ts avec les interfaces RubberbandWorkerInput (channelBuffers: Float32Array[], sampleRate: number, pitch: number, tempo: number) et RubberbandWorkerOutput (channelBuffers?: Float32Array[], ready?: boolean, status?: string, progress?: number, error?: string). Créer aussi le fichier index.ts pour exporter les types.",
@@ -1001,7 +1063,7 @@
         "updatedAt": "2025-10-17T17:09:54.329Z"
       },
       {
-        "id": "3",
+        "id": 3,
         "title": "Implémentation du Web Worker rubberband",
         "description": "Créer le Web Worker qui charge rubberband-wasm et traite l'audio avec les phases Study et Process",
         "details": "Créer src/app/features/audio-looper/services/workers/rubberband.worker.ts. Implémenter le chargement asynchrone de rubberband-wasm via importScripts, l'initialisation du module avec locateFile pointant vers /assets/rubberband/. Implémenter le traitement audio avec phase Study (0-50%) et phase Process (50-100%), throttling des messages de progression (250ms), et gestion des erreurs. Utiliser la logique inspirée de .ai/rubberband-wasm/worker.js.",
@@ -1079,7 +1141,7 @@
         "updatedAt": "2025-10-17T17:34:28.603Z"
       },
       {
-        "id": "4",
+        "id": 4,
         "title": "Création du RubberbandEngineService",
         "description": "Créer le service Angular qui orchestre le traitement audio via le Web Worker avec cache et debounce",
         "details": "Créer src/app/features/audio-looper/services/rubberband-engine.service.ts avec injection Injectable providedIn: 'root'. Implémenter les signals pitch, playbackRate, isProcessing, processingProgress, processingStatus. Implémenter le cache Map<string, AudioBuffer> avec clés basées sur pitch et tempo. Implémenter le debounce 500ms pour éviter les traitements multiples. Créer l'API publique: loadOriginalBuffer(), setPitch(), setPlaybackRate(), getProcessedBuffer() Observable, clearCache().",
@@ -1157,7 +1219,7 @@
         "updatedAt": "2025-10-17T20:29:11.633Z"
       },
       {
-        "id": "5",
+        "id": 5,
         "title": "Intégration RubberbandEngineService dans ToneEngineService",
         "description": "Modifier ToneEngineService pour injecter RubberbandEngineService et gérer le remplacement de buffer",
         "details": "Dans src/app/features/audio-looper/services/tone-engine.service.ts, injecter RubberbandEngineService. Ajouter la propriété originalAudioBuffer pour stocker le buffer original. Modifier loadAudioFile() pour envoyer le buffer à rubberband via loadOriginalBuffer() et s'abonner à getProcessedBuffer(). Implémenter replaceAudioBuffer() qui préserve la position de lecture et l'état playing/paused lors du remplacement. Implémenter adjustLoopPoints() pour ajuster les marqueurs A/B selon la nouvelle durée.",
@@ -1235,7 +1297,7 @@
         "updatedAt": "2025-10-18T06:46:57.165Z"
       },
       {
-        "id": "6",
+        "id": 6,
         "title": "Création du composant RubberbandPitchControlComponent",
         "description": "Créer le composant UI pour le contrôle du pitch avec slider et indicateur de progression",
         "details": "Créer src/app/features/audio-looper/ui/rubberband-pitch-control/ avec les fichiers component.ts, component.html, component.scss et index.ts. Implémenter le template avec slider -6 à +6, affichage de la valeur courante, bouton Reset Pitch, et indicateur de progression conditionnel (@if). Injecter ToneEngineService et RubberbandEngineService. Implémenter onPitchChange() qui appelle toneEngine.setPitch(). Utiliser les signals pour l'affichage réactif.",
@@ -1313,7 +1375,7 @@
         "updatedAt": "2025-10-18T07:02:24.213Z"
       },
       {
-        "id": "7",
+        "id": 7,
         "title": "Styling SCSS du composant RubberbandPitchControlComponent",
         "description": "Implémenter les styles SCSS pour le contrôle pitch avec design responsive et indicateur de progression",
         "details": "Dans rubberband-pitch-control.component.scss, créer les styles pour .pitch-control avec header (label + valeur), slider-container, bouton reset, et section processing. Implémenter la barre de progression animée avec .progress-bar et .progress-fill. Assurer la cohérence avec les styles existants du module audio-looper. Implémenter le responsive design pour mobile, tablette et desktop. Utiliser les variables SCSS existantes si disponibles.",
@@ -1327,7 +1389,7 @@
         "updatedAt": "2025-10-19T07:00:16.554Z"
       },
       {
-        "id": "8",
+        "id": 8,
         "title": "Intégration du composant dans AudioLooperContainerComponent",
         "description": "Ajouter RubberbandPitchControlComponent dans le template du container principal",
         "details": "Dans src/app/features/audio-looper/ui/audio-looper-container/audio-looper-container.component.html, ajouter <app-rubberband-pitch-control></app-rubberband-pitch-control> après le commentaire '<!-- Les autres contrôles seront ajoutés dans les prochaines tâches -->'. Importer le composant dans audio-looper-container.component.ts via le fichier index.ts. Vérifier que le composant s'affiche correctement dans l'interface.",
@@ -1341,7 +1403,7 @@
         "updatedAt": "2025-10-19T07:09:43.775Z"
       },
       {
-        "id": "9",
+        "id": 9,
         "title": "Modification de WaveformDisplayComponent pour la régénération",
         "description": "Modifier WaveformDisplayComponent pour régénérer automatiquement la waveform lors du changement de buffer",
         "details": "Dans src/app/features/audio-looper/ui/waveform-display/waveform-display.component.ts, ajouter un effect() qui écoute les changements de duration du ToneEngineService. Implémenter regenerateWaveform() qui récupère le nouveau buffer via this.player.buffer.get() et redessine la waveform. Conserver les marqueurs A/B et la position du curseur de lecture. Utiliser effect() d'Angular pour réagir automatiquement aux changements.",
@@ -1355,7 +1417,7 @@
         "updatedAt": "2025-10-19T19:31:43.160Z"
       },
       {
-        "id": "10",
+        "id": 10,
         "title": "Implémentation du cache et optimisation des performances",
         "description": "Optimiser le système de cache du RubberbandEngineService et améliorer les performances",
         "details": "Dans rubberband-engine.service.ts, optimiser la logique de cache avec getCacheKey() basé sur pitch et tempo. Implémenter clearCache() pour la gestion mémoire. Optimiser le debounce pour éviter les traitements inutiles. Ajouter la gestion de l'annulation des traitements en cours (Worker.terminate()). Implémenter le throttling des messages de progression (250ms) côté service.",
@@ -1369,7 +1431,7 @@
         "updatedAt": "2025-10-19T19:41:03.064Z"
       },
       {
-        "id": "11",
+        "id": 11,
         "title": "Gestion des erreurs et fallback",
         "description": "Implémenter la gestion d'erreurs pour le chargement de rubberband-wasm et le traitement audio",
         "details": "Ajouter la gestion d'erreurs dans le Web Worker pour le chargement de rubberband-wasm (fichiers manquants, erreurs WASM). Dans RubberbandEngineService, implémenter la gestion des erreurs de traitement et des timeouts. Ajouter des messages d'erreur utilisateur clairs dans le composant UI. Implémenter un fallback vers Tone.js PitchShift en cas d'échec de rubberband. Ajouter des logs console pour le debugging.",
@@ -1383,7 +1445,7 @@
         "updatedAt": "2025-10-19T19:54:35.606Z"
       },
       {
-        "id": "12",
+        "id": 12,
         "title": "Tests de compatibilité cross-browser et WebAssembly",
         "description": "Tester la compatibilité rubberband-wasm sur différents navigateurs et implémenter les détections nécessaires",
         "details": "Tester rubberband-wasm sur Chrome, Firefox, Safari et Edge. Implémenter la détection du support WebAssembly au démarrage. Ajouter des messages informatifs si WebAssembly n'est pas supporté. Tester sur mobile (iOS Safari, Chrome Android). Implémenter des polyfills si nécessaire. Vérifier les performances sur différentes plateformes.",
@@ -1397,7 +1459,7 @@
         "updatedAt": "2025-10-19T20:03:12.254Z"
       },
       {
-        "id": "13",
+        "id": 13,
         "title": "Synchronisation avec les autres contrôles audio",
         "description": "Assurer la compatibilité entre le pitch rubberband et les autres contrôles (vitesse, volume, loop)",
         "details": "Vérifier que le contrôle de vitesse (playback rate) fonctionne correctement avec les buffers traités par rubberband. Tester la compatibilité avec le contrôle de volume et les marqueurs de boucle A/B. Implémenter la synchronisation entre ToneEngineService et RubberbandEngineService pour éviter les conflits. Tester les interactions entre tous les contrôles audio simultanément.",
@@ -1411,7 +1473,7 @@
         "updatedAt": "2025-10-19T20:11:28.368Z"
       },
       {
-        "id": "14",
+        "id": 14,
         "title": "Tests de qualité audio et validation des algorithmes",
         "description": "Effectuer des tests approfondis de qualité audio pour valider l'amélioration par rapport à Tone.js",
         "details": "Tester le pitch shift de -6 à +6 demi-tons avec différents types de fichiers audio (voix, musique, instruments). Comparer la qualité audio entre Tone.js PitchShift et rubberband-wasm. Vérifier l'absence d'artefacts (distorsion, phasing, effet chipmunk). Tester avec des fichiers de différentes qualités (MP3 128kbps, 320kbps, WAV). Documenter les améliorations de qualité observées.",
@@ -1425,7 +1487,7 @@
         "updatedAt": "2025-10-19T20:19:01.028Z"
       },
       {
-        "id": "15",
+        "id": 15,
         "title": "Documentation et nettoyage du code",
         "description": "Ajouter la documentation technique, nettoyer le code et effectuer la validation finale",
         "details": "Ajouter des commentaires JSDoc aux méthodes principales de RubberbandEngineService et du Web Worker. Nettoyer les console.logs de debug. Optimiser les imports et vérifier qu'il n'y a pas de code mort. Mettre à jour les fichiers index.ts pour les exports. Effectuer un build de production final et vérifier les performances. Préparer un commit atomique avec un message détaillé.",
@@ -1446,7 +1508,9 @@
       "completedCount": 15,
       "tags": [
         "rubberband-wasm-pitch"
-      ]
+      ],
+      "created": "2025-10-19T20:58:13.296Z",
+      "description": "Tasks for rubberband-wasm-pitch context"
     }
   }
 }
