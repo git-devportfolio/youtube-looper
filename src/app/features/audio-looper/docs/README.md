@@ -4,7 +4,27 @@ Ce dossier contient la documentation technique du module Audio Looper.
 
 ## Documents Disponibles
 
-### 1. AUDIO_CONTROLS_SYNC.md
+### 1. TECHNICAL_OVERVIEW.md
+**Aperçu Technique Complet**
+
+Vue d'ensemble complète de l'architecture, des flux de données, et des optimisations du module Audio Looper.
+
+**Contenu** :
+- Stack technologique
+- Architecture des services (ToneEngine, RubberbandEngine, Compatibility)
+- Composants UI
+- Web Worker Rubberband
+- Flux de données détaillés
+- Optimisations (cache, debounce, throttling, timeout)
+- Gestion d'erreurs
+- Métriques de performance
+- Compatibilité navigateur
+
+**Pour qui** : Développeurs découvrant le projet, nouveaux contributeurs
+
+---
+
+### 2. AUDIO_CONTROLS_SYNC.md
 **Synchronisation des Contrôles Audio**
 
 Documentation complète de la synchronisation entre les différents contrôles audio (pitch, vitesse, volume, boucle).
@@ -21,7 +41,7 @@ Documentation complète de la synchronisation entre les différents contrôles a
 
 ---
 
-### 2. AUDIO_QUALITY_TESTING.md
+### 3. AUDIO_QUALITY_TESTING.md
 **Tests de Qualité Audio - Rubberband vs Tone.js**
 
 Guide complet pour effectuer les tests de qualité audio et valider l'amélioration apportée par Rubberband.
@@ -43,9 +63,10 @@ Guide complet pour effectuer les tests de qualité audio et valider l'améliorat
 
 ### Pour les Développeurs
 
-1. **Comprendre l'architecture** → Lire `AUDIO_CONTROLS_SYNC.md`
-2. **Modifier un contrôle** → Consulter le flux correspondant dans `AUDIO_CONTROLS_SYNC.md`
-3. **Tester la qualité** → Suivre le protocole dans `AUDIO_QUALITY_TESTING.md`
+1. **Découvrir le projet** → Lire `TECHNICAL_OVERVIEW.md`
+2. **Comprendre l'architecture** → Lire `AUDIO_CONTROLS_SYNC.md`
+3. **Modifier un contrôle** → Consulter le flux correspondant dans `AUDIO_CONTROLS_SYNC.md`
+4. **Tester la qualité** → Suivre le protocole dans `AUDIO_QUALITY_TESTING.md`
 
 ### Pour les Testeurs QA
 
@@ -73,6 +94,7 @@ Audio Looper Module
 │   ├── AudioPlayer             (Contrôles lecture)
 │   └── RubberbandPitchControl  (Contrôle pitch)
 └── Docs (ce dossier)
+    ├── TECHNICAL_OVERVIEW.md
     ├── AUDIO_CONTROLS_SYNC.md
     ├── AUDIO_QUALITY_TESTING.md
     └── README.md (ce fichier)
