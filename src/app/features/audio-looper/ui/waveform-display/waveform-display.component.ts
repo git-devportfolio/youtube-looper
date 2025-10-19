@@ -1,6 +1,6 @@
 import { Component, ElementRef, ViewChild, AfterViewInit, OnDestroy, inject, input, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { WaveformService, AudioPlayerService } from '../../services';
+import { WaveformService, AudioPlayerService, ToneEngineService } from '../../services';
 
 @Component({
   selector: 'app-waveform-display',
@@ -13,6 +13,7 @@ export class WaveformDisplayComponent implements AfterViewInit, OnDestroy {
 
   private readonly waveformService = inject(WaveformService);
   private readonly audioPlayerService = inject(AudioPlayerService);
+  private readonly toneEngineService = inject(ToneEngineService);
   private resizeObserver?: ResizeObserver;
   private canvasInitialized = false;
   private animationFrameId?: number;
@@ -54,6 +55,20 @@ export class WaveformDisplayComponent implements AfterViewInit, OnDestroy {
           this.redrawWaveform();
         }
       }
+    });
+
+    // Effect pour régénérer la waveform lors du changement de buffer
+    // (détecté par le changement de duration dans ToneEngineService)
+    effect(() => {
+      const duration = this.toneEngineService.duration();
+
+      // Vérifier que le canvas est initialisé et qu'il y a une durée valide
+      if (!this.canvasInitialized || duration === 0) {
+        return;
+      }
+
+      // Régénérer la waveform avec le nouveau buffer
+      this.regenerateWaveform();
     });
   }
 
@@ -142,6 +157,45 @@ export class WaveformDisplayComponent implements AfterViewInit, OnDestroy {
       this.redrawWaveform();
     } catch (error) {
       console.error('Erreur lors de la génération de la waveform:', error);
+    }
+  }
+
+  /**
+   * Régénère la waveform avec le buffer actuel de ToneEngineService
+   * Cette méthode est appelée automatiquement quand le buffer audio change
+   * (par exemple après un traitement Rubberband)
+   */
+  private async regenerateWaveform(): Promise<void> {
+    try {
+      // Récupérer le buffer actuel depuis ToneEngineService
+      const player = (this.toneEngineService as any).player;
+
+      if (!player || !player.buffer) {
+        console.warn('[WaveformDisplay] No player or buffer available for regeneration');
+        return;
+      }
+
+      const newBuffer = player.buffer.get() as AudioBuffer;
+
+      if (!newBuffer) {
+        console.warn('[WaveformDisplay] Failed to get AudioBuffer from player');
+        return;
+      }
+
+      console.log('[WaveformDisplay] Regenerating waveform with new buffer', {
+        duration: newBuffer.duration,
+        sampleRate: newBuffer.sampleRate,
+        channels: newBuffer.numberOfChannels
+      });
+
+      // Régénérer la waveform avec le nouveau buffer
+      await this.generateAndDrawWaveform(newBuffer);
+
+      // Note: Les marqueurs A/B et la position du curseur sont préservés
+      // car redrawWaveform() utilise les signals du service qui restent inchangés
+
+    } catch (error) {
+      console.error('[WaveformDisplay] Error regenerating waveform:', error);
     }
   }
 
