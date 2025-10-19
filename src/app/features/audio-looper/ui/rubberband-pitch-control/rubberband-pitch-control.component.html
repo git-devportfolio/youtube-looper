@@ -1,0 +1,48 @@
+<div class="pitch-control">
+  <div class="pitch-control__header">
+    <h3 class="pitch-control__title">Pitch Shift</h3>
+    <span class="pitch-control__value">{{ currentPitch >= 0 ? '+' : '' }}{{ currentPitch }} demi-tons</span>
+  </div>
+
+  <div class="pitch-control__slider-container">
+    <label for="pitch-slider" class="pitch-control__label">
+      <span class="pitch-control__min">{{ MIN_PITCH }}</span>
+      <input
+        type="range"
+        id="pitch-slider"
+        class="pitch-control__slider"
+        [min]="MIN_PITCH"
+        [max]="MAX_PITCH"
+        [value]="currentPitch"
+        (input)="onPitchChange($event)"
+        step="1"
+      />
+      <span class="pitch-control__max">{{ MAX_PITCH }}</span>
+    </label>
+  </div>
+
+  <div class="pitch-control__actions">
+    <button
+      type="button"
+      class="pitch-control__reset-btn"
+      (click)="resetPitch()"
+      [disabled]="currentPitch === 0"
+    >
+      Reset Pitch
+    </button>
+  </div>
+
+  @if (isProcessing) {
+    <div class="pitch-control__progress">
+      <div class="pitch-control__progress-bar">
+        <div
+          class="pitch-control__progress-fill"
+          [style.width.%]="processingProgress"
+        ></div>
+      </div>
+      <span class="pitch-control__progress-text">
+        {{ processingStatus }} - {{ processingProgress }}%
+      </span>
+    </div>
+  }
+</div>

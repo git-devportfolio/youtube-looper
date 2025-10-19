@@ -1244,8 +1244,73 @@
         "dependencies": [
           "5"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Création de la structure de dossier et des fichiers de base",
+            "description": "Créer la structure de dossier src/app/features/audio-looper/ui/rubberband-pitch-control/ avec tous les fichiers nécessaires",
+            "dependencies": [],
+            "details": "Créer le dossier src/app/features/audio-looper/ui/rubberband-pitch-control/ et y ajouter les fichiers rubberband-pitch-control.component.ts, rubberband-pitch-control.component.html, rubberband-pitch-control.component.scss et index.ts. Le fichier index.ts doit exporter le composant selon les conventions barrel exports du projet.",
+            "status": "done",
+            "testStrategy": "Vérifier que tous les fichiers sont créés dans la bonne structure de dossier et que le composant peut être importé via le fichier index.ts",
+            "updatedAt": "2025-10-18T06:59:37.876Z",
+            "parentId": "undefined"
+          },
+          {
+            "id": 2,
+            "title": "Implémentation de la logique TypeScript du composant",
+            "description": "Développer la classe RubberbandPitchControlComponent avec injection des services et gestion des signals",
+            "dependencies": [
+              1
+            ],
+            "details": "Implémenter la classe component avec injection de ToneEngineService et RubberbandEngineService via inject(). Créer les signals pour pitch value, isProcessing, et autres états réactifs. Implémenter les méthodes onPitchChange() pour appeler toneEngine.setPitch() et resetPitch() pour remettre à 0. Configurer le composant en standalone avec les imports nécessaires.",
+            "status": "done",
+            "testStrategy": "Compiler le composant sans erreurs TypeScript et vérifier que les services sont correctement injectés",
+            "parentId": "undefined",
+            "updatedAt": "2025-10-18T07:00:22.720Z"
+          },
+          {
+            "id": 3,
+            "title": "Création du template HTML avec slider et contrôles",
+            "description": "Développer le template HTML avec slider de -6 à +6, affichage de valeur, bouton Reset et indicateur de progression",
+            "dependencies": [
+              2
+            ],
+            "details": "Créer le template avec header contenant label et affichage de la valeur courante, slider HTML avec range -6 à +6 et step 0.1, bouton 'Reset Pitch' pour remettre à zéro, et section conditionnelle (@if) pour l'indicateur de progression pendant le traitement. Utiliser les bindings Angular appropriés pour les events et la réactivité.",
+            "status": "done",
+            "testStrategy": "Vérifier que le slider fonctionne correctement, que la valeur s'affiche en temps réel, que le bouton reset fonctionne, et que l'indicateur apparaît conditionnellement",
+            "parentId": "undefined",
+            "updatedAt": "2025-10-18T07:01:01.741Z"
+          },
+          {
+            "id": 4,
+            "title": "Implémentation des styles SCSS avec design responsive",
+            "description": "Développer les styles SCSS pour le composant avec design responsive et animation de progression",
+            "dependencies": [
+              3
+            ],
+            "details": "Créer les styles pour .pitch-control avec header, slider-container, bouton reset, et section processing. Implémenter la barre de progression animée avec .progress-bar et .progress-fill. Assurer la responsivité pour mobile, tablette et desktop. Utiliser les variables SCSS existantes du projet pour maintenir la cohérence visuelle.",
+            "status": "done",
+            "testStrategy": "Tester l'affichage sur différentes tailles d'écran, vérifier l'animation de la barre de progression, et s'assurer que les contrôles sont utilisables sur écran tactile",
+            "parentId": "undefined",
+            "updatedAt": "2025-10-18T07:01:49.137Z"
+          },
+          {
+            "id": 5,
+            "title": "Mise à jour du fichier index.ts du dossier ui",
+            "description": "Ajouter l'export du nouveau composant dans le fichier index.ts principal du dossier ui",
+            "dependencies": [
+              4
+            ],
+            "details": "Modifier le fichier src/app/features/audio-looper/ui/index.ts pour ajouter l'export 'export * from './rubberband-pitch-control';' afin que le composant soit accessible via les barrel exports. Vérifier que l'export fonctionne correctement et que le composant peut être importé depuis './ui'.",
+            "status": "done",
+            "testStrategy": "Vérifier que le composant peut être importé via 'import { RubberbandPitchControlComponent } from './ui' et compiler le projet sans erreurs",
+            "parentId": "undefined",
+            "updatedAt": "2025-10-18T07:02:24.213Z"
+          }
+        ],
+        "updatedAt": "2025-10-18T07:02:24.213Z"
       },
       {
         "id": "7",
@@ -1367,9 +1432,9 @@
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2025-10-18T06:46:57.168Z",
+      "lastModified": "2025-10-18T07:02:24.215Z",
       "taskCount": 15,
-      "completedCount": 5,
+      "completedCount": 6,
       "tags": [
         "rubberband-wasm-pitch"
       ]

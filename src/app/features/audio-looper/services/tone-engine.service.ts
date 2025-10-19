@@ -196,6 +196,9 @@ export class ToneEngineService {
     if (this.pitchShift) {
       this.pitchShift.pitch = clampedPitch;
     }
+
+    // Appeler RubberbandEngine pour traiter l'audio
+    this.rubberbandEngine.setPitch(clampedPitch);
   }
 
   /**

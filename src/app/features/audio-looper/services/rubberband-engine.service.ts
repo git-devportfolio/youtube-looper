@@ -215,7 +215,9 @@ export class RubberbandEngineService {
 
     // Copier les données dans l'AudioBuffer
     for (let channel = 0; channel < channelBuffers.length; channel++) {
-      processedBuffer.copyToChannel(channelBuffers[channel], channel);
+      // Créer une copie avec ArrayBuffer standard (pas SharedArrayBuffer) 
+      const channelData = new Float32Array(channelBuffers[channel]);
+      processedBuffer.copyToChannel(channelData, channel);
     }
 
     // Mettre en cache
