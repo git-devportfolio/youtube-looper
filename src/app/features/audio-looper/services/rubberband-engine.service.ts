@@ -1,6 +1,7 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, signal, inject } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import type { RubberbandWorkerInput, RubberbandWorkerOutput } from './workers/rubberband-worker.types';
+import { BrowserCompatibilityService } from './compatibility';
 
 /**
  * Service Angular orchestrant le traitement audio via le Web Worker Rubberband
@@ -15,6 +16,12 @@ import type { RubberbandWorkerInput, RubberbandWorkerOutput } from './workers/ru
   providedIn: 'root'
 })
 export class RubberbandEngineService {
+  // ==================== SERVICES ====================
+
+  /**
+   * Service de détection de compatibilité navigateur
+   */
+  private readonly compatibilityService = inject(BrowserCompatibilityService);
 
   // ==================== SIGNALS D'ÉTAT ====================
 
@@ -174,6 +181,14 @@ export class RubberbandEngineService {
   private createWorker(): void {
     if (this.worker) {
       return; // Worker déjà créé
+    }
+
+    // Vérifier la compatibilité du navigateur
+    const compat = this.compatibilityService.compatibility();
+    if (compat && !compat.isFullyCompatible) {
+      const message = this.compatibilityService.getIncompatibilityMessage();
+      this.handleProcessingError(message || 'Browser compatibility issues detected');
+      return;
     }
 
     // Créer le Worker
@@ -512,6 +527,13 @@ export class RubberbandEngineService {
   clearCache(): void {
     this.audioCache.clear();
     console.log('[RubberbandEngineService] Cache cleared');
+  }
+
+  /**
+   * Retourne les informations de compatibilité du navigateur
+   */
+  getCompatibility() {
+    return this.compatibilityService.compatibility();
   }
 
   /**
