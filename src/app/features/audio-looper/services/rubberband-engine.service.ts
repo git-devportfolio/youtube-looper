@@ -87,6 +87,16 @@ export class RubberbandEngineService {
   private readonly DEBOUNCE_DELAY = 500;
 
   /**
+   * Timer pour le throttling des messages de progression
+   */
+  private progressThrottleTimer: number = 0;
+
+  /**
+   * Délai de throttling pour les messages de progression (ms)
+   */
+  private readonly PROGRESS_THROTTLE_DELAY = 250;
+
+  /**
    * Subject pour émettre les AudioBuffer traités
    */
   private processedBufferSubject = new Subject<AudioBuffer>();
@@ -169,9 +179,9 @@ export class RubberbandEngineService {
         return;
       }
 
-      // Progression du traitement
+      // Progression du traitement (avec throttling pour optimiser les performances)
       if (data.progress !== undefined) {
-        this.processingProgress.set(data.progress);
+        this.updateProgressThrottled(data.progress);
       }
 
       // Statut du traitement
@@ -254,6 +264,43 @@ export class RubberbandEngineService {
   }
 
   /**
+   * Met à jour la progression avec throttling (250ms)
+   * Évite les mises à jour trop fréquentes qui peuvent dégrader les performances
+   * @param progress Progression du traitement (0-100)
+   */
+  private updateProgressThrottled(progress: number): void {
+    const now = Date.now();
+
+    // Mettre à jour immédiatement si :
+    // - Premier message (progressThrottleTimer === 0)
+    // - Traitement terminé (progress === 100)
+    // - Délai de throttling écoulé
+    if (
+      this.progressThrottleTimer === 0 ||
+      progress === 100 ||
+      now - this.progressThrottleTimer >= this.PROGRESS_THROTTLE_DELAY
+    ) {
+      this.processingProgress.set(progress);
+      this.progressThrottleTimer = now;
+    }
+  }
+
+  /**
+   * Annule le traitement en cours en détruisant le worker
+   * Utile pour éviter de traiter des paramètres obsolètes
+   */
+  private cancelCurrentProcessing(): void {
+    if (this.worker && this.isProcessing()) {
+      console.log('[RubberbandEngineService] Cancelling current processing');
+      this.destroyWorker();
+      this.isProcessing.set(false);
+      this.processingStatus.set('Cancelled');
+      this.processingProgress.set(0);
+      this.progressThrottleTimer = 0;
+    }
+  }
+
+  /**
    * Déclenche le traitement audio avec debounce
    */
   private triggerProcessing(): void {
@@ -261,6 +308,9 @@ export class RubberbandEngineService {
     if (this.debounceTimer !== null) {
       clearTimeout(this.debounceTimer);
     }
+
+    // Annuler le traitement en cours si les paramètres changent
+    this.cancelCurrentProcessing();
 
     // Créer un nouveau timer
     this.debounceTimer = setTimeout(() => {
@@ -408,6 +458,9 @@ export class RubberbandEngineService {
       clearTimeout(this.debounceTimer);
       this.debounceTimer = null;
     }
+
+    // Réinitialiser le timer de throttling
+    this.progressThrottleTimer = 0;
 
     console.log('[RubberbandEngineService] Service destroyed');
   }
