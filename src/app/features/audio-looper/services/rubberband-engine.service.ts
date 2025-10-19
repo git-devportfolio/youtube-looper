@@ -47,6 +47,16 @@ export class RubberbandEngineService {
    */
   readonly processingStatus = signal<string>('');
 
+  /**
+   * Signal pour indiquer si une erreur est survenue
+   */
+  readonly hasError = signal<boolean>(false);
+
+  /**
+   * Signal pour le message d'erreur détaillé
+   */
+  readonly errorMessage = signal<string>('');
+
   // ==================== CACHE ====================
 
   /**
@@ -95,6 +105,16 @@ export class RubberbandEngineService {
    * Délai de throttling pour les messages de progression (ms)
    */
   private readonly PROGRESS_THROTTLE_DELAY = 250;
+
+  /**
+   * Timeout pour le traitement audio (ms) - 60 secondes
+   */
+  private readonly PROCESSING_TIMEOUT = 60000;
+
+  /**
+   * Timer pour le timeout du traitement
+   */
+  private processingTimeoutTimer: ReturnType<typeof setTimeout> | null = null;
 
   /**
    * Subject pour émettre les AudioBuffer traités
@@ -192,8 +212,7 @@ export class RubberbandEngineService {
       // Erreur de traitement
       if (data.error) {
         console.error('[RubberbandEngineService] Worker error:', data.error);
-        this.isProcessing.set(false);
-        this.processingStatus.set('Error');
+        this.handleProcessingError(data.error);
         return;
       }
 
@@ -206,8 +225,7 @@ export class RubberbandEngineService {
     // Gérer les erreurs du Worker
     this.worker.onerror = (error: ErrorEvent) => {
       console.error('[RubberbandEngineService] Worker error:', error);
-      this.isProcessing.set(false);
-      this.processingStatus.set('Error');
+      this.handleProcessingError(error.message || 'Unknown worker error');
     };
   }
 
@@ -224,13 +242,57 @@ export class RubberbandEngineService {
   }
 
   /**
+   * Gère les erreurs de traitement audio
+   * @param errorMsg Message d'erreur
+   */
+  private handleProcessingError(errorMsg: string): void {
+    // Annuler le timeout
+    this.clearProcessingTimeout();
+
+    // Mettre à jour les signals d'état
+    this.isProcessing.set(false);
+    this.processingStatus.set('Error');
+    this.hasError.set(true);
+    this.errorMessage.set(errorMsg);
+    this.processingProgress.set(0);
+
+    console.error('[RubberbandEngineService] Processing error:', errorMsg);
+  }
+
+  /**
+   * Démarre le timer de timeout pour le traitement
+   */
+  private startProcessingTimeout(): void {
+    this.clearProcessingTimeout();
+
+    this.processingTimeoutTimer = setTimeout(() => {
+      console.error('[RubberbandEngineService] Processing timeout after', this.PROCESSING_TIMEOUT, 'ms');
+      this.handleProcessingError('Processing timeout: audio processing took too long');
+      this.destroyWorker();
+    }, this.PROCESSING_TIMEOUT);
+  }
+
+  /**
+   * Annule le timer de timeout
+   */
+  private clearProcessingTimeout(): void {
+    if (this.processingTimeoutTimer !== null) {
+      clearTimeout(this.processingTimeoutTimer);
+      this.processingTimeoutTimer = null;
+    }
+  }
+
+  /**
    * Gère l'audio traité reçu du Worker
    * @param channelBuffers Tableaux de canaux audio traités
    */
   private handleProcessedAudio(channelBuffers: Float32Array[]): void {
+    // Annuler le timeout car le traitement est terminé
+    this.clearProcessingTimeout();
+
     if (!this.originalBuffer) {
       console.error('[RubberbandEngineService] No original buffer');
-      this.isProcessing.set(false);
+      this.handleProcessingError('No original buffer available');
       return;
     }
 
@@ -365,10 +427,17 @@ export class RubberbandEngineService {
       channelBuffers.push(channelData);
     }
 
+    // Réinitialiser les erreurs précédentes
+    this.hasError.set(false);
+    this.errorMessage.set('');
+
     // Mettre à jour l'état
     this.isProcessing.set(true);
     this.processingProgress.set(0);
     this.processingStatus.set('Starting...');
+
+    // Démarrer le timeout
+    this.startProcessingTimeout();
 
     // Envoyer au Worker
     const workerInput: RubberbandWorkerInput = {
@@ -451,6 +520,7 @@ export class RubberbandEngineService {
   destroy(): void {
     this.destroyWorker();
     this.clearCache();
+    this.clearProcessingTimeout();
     this.originalBuffer = null;
     this.processedBufferSubject.complete();
 
@@ -459,8 +529,10 @@ export class RubberbandEngineService {
       this.debounceTimer = null;
     }
 
-    // Réinitialiser le timer de throttling
+    // Réinitialiser les timers et états
     this.progressThrottleTimer = 0;
+    this.hasError.set(false);
+    this.errorMessage.set('');
 
     console.log('[RubberbandEngineService] Service destroyed');
   }

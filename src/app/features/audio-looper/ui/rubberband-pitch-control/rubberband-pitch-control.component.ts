@@ -75,4 +75,18 @@ export class RubberbandPitchControlComponent {
   get processingStatus(): string {
     return this.rubberbandEngine.processingStatus();
   }
+
+  /**
+   * Vérifie si une erreur est survenue
+   */
+  get hasError(): boolean {
+    return this.rubberbandEngine.hasError();
+  }
+
+  /**
+   * Récupère le message d'erreur
+   */
+  get errorMessage(): string {
+    return this.rubberbandEngine.errorMessage();
+  }
 }

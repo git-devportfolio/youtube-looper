@@ -45,4 +45,11 @@
       </span>
     </div>
   }
+
+  @if (hasError) {
+    <div class="pitch-control__error">
+      <span class="pitch-control__error-icon">⚠️</span>
+      <span class="pitch-control__error-message">{{ errorMessage }}</span>
+    </div>
+  }
 </div>
