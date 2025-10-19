@@ -1,92 +1,99 @@
-import { Component, inject } from '@angular/core';
-import { ToneEngineService } from '../../services/tone-engine.service';
+import { Component, inject, signal, computed } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { RubberbandEngineService } from '../../services/rubberband-engine.service';
+import { ToneEngineService } from '../../services/tone-engine.service';
 
 /**
  * Composant de contrôle du pitch avec Rubberband
  *
- * Permet de modifier la tonalité de l'audio sans affecter la vitesse
- * via un slider de -6 à +6 demi-tons
+ * Interface modernisée avec popup modale et stepper (+/-)
+ * Inspirée du HelpGuideComponent pour une UX cohérente
  */
 @Component({
   selector: 'app-rubberband-pitch-control',
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './rubberband-pitch-control.component.html',
   styleUrl: './rubberband-pitch-control.component.scss'
 })
 export class RubberbandPitchControlComponent {
-  // Injection des services
+  private readonly rubberbandEngine = inject(RubberbandEngineService);
   private readonly toneEngine = inject(ToneEngineService);
-  protected readonly rubberbandEngine = inject(RubberbandEngineService);
 
-  // Plage du slider
+  // Signal pour l'ouverture/fermeture de la popup
+  private readonly _isOpen = signal(false);
+  readonly isOpen = this._isOpen.asReadonly();
+
+  // Valeurs du pitch
   readonly MIN_PITCH = -6;
   readonly MAX_PITCH = 6;
+  readonly currentPitch = this.rubberbandEngine.pitch;
+
+  // États de processing
+  readonly isProcessing = this.rubberbandEngine.isProcessing;
+  readonly processingProgress = this.rubberbandEngine.processingProgress;
+  readonly processingStatus = this.rubberbandEngine.processingStatus;
+  readonly hasError = this.rubberbandEngine.hasError;
+  readonly errorMessage = this.rubberbandEngine.errorMessage;
+
+  // Computed
+  readonly canDecrease = computed(() => this.currentPitch() > this.MIN_PITCH);
+  readonly canIncrease = computed(() => this.currentPitch() < this.MAX_PITCH);
+  readonly isAudioReady = this.toneEngine.isReady;
+  readonly pitchLabel = computed(() => {
+    const pitch = this.currentPitch();
+    if (pitch === 0) return '±0 demi-tons';
+    return pitch > 0 ? `+${pitch} demi-tons` : `${pitch} demi-tons`;
+  });
 
   /**
-   * Gère le changement de pitch depuis le slider
-   * @param event Événement du slider
+   * Ouvrir la popup
    */
-  onPitchChange(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    const pitch = parseInt(input.value, 10);
+  open(): void {
+    this._isOpen.set(true);
+  }
 
-    // Valider la plage
-    if (pitch >= this.MIN_PITCH && pitch <= this.MAX_PITCH) {
-      // Appeler ToneEngineService pour mettre à jour le pitch
-      this.toneEngine.setPitch(pitch);
+  /**
+   * Fermer la popup
+   */
+  close(): void {
+    this._isOpen.set(false);
+  }
 
-      // Le ToneEngineService va gérer la mise à jour du signal
-      // et RubberbandEngineService va traiter l'audio
+  /**
+   * Diminuer le pitch de 1 demi-ton
+   */
+  decreasePitch(): void {
+    if (this.canDecrease() && !this.isProcessing()) {
+      const newPitch = this.currentPitch() - 1;
+      this.toneEngine.setPitch(newPitch);
     }
   }
 
   /**
-   * Réinitialise le pitch à 0
+   * Augmenter le pitch de 1 demi-ton
+   */
+  increasePitch(): void {
+    if (this.canIncrease() && !this.isProcessing()) {
+      const newPitch = this.currentPitch() + 1;
+      this.toneEngine.setPitch(newPitch);
+    }
+  }
+
+  /**
+   * Réinitialiser le pitch à 0
    */
   resetPitch(): void {
-    this.toneEngine.resetPitch();
+    if (!this.isProcessing()) {
+      this.toneEngine.resetPitch();
+    }
   }
 
   /**
-   * Récupère la valeur actuelle du pitch depuis le signal
+   * Définir directement le pitch (pour des presets futurs)
    */
-  get currentPitch(): number {
-    return this.rubberbandEngine.pitch();
-  }
-
-  /**
-   * Vérifie si un traitement est en cours
-   */
-  get isProcessing(): boolean {
-    return this.rubberbandEngine.isProcessing();
-  }
-
-  /**
-   * Récupère la progression du traitement
-   */
-  get processingProgress(): number {
-    return this.rubberbandEngine.processingProgress();
-  }
-
-  /**
-   * Récupère le statut du traitement
-   */
-  get processingStatus(): string {
-    return this.rubberbandEngine.processingStatus();
-  }
-
-  /**
-   * Vérifie si une erreur est survenue
-   */
-  get hasError(): boolean {
-    return this.rubberbandEngine.hasError();
-  }
-
-  /**
-   * Récupère le message d'erreur
-   */
-  get errorMessage(): string {
-    return this.rubberbandEngine.errorMessage();
+  setPitch(value: number): void {
+    if (value >= this.MIN_PITCH && value <= this.MAX_PITCH && !this.isProcessing()) {
+      this.toneEngine.setPitch(value);
+    }
   }
 }
