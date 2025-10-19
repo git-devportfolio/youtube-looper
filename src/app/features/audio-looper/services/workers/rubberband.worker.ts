@@ -26,11 +26,16 @@ interface RubberbandAPI {
   memReadF32(ptr: number, length: number): Float32Array;
 }
 
-// Module rubberband global
-declare const rubberband: {
+// Interface pour accéder au module rubberband chargé dynamiquement
+interface RubberbandModule {
   RubberBandInterface: {
     initialize(wasm: WebAssembly.Module): Promise<RubberbandAPI>;
   };
+}
+
+// Extension de l'interface WorkerGlobalScope pour inclure rubberband
+declare const self: WorkerGlobalScope & {
+  rubberband?: RubberbandModule;
 };
 
 let rbApi: RubberbandAPI | null = null;
@@ -42,8 +47,18 @@ let rbApi: RubberbandAPI | null = null;
   try {
     console.time('[RubberbandWorker] WASM compile');
 
-    // Charger le fichier JavaScript UMD de rubberband
-    importScripts('/assets/rubberband/rubberband.umd.min.js');
+    // Charger le fichier JavaScript UMD de rubberband via fetch (compatible module workers)
+    const scriptResponse = await fetch('/assets/rubberband/rubberband.umd.min.js');
+    const scriptText = await scriptResponse.text();
+
+    // Évaluer le script dans le contexte global du worker
+    // eslint-disable-next-line no-eval
+    (0, eval)(scriptText);
+
+    // Vérifier que rubberband est disponible sur l'objet global
+    if (!self.rubberband) {
+      throw new Error('Rubberband library not loaded correctly');
+    }
 
     // Compiler le module WASM
     const wasm = await WebAssembly.compileStreaming(
@@ -51,7 +66,7 @@ let rbApi: RubberbandAPI | null = null;
     );
 
     // Initialiser l'API Rubberband
-    rbApi = await rubberband.RubberBandInterface.initialize(wasm);
+    rbApi = await self.rubberband.RubberBandInterface.initialize(wasm);
 
     console.timeEnd('[RubberbandWorker] WASM compile');
 

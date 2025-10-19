@@ -1322,8 +1322,9 @@
         "dependencies": [
           "6"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-10-19T07:00:16.554Z"
       },
       {
         "id": "8",
@@ -1335,8 +1336,9 @@
         "dependencies": [
           "7"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-10-19T07:09:43.775Z"
       },
       {
         "id": "9",
@@ -1432,9 +1434,9 @@
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2025-10-18T07:02:24.215Z",
+      "lastModified": "2025-10-19T07:09:43.788Z",
       "taskCount": 15,
-      "completedCount": 6,
+      "completedCount": 8,
       "tags": [
         "rubberband-wasm-pitch"
       ]

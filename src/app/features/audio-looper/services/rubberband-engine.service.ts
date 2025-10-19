@@ -67,6 +67,16 @@ export class RubberbandEngineService {
   private worker: Worker | null = null;
 
   /**
+   * Flag indiquant si le worker est prêt à traiter l'audio
+   */
+  private workerReady = false;
+
+  /**
+   * File d'attente des traitements en attente que le worker soit prêt
+   */
+  private pendingProcessing = false;
+
+  /**
    * Timer pour le debounce des modifications de paramètres
    */
   private debounceTimer: ReturnType<typeof setTimeout> | null = null;
@@ -149,6 +159,13 @@ export class RubberbandEngineService {
       // Worker prêt
       if (data.ready) {
         console.log('[RubberbandEngineService] Worker ready');
+        this.workerReady = true;
+
+        // Si un traitement était en attente, le lancer maintenant
+        if (this.pendingProcessing) {
+          this.pendingProcessing = false;
+          this.processAudio();
+        }
         return;
       }
 
@@ -191,6 +208,8 @@ export class RubberbandEngineService {
     if (this.worker) {
       this.worker.terminate();
       this.worker = null;
+      this.workerReady = false;
+      this.pendingProcessing = false;
     }
   }
 
@@ -277,6 +296,14 @@ export class RubberbandEngineService {
 
     if (!this.worker) {
       console.error('[RubberbandEngineService] Worker not available');
+      return;
+    }
+
+    // Si le worker n'est pas encore prêt, marquer le traitement comme en attente
+    if (!this.workerReady) {
+      console.log('[RubberbandEngineService] Worker not ready yet, queueing processing');
+      this.pendingProcessing = true;
+      this.processingStatus.set('Initializing worker...');
       return;
     }
 

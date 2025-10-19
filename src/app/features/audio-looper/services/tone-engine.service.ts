@@ -10,7 +10,6 @@ export class ToneEngineService {
   private readonly rubberbandEngine = inject(RubberbandEngineService);
   // Tone.js player et effets
   private player: Tone.Player | null = null;
-  private pitchShift: Tone.PitchShift | null = null;
   private gainNode: Tone.Gain | null = null;
   private startTime: number = 0; // Timestamp de démarrage de la lecture
   private startOffset: number = 0; // Position de départ dans l'audio (en secondes)
@@ -19,7 +18,6 @@ export class ToneEngineService {
   private originalAudioBuffer: AudioBuffer | null = null;
 
   // Signals pour les contrôles audio
-  readonly pitch = signal<number>(0); // -6 à +6 demi-tons
   readonly playbackRate = signal<number>(1.0); // 0.5x, 0.75x, 1.0x
   readonly loopStart = signal<number | null>(null);
   readonly loopEnd = signal<number | null>(null);
@@ -94,12 +92,12 @@ export class ToneEngineService {
         }
       });
 
-      // Créer les effets
-      this.pitchShift = new Tone.PitchShift(0);
+      // Créer le noeud de gain pour le volume
       this.gainNode = new Tone.Gain(1);
 
-      // Connecter la chaîne audio: Player -> PitchShift -> Gain -> Destination
-      this.player.chain(this.pitchShift, this.gainNode, Tone.getDestination());
+      // Connecter la chaîne audio: Player -> Gain -> Destination
+      // Note: Le pitch shifting est géré par Rubberband dans le buffer, pas par Tone.js
+      this.player.chain(this.gainNode, Tone.getDestination());
 
       // S'abonner aux buffers traités de Rubberband
       this.rubberbandEngine.getProcessedBuffer().subscribe(processedBuffer => {
@@ -187,18 +185,11 @@ export class ToneEngineService {
 
   /**
    * Définit le pitch shift (-6 à +6 demi-tons)
+   * Le pitch shifting est géré par Rubberband qui modifie le buffer audio
    */
   setPitch(semitones: number): void {
-    // Limiter entre -6 et +6
-    const clampedPitch = Math.max(-6, Math.min(6, semitones));
-    this.pitch.set(clampedPitch);
-
-    if (this.pitchShift) {
-      this.pitchShift.pitch = clampedPitch;
-    }
-
-    // Appeler RubberbandEngine pour traiter l'audio
-    this.rubberbandEngine.setPitch(clampedPitch);
+    // Appeler RubberbandEngine pour traiter l'audio avec le pitch voulu
+    this.rubberbandEngine.setPitch(semitones);
   }
 
   /**
@@ -411,11 +402,6 @@ export class ToneEngineService {
     if (this.player) {
       this.player.dispose();
       this.player = null;
-    }
-
-    if (this.pitchShift) {
-      this.pitchShift.dispose();
-      this.pitchShift = null;
     }
 
     if (this.gainNode) {
