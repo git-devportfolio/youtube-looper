@@ -194,13 +194,18 @@ export class ToneEngineService {
 
   /**
    * Définit la vitesse de lecture (0.5x, 0.75x, 1.0x)
+   * Note: La vitesse est gérée par Rubberband qui traite le buffer.
+   * Le player Tone.js reste à vitesse normale (1.0x) car le tempo est déjà appliqué.
    */
   setPlaybackRate(rate: number): void {
     this.playbackRate.set(rate);
 
-    if (this.player) {
-      this.player.playbackRate = rate;
-    }
+    // Synchroniser avec RubberbandEngine pour traiter le buffer avec le nouveau tempo
+    this.rubberbandEngine.setPlaybackRate(rate);
+
+    // NOTE: Le player Tone.js reste à playbackRate = 1.0 car le tempo est déjà
+    // appliqué dans le buffer traité par Rubberband. Changer le playbackRate du
+    // player créerait un double effet de vitesse (Rubberband + Tone.js).
   }
 
   /**
