@@ -1,0 +1,77 @@
+.speed-control {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+  background-color: var(--color-surface);
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__title {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+  }
+
+  &__current {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    padding: 0.25rem 0.5rem;
+    background-color: var(--color-primary-bg, rgba(59, 130, 246, 0.1));
+    border-radius: 4px;
+  }
+
+  &__presets {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+  }
+
+  &__preset {
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    background-color: var(--color-button-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+
+    &:hover:not(&--active) {
+      background-color: var(--color-button-hover);
+      border-color: var(--color-primary);
+      transform: translateY(-1px);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+
+    &--active {
+      background-color: var(--color-primary);
+      color: white;
+      border-color: var(--color-primary);
+      cursor: default;
+    }
+  }
+}
+
+// Variables CSS par défaut (si non définies globalement)
+:root {
+  --color-surface: #1f2937;
+  --color-border: #374151;
+  --color-text-primary: #f9fafb;
+  --color-button-bg: #374151;
+  --color-button-hover: #4b5563;
+  --color-primary: #3b82f6;
+  --color-primary-bg: rgba(59, 130, 246, 0.1);
+}

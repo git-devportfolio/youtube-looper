@@ -946,30 +946,80 @@
         "updatedAt": "2025-10-19T21:08:59.173Z"
       },
       {
-        "id": "10",
-        "title": "Implémentation du contrôle de tonalité (pitch shift)",
-        "description": "Créer le composant de contrôle de la tonalité avec slider -6 à +6 demi-tons utilisant Tone.PitchShift",
-        "details": "Développer le composant pitch-control avec slider ou input numérique pour la plage -6 à +6 demi-tons. Intégrer Tone.PitchShift dans le tone-engine.service pour modifier la tonalité en temps réel. Afficher la valeur courante (ex. '+3 demi-tons', '-5 demi-tons'). Implémenter le bouton 'Reset Pitch' pour revenir à 0. Appliquer les changements instantanément pendant la lecture. Optimiser les performances pour éviter les latences audibles. Utiliser les bonnes pratiques Tone.js pour les effets audio.",
-        "testStrategy": "Tester le slider sur toute la plage -6 à +6, vérifier l'application en temps réel de la tonalité, valider l'affichage de la valeur courante, confirmer le fonctionnement du reset, et s'assurer de l'absence de latence perceptible.",
-        "priority": "medium",
-        "dependencies": [
-          "9"
-        ],
-        "status": "pending",
-        "subtasks": []
-      },
-      {
         "id": "11",
         "title": "Développement du contrôle de vitesse avec presets et stepper",
         "description": "Créer le composant de contrôle de vitesse avec boutons presets (0.5x, 0.75x, 1.0x) et stepper précis (0.4x-2.0x)",
+        "status": "done",
+        "dependencies": [],
+        "priority": "medium",
         "details": "Implémenter le composant speed-control avec boutons presets rapides: 0.5x, 0.75x, 1.0x. Développer le stepper [- | valeur | +] pour ajustements précis de 0.4x à 2.0x par incréments de 0.1x. Synchroniser les presets avec le stepper (clic preset met à jour le stepper). Utiliser Tone.js pour modifier la vitesse sans altérer la tonalité. Afficher la vitesse courante (ex. '0.6x', '1.2x'). Appliquer les changements en temps réel. Définir 1.0x comme vitesse par défaut au chargement.",
         "testStrategy": "Tester les boutons presets, valider le stepper sur toute la plage 0.4x-2.0x, vérifier la synchronisation preset-stepper, confirmer que la tonalité n'est pas altérée, et tester l'application en temps réel.",
-        "priority": "medium",
-        "dependencies": [
-          "10"
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Créer l'interface et les signaux du composant speed-control",
+            "description": "Implémenter la logique de base du composant avec signals pour gérer l'état de vitesse",
+            "dependencies": [],
+            "details": "Créer les signals speedValue, showAdvanced et implémenter les méthodes de base (setSpeed, setSpeedCustom, toggleAdvanced). Injecter ToneEngineService pour la communication avec le moteur audio. Définir les presets rapides (0.5x, 0.75x, 1.0x) et la plage du stepper (0.4x-2.0x avec incréments de 0.1x). Initialiser la vitesse par défaut à 1.0x.",
+            "status": "done",
+            "testStrategy": "Vérifier que les signals sont initialisés correctement, que la vitesse par défaut est 1.0x, et que l'injection du ToneEngineService fonctionne",
+            "updatedAt": "2025-10-20T05:38:35.923Z",
+            "parentId": "undefined"
+          },
+          {
+            "id": 2,
+            "title": "Développer le template HTML avec boutons presets et stepper",
+            "description": "Créer l'interface utilisateur avec boutons presets et contrôle stepper [- | valeur | +]",
+            "dependencies": [
+              1
+            ],
+            "details": "Implémenter les trois boutons presets (0.5x, 0.75x, 1.0x) avec état actif visuel. Créer le stepper avec bouton moins, affichage de la valeur courante (ex: '0.6x', '1.2x'), et bouton plus. Ajouter un bouton 'Options' pour révéler/masquer les contrôles avancés. Assurer l'accessibilité avec aria-labels appropriés et navigation clavier.",
+            "status": "done",
+            "testStrategy": "Vérifier l'affichage des boutons presets, du stepper et du bouton options, valider l'état actif visuel, et tester l'accessibilité clavier",
+            "parentId": "undefined",
+            "updatedAt": "2025-10-20T05:38:43.663Z"
+          },
+          {
+            "id": 3,
+            "title": "Implémenter la logique des boutons presets avec synchronisation stepper",
+            "description": "Connecter les boutons presets pour qu'ils mettent à jour le stepper et appliquent la vitesse",
+            "dependencies": [
+              2
+            ],
+            "details": "Implémenter les gestionnaires de clic pour les boutons 0.5x, 0.75x, 1.0x qui mettent à jour le signal speedValue et appellent ToneEngineService.setPlaybackRate(). Synchroniser les presets avec le stepper pour que le clic sur un preset mette à jour l'affichage du stepper. Gérer l'état actif des boutons presets selon la vitesse courante.",
+            "status": "done",
+            "testStrategy": "Tester que chaque bouton preset applique la bonne vitesse, que le stepper se synchronise avec les presets, et que l'état visuel actif fonctionne correctement",
+            "parentId": "undefined",
+            "updatedAt": "2025-10-20T05:38:47.937Z"
+          },
+          {
+            "id": 4,
+            "title": "Développer la logique du stepper avec incréments précis",
+            "description": "Implémenter les boutons + et - du stepper pour ajustements fins de vitesse",
+            "dependencies": [
+              3
+            ],
+            "details": "Créer les méthodes incrementSpeed() et decrementSpeed() avec incréments de 0.1x. Limiter la plage entre 0.4x et 2.0x. Implémenter la validation des bornes et l'arrondi pour éviter les erreurs de précision JavaScript. Mettre à jour le signal speedValue et appliquer via ToneEngineService.setPlaybackRate() en temps réel.",
+            "status": "done",
+            "testStrategy": "Valider la plage 0.4x-2.0x, tester les incréments de 0.1x, vérifier les bornes min/max, et confirmer l'application en temps réel de la vitesse",
+            "parentId": "undefined",
+            "updatedAt": "2025-10-20T05:38:50.920Z"
+          },
+          {
+            "id": 5,
+            "title": "Styliser le composant et finaliser l'intégration avec ToneEngine",
+            "description": "Appliquer les styles SCSS et assurer l'intégration complète avec le moteur audio",
+            "dependencies": [
+              4
+            ],
+            "details": "Créer les styles SCSS pour les boutons presets avec état actif, le stepper avec design cohérent, et l'affichage de la vitesse courante. Implémenter l'abonnement au signal playbackRate de ToneEngineService pour synchronisation bidirectionnelle. Ajouter la gestion des états désactivés quand aucun fichier audio n'est chargé. Optimiser pour mobile avec boutons tactiles appropriés.",
+            "status": "done",
+            "testStrategy": "Vérifier l'apparence visuelle sur desktop et mobile, tester la synchronisation bidirectionnelle avec ToneEngine, et valider les états désactivés sans fichier audio",
+            "parentId": "undefined",
+            "updatedAt": "2025-10-20T05:38:53.934Z"
+          }
         ],
-        "status": "pending",
-        "subtasks": []
+        "updatedAt": "2025-10-20T05:38:53.934Z"
       },
       {
         "id": "12",
@@ -1026,9 +1076,9 @@
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2025-10-19T21:08:59.176Z",
-      "taskCount": 15,
-      "completedCount": 9,
+      "lastModified": "2025-10-20T05:38:53.937Z",
+      "taskCount": 14,
+      "completedCount": 10,
       "tags": [
         "audio-looper"
       ]

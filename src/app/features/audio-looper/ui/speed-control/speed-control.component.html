@@ -1,1 +1,20 @@
-<p>speed-control works!</p>
+<div class="speed-control">
+  <div class="speed-control__header">
+    <h3 class="speed-control__title">Speed</h3>
+    <span class="speed-control__current">{{ playbackRate() }}x</span>
+  </div>
+
+  <div class="speed-control__presets">
+    @for (preset of SPEED_PRESETS; track preset) {
+      <button
+        class="speed-control__preset"
+        [class.speed-control__preset--active]="isPresetActive(preset)"
+        (click)="setSpeed(preset)"
+        type="button"
+        [attr.aria-label]="'Set speed to ' + preset + 'x'"
+      >
+        {{ preset }}x
+      </button>
+    }
+  </div>
+</div>
