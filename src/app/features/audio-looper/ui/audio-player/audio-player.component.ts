@@ -16,6 +16,11 @@ export class AudioPlayerComponent {
 
   @ViewChild(AudioControlsModalComponent) audioControlsModal?: AudioControlsModalComponent;
 
+  // Signals pour les contrôles de boucle
+  readonly loopStart = this.toneEngine.loopStart;
+  readonly loopEnd = this.toneEngine.loopEnd;
+  readonly isLooping = this.toneEngine.isLooping;
+
   // Signals du service
   readonly isPlaying = this.audioPlayerService.isPlaying;
   readonly isReady = this.audioPlayerService.isReady;
@@ -60,6 +65,15 @@ export class AudioPlayerComponent {
     }
   }
 
+  // Computed signals pour les contrôles de boucle
+  readonly hasLoopPoints = computed(() =>
+    this.loopStart() !== null && this.loopEnd() !== null
+  );
+
+  readonly loopButtonLabel = computed(() =>
+    this.isLooping() ? 'Loop OFF' : 'Loop ON'
+  );
+
   /**
    * Ouvrir le modal des contrôles audio
    */
@@ -68,9 +82,54 @@ export class AudioPlayerComponent {
   }
 
   /**
+   * Définit le point A (début de la boucle) à la position courante
+   */
+  setPointA(): void {
+    const currentPos = this.currentTime();
+    const endPoint = this.loopEnd();
+    const dur = this.duration();
+
+    if (currentPos < 0 || currentPos >= dur) return;
+    if (endPoint !== null && currentPos >= endPoint) return;
+
+    const effectiveEndPoint = endPoint ?? dur;
+    this.toneEngine.setLoopPoints(currentPos, effectiveEndPoint);
+  }
+
+  /**
+   * Définit le point B (fin de la boucle) à la position courante
+   */
+  setPointB(): void {
+    const currentPos = this.currentTime();
+    const startPoint = this.loopStart();
+    const dur = this.duration();
+
+    if (currentPos <= 0 || currentPos > dur) return;
+    if (startPoint !== null && currentPos <= startPoint) return;
+
+    const effectiveStartPoint = startPoint ?? 0;
+    this.toneEngine.setLoopPoints(effectiveStartPoint, currentPos);
+  }
+
+  /**
+   * Active ou désactive la boucle
+   */
+  toggleLoop(): void {
+    if (!this.hasLoopPoints()) return;
+    this.toneEngine.toggleLoop();
+  }
+
+  /**
+   * Réinitialise les points de boucle
+   */
+  resetLoop(): void {
+    this.toneEngine.resetLoop();
+  }
+
+  /**
    * Formate le temps en MM:SS
    */
-  private formatTime(seconds: number): string {
+  formatTime(seconds: number): string {
     if (!isFinite(seconds) || seconds < 0) {
       return '00:00';
     }

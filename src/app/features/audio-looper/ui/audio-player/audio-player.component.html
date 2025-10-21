@@ -31,6 +31,65 @@
     <span class="audio-player__duration">{{ formattedDuration() }}</span>
   </div>
 
+  <!-- Contrôles de boucle -->
+  <div class="audio-player__loop-controls">
+    <div class="audio-player__loop-group">
+      <button
+        class="audio-player__loop-btn audio-player__loop-btn--a"
+        [class.audio-player__loop-btn--set]="loopStart() !== null"
+        [disabled]="!isReady()"
+        (click)="setPointA()"
+        type="button"
+        [attr.aria-label]="'Définir point A' + (loopStart() !== null ? ' (' + formatTime(loopStart()!) + ')' : '')"
+        [title]="loopStart() !== null ? 'Point A: ' + formatTime(loopStart()!) + ' - Cliquez pour redéfinir' : 'Cliquez pour définir le début de la boucle (Point A)'">
+        A
+        @if (loopStart() !== null) {
+          <span class="audio-player__loop-time">{{ formatTime(loopStart()!) }}</span>
+        }
+      </button>
+
+      <button
+        class="audio-player__loop-btn audio-player__loop-btn--b"
+        [class.audio-player__loop-btn--set]="loopEnd() !== null"
+        [disabled]="!isReady()"
+        (click)="setPointB()"
+        type="button"
+        [attr.aria-label]="'Définir point B' + (loopEnd() !== null ? ' (' + formatTime(loopEnd()!) + ')' : '')"
+        [title]="loopEnd() !== null ? 'Point B: ' + formatTime(loopEnd()!) + ' - Cliquez pour redéfinir' : 'Cliquez pour définir la fin de la boucle (Point B)'">
+        B
+        @if (loopEnd() !== null) {
+          <span class="audio-player__loop-time">{{ formatTime(loopEnd()!) }}</span>
+        }
+      </button>
+    </div>
+
+    <button
+      class="audio-player__loop-toggle"
+      [class.audio-player__loop-toggle--active]="isLooping()"
+      [disabled]="!hasLoopPoints()"
+      (click)="toggleLoop()"
+      type="button"
+      [attr.aria-label]="loopButtonLabel()"
+      [title]="!hasLoopPoints() ? 'Définissez d\'abord les points A et B pour activer la boucle' : (isLooping() ? 'Boucle activée - Cliquez pour désactiver' : 'Boucle désactivée - Cliquez pour activer')">
+      <svg class="audio-player__loop-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M17 2v4M17 2l-3 3M17 2l3 3M7 22v-4M7 22l-3-3M7 22l3-3M3 9h12a4 4 0 014 4v0M21 15H9a4 4 0 01-4-4v0"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+
+    <button
+      class="audio-player__loop-reset"
+      [disabled]="!hasLoopPoints()"
+      (click)="resetLoop()"
+      type="button"
+      aria-label="Réinitialiser la boucle"
+      [title]="hasLoopPoints() ? 'Réinitialiser les points A et B' : 'Aucun point de boucle défini'">
+      <svg class="audio-player__reset-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M6 18L18 6M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </div>
+
   <!-- Bouton Settings discret -->
   <button
     class="audio-player__settings-button"
