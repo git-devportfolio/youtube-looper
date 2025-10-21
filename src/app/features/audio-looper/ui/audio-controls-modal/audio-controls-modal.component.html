@@ -120,39 +120,72 @@
           <div class="tab-content">
             <!-- Description -->
             <p class="description">
-              Ralentissez la lecture pour faciliter l'apprentissage.
+              Ajustez la vitesse de lecture pour faciliter l'apprentissage.
               La tonalité reste inchangée.
             </p>
 
-            <!-- Presets de vitesse -->
-            <div class="speed-presets">
-              @for (preset of SPEED_PRESETS; track preset) {
-                <button
-                  class="speed-preset"
-                  [class.speed-preset--active]="isTempSpeedActive(preset)"
-                  (click)="setTempSpeed(preset)"
-                  type="button">
-                  <div class="speed-preset-value">{{ preset }}x</div>
-                  <div class="speed-preset-label">
-                    @if (preset === 0.5) {
-                      <span>Très lent</span>
-                    } @else if (preset === 0.75) {
-                      <span>Lent</span>
-                    } @else {
-                      <span>Normal</span>
-                    }
-                  </div>
-                </button>
-              }
+            <!-- Stepper -->
+            <div class="stepper">
+              <button
+                class="stepper-btn"
+                (click)="decreaseTempSpeed()"
+                [disabled]="!canDecreaseSpeed()"
+                aria-label="Diminuer la vitesse">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </button>
+
+              <div class="stepper-display">
+                <div class="stepper-value">{{ tempSpeedLabel() }}</div>
+                <div class="stepper-subtitle">
+                  @if (_tempSpeed() === 1.0) {
+                    <span>Vitesse normale</span>
+                  } @else if (_tempSpeed() < 0.7) {
+                    <span>Très lent</span>
+                  } @else if (_tempSpeed() < 1.0) {
+                    <span>Lent</span>
+                  } @else if (_tempSpeed() > 1.0) {
+                    <span>Rapide</span>
+                  }
+                </div>
+              </div>
+
+              <button
+                class="stepper-btn"
+                (click)="increaseTempSpeed()"
+                [disabled]="!canIncreaseSpeed()"
+                aria-label="Augmenter la vitesse">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </button>
             </div>
+
+            <!-- Barre de progression -->
+            <!-- <div class="progress-track">
+              <div class="progress-markers">
+                @for (marker of [0.5, 0.75, 0.95, 1.0, 1.5, 2.0]; track marker) {
+                  <div
+                    class="progress-marker"
+                    [class.active]="_tempSpeed() === marker"
+                    [class.zero]="marker === 1.0"
+                    [style.left.%]="((marker - 0.5) / (2.0 - 0.5)) * 100">
+                    <span class="progress-marker-label">{{ marker }}x</span>
+                  </div>
+                }
+              </div>
+              <div class="progress-indicator" [style.left.%]="((_tempSpeed() - 0.5) / (2.0 - 0.5)) * 100"></div>
+            </div> -->
 
             <!-- Conseils -->
             <div class="tips">
               <h4 class="tips-title">💡 Conseils :</h4>
               <ul class="tips-list">
-                <li>Commencez à 0.5x pour les passages difficiles</li>
-                <li>Passez à 0.75x quand vous maîtrisez mieux</li>
-                <li>Revenez à 1.0x pour jouer en tempo réel</li>
+                <li>Ralentissez (0.5x - 0.75x) pour les passages difficiles</li>
+                <li>Utilisez 0.95x pour jouer presque au tempo réel</li>
+                <li>Utilisez la vitesse normale (1.0x) pour le tempo réel</li>
+                <li>Accélérez (1.5x - 2.0x) pour réviser rapidement</li>
               </ul>
             </div>
 

@@ -41,7 +41,9 @@ export class AudioControlsModalComponent {
   readonly currentPitch = this.rubberbandEngine.pitch;
 
   // Valeurs de vitesse
-  readonly SPEED_PRESETS = [0.5, 0.75, 1.0] as const;
+  readonly MIN_SPEED = 0.5;
+  readonly MAX_SPEED = 2.0;
+  readonly SPEED_STEP = 0.05;
   readonly currentSpeed = this.toneEngine.playbackRate;
 
   // États de processing
@@ -54,6 +56,8 @@ export class AudioControlsModalComponent {
   // Computed
   readonly canDecreasePitch = computed(() => this._tempPitch() > this.MIN_PITCH);
   readonly canIncreasePitch = computed(() => this._tempPitch() < this.MAX_PITCH);
+  readonly canDecreaseSpeed = computed(() => this._tempSpeed() > this.MIN_SPEED);
+  readonly canIncreaseSpeed = computed(() => this._tempSpeed() < this.MAX_SPEED);
   readonly isAudioReady = this.toneEngine.isReady;
 
   readonly pitchLabel = computed(() => {
@@ -66,6 +70,10 @@ export class AudioControlsModalComponent {
     const pitch = this._tempPitch();
     if (pitch === 0) return '±0 demi-tons';
     return pitch > 0 ? `+${pitch} demi-tons` : `${pitch} demi-tons`;
+  });
+
+  readonly tempSpeedLabel = computed(() => {
+    return `${this._tempSpeed().toFixed(2)}x`;
   });
 
   readonly hasChanges = computed(() => {
@@ -116,17 +124,21 @@ export class AudioControlsModalComponent {
   }
 
   /**
-   * Définir la vitesse temporaire
+   * Diminuer la vitesse temporaire de 0.05x
    */
-  setTempSpeed(speed: number): void {
-    this._tempSpeed.set(speed);
+  decreaseTempSpeed(): void {
+    if (this.canDecreaseSpeed()) {
+      this._tempSpeed.update(s => Math.max(this.MIN_SPEED, Number((s - this.SPEED_STEP).toFixed(2))));
+    }
   }
 
   /**
-   * Vérifier si un preset de vitesse est actif (temporaire)
+   * Augmenter la vitesse temporaire de 0.05x
    */
-  isTempSpeedActive(speed: number): boolean {
-    return this._tempSpeed() === speed;
+  increaseTempSpeed(): void {
+    if (this.canIncreaseSpeed()) {
+      this._tempSpeed.update(s => Math.min(this.MAX_SPEED, Number((s + this.SPEED_STEP).toFixed(2))));
+    }
   }
 
   /**

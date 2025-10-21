@@ -34,7 +34,7 @@
   box-shadow: var(--shadow-lg);
   max-width: var(--modal-width);
   width: 100%;
-  // max-height: 90vh;
+  // max-height: 100vh;
   overflow-y: auto;
   animation: slideIn .3s;
 
@@ -326,62 +326,6 @@
   box-shadow: 0 0 8px rgba(255,0,0,.5);
   transition: left .3s;
   pointer-events: none;
-}
-
-// Speed presets
-.speed-presets {
-  display: grid;
-  grid-template-columns: repeat(3,1fr);
-  gap: var(--spacing-md);
-  margin: var(--spacing-xl) 0;
-
-  @include mobile-only {
-    gap: var(--spacing-sm);
-  }
-}
-
-.speed-preset {
-  padding: var(--spacing-lg) var(--spacing-md);
-  border: 2px solid var(--border-color);
-  border-radius: var(--border-radius);
-  background: var(--background-secondary);
-  cursor: pointer;
-  transition: all .2s;
-  @include accessible-focus();
-
-  &:hover:not(&--active) {
-    background: var(--background-tertiary);
-    border-color: var(--text-secondary);
-    transform: translateY(-2px);
-  }
-
-  &--active {
-    background: var(--primary-color);
-    border-color: var(--primary-color);
-    color: white;
-
-    .speed-preset-value,
-    .speed-preset-label {
-      color: white;
-    }
-  }
-}
-
-.speed-preset-value {
-  font-size: 1.75rem;
-  font-weight: 700;
-  color: var(--primary-color);
-  margin-bottom: var(--spacing-xs);
-
-  @include mobile-only {
-    font-size: 1.5rem;
-  }
-}
-
-.speed-preset-label {
-  font-size: .875rem;
-  color: var(--text-secondary);
-  font-weight: 500;
 }
 
 // Tips (factorisation)
