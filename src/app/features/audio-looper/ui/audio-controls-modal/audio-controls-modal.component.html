@@ -1,0 +1,230 @@
+<!-- Bouton discret pour ouvrir la popup -->
+<button
+  class="audio-trigger-btn"
+  (click)="open()"
+  [disabled]="!isAudioReady()"
+  aria-label="Modifier tonalité et vitesse">
+  <svg class="audio-trigger-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M12 2v20M8 6l4-4 4 4M8 18l4 4 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+  <span class="audio-trigger-label">Tonalité & Vitesse</span>
+  <div class="audio-trigger-values">
+    <span class="audio-trigger-value">{{ pitchLabel() }}</span>
+    <span class="audio-trigger-separator">•</span>
+    <span class="audio-trigger-value">{{ currentSpeed() }}x</span>
+  </div>
+</button>
+
+<!-- Modal Popup avec onglets -->
+@if (isOpen()) {
+  <div class="modal-overlay" (click)="close()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <!-- Header -->
+      <div class="modal-header">
+        <h2 class="modal-title">
+          <span class="modal-icon">🎵</span>
+          Contrôles Audio
+        </h2>
+        <button class="modal-close" (click)="close()" aria-label="Fermer">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Onglets -->
+      <div class="tabs">
+        <button
+          class="tab"
+          [class.tab--active]="activeTab() === 'pitch'"
+          (click)="setActiveTab('pitch')"
+          type="button">
+          🎼 Tonalité
+        </button>
+        <button
+          class="tab"
+          [class.tab--active]="activeTab() === 'speed'"
+          (click)="setActiveTab('speed')"
+          type="button">
+          ⚡ Vitesse
+        </button>
+      </div>
+
+      <!-- Contenu principal -->
+      <div class="modal-content">
+        <!-- Onglet Pitch -->
+        @if (activeTab() === 'pitch') {
+          <div class="tab-content">
+            <!-- Description -->
+            <p class="description">
+              Ajustez la tonalité de -6 à +6 demi-tons sans modifier la vitesse.
+              Parfait pour transposer dans votre tessiture.
+            </p>
+
+            <!-- Stepper -->
+            <div class="stepper">
+              <button
+                class="stepper-btn"
+                (click)="decreaseTempPitch()"
+                [disabled]="!canDecreasePitch()"
+                aria-label="Diminuer d'un demi-ton">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </button>
+
+              <div class="stepper-display">
+                <div class="stepper-value">{{ tempPitchLabel() }}</div>
+                <div class="stepper-subtitle">
+                  @if (_tempPitch() === 0) {
+                    <span>Tonalité originale</span>
+                  } @else if (_tempPitch() > 0) {
+                    <span>Plus aigu</span>
+                  } @else {
+                    <span>Plus grave</span>
+                  }
+                </div>
+              </div>
+
+              <button
+                class="stepper-btn"
+                (click)="increaseTempPitch()"
+                [disabled]="!canIncreasePitch()"
+                aria-label="Augmenter d'un demi-ton">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </button>
+            </div>
+
+            <!-- Barre de progression -->
+            <div class="progress-track">
+              <div class="progress-markers">
+                @for (marker of [-6, -3, 0, 3, 6]; track marker) {
+                  <div
+                    class="progress-marker"
+                    [class.active]="_tempPitch() === marker"
+                    [class.zero]="marker === 0">
+                    <span class="progress-marker-label">{{ marker > 0 ? '+' + marker : marker }}</span>
+                  </div>
+                }
+              </div>
+              <div class="progress-indicator" [style.left.%]="((_tempPitch() + 6) / 12) * 100"></div>
+            </div>
+
+            <!-- Conseils -->
+            <div class="tips">
+              <h4 class="tips-title">💡 Conseils :</h4>
+              <ul class="tips-list">
+                <li>Descendez de 2-3 demi-tons pour les chansons trop aiguës</li>
+                <li>Le timbre est préservé grâce à Rubberband</li>
+                <li>Combinez avec le ralentissement pour mieux apprendre</li>
+              </ul>
+            </div>
+
+            <!-- Reset pitch -->
+            <button
+              class="reset-btn"
+              (click)="resetTempPitch()"
+              [disabled]="_tempPitch() === 0">
+              Réinitialiser la tonalité
+            </button>
+          </div>
+        }
+
+        <!-- Onglet Speed -->
+        @if (activeTab() === 'speed') {
+          <div class="tab-content">
+            <!-- Description -->
+            <p class="description">
+              Ralentissez la lecture pour faciliter l'apprentissage.
+              La tonalité reste inchangée.
+            </p>
+
+            <!-- Presets de vitesse -->
+            <div class="speed-presets">
+              @for (preset of SPEED_PRESETS; track preset) {
+                <button
+                  class="speed-preset"
+                  [class.speed-preset--active]="isTempSpeedActive(preset)"
+                  (click)="setTempSpeed(preset)"
+                  type="button">
+                  <div class="speed-preset-value">{{ preset }}x</div>
+                  <div class="speed-preset-label">
+                    @if (preset === 0.5) {
+                      <span>Très lent</span>
+                    } @else if (preset === 0.75) {
+                      <span>Lent</span>
+                    } @else {
+                      <span>Normal</span>
+                    }
+                  </div>
+                </button>
+              }
+            </div>
+
+            <!-- Conseils -->
+            <div class="tips">
+              <h4 class="tips-title">💡 Conseils :</h4>
+              <ul class="tips-list">
+                <li>Commencez à 0.5x pour les passages difficiles</li>
+                <li>Passez à 0.75x quand vous maîtrisez mieux</li>
+                <li>Revenez à 1.0x pour jouer en tempo réel</li>
+              </ul>
+            </div>
+
+            <!-- Reset speed -->
+            <button
+              class="reset-btn"
+              (click)="resetTempSpeed()"
+              [disabled]="_tempSpeed() === 1.0">
+              Réinitialiser la vitesse
+            </button>
+          </div>
+        }
+
+        <!-- Erreur -->
+        @if (hasError()) {
+          <div class="error">
+            <span class="error-icon">⚠️</span>
+            <span class="error-message">{{ errorMessage() }}</span>
+          </div>
+        }
+      </div>
+
+      <!-- Footer avec actions -->
+      <div class="modal-footer">
+        <button
+          class="btn btn--secondary"
+          (click)="close()">
+          Annuler
+        </button>
+        <button
+          class="btn btn--primary"
+          (click)="apply()"
+          [disabled]="!hasChanges()">
+          @if (hasChanges()) {
+            <span>Appliquer</span>
+          } @else {
+            <span>Aucun changement</span>
+          }
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Overlay de processing (bloque toute l'UI) -->
+@if (isProcessing()) {
+  <div class="processing-overlay">
+    <div class="processing-modal">
+      <div class="processing-spinner"></div>
+      <h3 class="processing-title">{{ processingStatus() }}</h3>
+      <div class="processing-progress-bar">
+        <div class="processing-progress-fill" [style.width.%]="processingProgress()"></div>
+      </div>
+      <p class="processing-percentage">{{ processingProgress() }}%</p>
+      <p class="processing-info">Veuillez patienter, traitement audio en cours...</p>
+    </div>
+  </div>
+}

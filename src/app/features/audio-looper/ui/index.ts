@@ -6,4 +6,4 @@ export * from './speed-control';
 export * from './volume-control';
 export * from './waveform-display';
 export * from './audio-looper-container';
-export * from './rubberband-pitch-control';
+export * from './audio-controls-modal';
