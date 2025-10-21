@@ -30,4 +30,29 @@
     <span class="audio-player__separator">/</span>
     <span class="audio-player__duration">{{ formattedDuration() }}</span>
   </div>
+
+  <!-- Bouton Settings discret -->
+  <button
+    class="audio-player__settings-button"
+    [class.audio-player__settings-button--active]="hasActiveModifications()"
+    [disabled]="!isReady()"
+    (click)="openAudioControls()"
+    type="button"
+    [attr.aria-label]="'Paramètres audio' + (hasActiveModifications() ? ' (modifié)' : '')"
+    [title]="hasActiveModifications() ? modificationsLabel() : 'Tonalité & Vitesse'"
+  >
+    <!-- Icône Settings (sliders) -->
+    <svg class="audio-player__settings-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M3 8h4m0 0a3 3 0 106 0m-6 0a3 3 0 016 0m6 0h2M3 16h2m0 0a3 3 0 106 0m-6 0a3 3 0 016 0m6 0h4"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+
+    <!-- Badge indicateur si modifications actives -->
+    @if (hasActiveModifications()) {
+      <span class="audio-player__settings-badge">{{ modificationsLabel() }}</span>
+    }
+  </button>
+
+  <!-- Modal des contrôles audio (caché par défaut) -->
+  <app-audio-controls-modal></app-audio-controls-modal>
 </div>
