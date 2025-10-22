@@ -473,10 +473,16 @@ export class RubberbandEngineService {
    */
   loadOriginalBuffer(buffer: AudioBuffer): void {
     this.originalBuffer = buffer;
-    console.log('[RubberbandEngineService] Original buffer loaded', {
+
+    // Mettre le buffer original en cache avec pitch=0 et tempo=1.0
+    // Cela évite de retraiter l'audio quand on revient aux paramètres par défaut
+    this.setCache(0, 1.0, buffer);
+
+    console.log('[RubberbandEngineService] Original buffer loaded and cached', {
       duration: buffer.duration,
       sampleRate: buffer.sampleRate,
-      channels: buffer.numberOfChannels
+      channels: buffer.numberOfChannels,
+      cachedAs: this.getCacheKey(0, 1.0)
     });
   }
 
