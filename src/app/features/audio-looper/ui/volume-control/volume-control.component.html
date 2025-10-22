@@ -1,1 +1,39 @@
-<p>volume-control works!</p>
+<div class="volume-control">
+  <!-- Bouton Mute/Unmute -->
+  <button
+    class="volume-control__mute-btn"
+    [disabled]="!isReady()"
+    (click)="toggleMute()"
+    type="button"
+    [attr.aria-label]="isMuted() ? 'Activer le son' : 'Couper le son'">
+    <!-- Icône volume actif -->
+    @if (!isMuted()) {
+      <svg class="volume-control__icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M11 5L6 9H2v6h4l5 4V5zM15.54 8.46a5 5 0 010 7.07M19.07 4.93a10 10 0 010 14.14"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    }
+    <!-- Icône volume muet -->
+    @if (isMuted()) {
+      <svg class="volume-control__icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M11 5L6 9H2v6h4l5 4V5zM23 9l-6 6M17 9l6 6"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    }
+  </button>
+
+  <!-- Slider de volume -->
+  <div class="volume-control__slider-container">
+    <input
+      type="range"
+      class="volume-control__slider"
+      [value]="volume()"
+      [disabled]="!isReady()"
+      min="0"
+      max="100"
+      step="1"
+      (input)="onVolumeChange($event)"
+      [attr.aria-label]="'Volume: ' + volume() + '%'" />
+    <span class="volume-control__value">{{ volume() }}%</span>
+  </div>
+</div>

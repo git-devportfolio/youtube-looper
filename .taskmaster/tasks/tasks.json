@@ -1031,8 +1031,9 @@
         "dependencies": [
           "11"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-10-22T05:30:48.694Z"
       },
       {
         "id": "13",
@@ -1076,9 +1077,9 @@
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2025-10-20T05:38:53.937Z",
+      "lastModified": "2025-10-22T05:30:48.695Z",
       "taskCount": 14,
-      "completedCount": 10,
+      "completedCount": 11,
       "tags": [
         "audio-looper"
       ]
@@ -1560,7 +1561,8 @@
         "rubberband-wasm-pitch"
       ],
       "created": "2025-10-19T20:58:13.296Z",
-      "description": "Tasks for rubberband-wasm-pitch context"
+      "description": "Tasks for rubberband-wasm-pitch context",
+      "updated": "2025-10-19T20:58:13.296Z"
     }
   }
 }

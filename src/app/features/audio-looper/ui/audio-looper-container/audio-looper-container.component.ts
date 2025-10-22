@@ -4,13 +4,14 @@ import { trigger, state, style, transition, animate, query, stagger } from '@ang
 import { FileUploadComponent } from '../file-upload';
 import { WaveformDisplayComponent } from '../waveform-display';
 import { AudioPlayerComponent } from '../audio-player';
+import { VolumeControlComponent } from '../volume-control';
 import { AudioPlayerService, ToneEngineService, WaveformService } from '../../services';
 
 type LoadingState = 'empty' | 'loading' | 'loaded' | 'error';
 
 @Component({
   selector: 'app-audio-looper-container',
-  imports: [CommonModule, FileUploadComponent, WaveformDisplayComponent, AudioPlayerComponent],
+  imports: [CommonModule, FileUploadComponent, WaveformDisplayComponent, AudioPlayerComponent, VolumeControlComponent],
   templateUrl: './audio-looper-container.component.html',
   styleUrl: './audio-looper-container.component.scss',
   animations: [

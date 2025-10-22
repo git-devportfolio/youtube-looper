@@ -1,0 +1,188 @@
+.volume-control {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  background-color: var(--background-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+
+  @media (max-width: 768px) {
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm);
+  }
+
+  // Bouton Mute/Unmute
+  &__mute-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background: var(--background-primary);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+
+    @media (max-width: 768px) {
+      width: 40px;
+      height: 40px;
+    }
+
+    &:hover:not(:disabled) {
+      background: var(--background-tertiary);
+      border-color: var(--primary-color);
+      transform: translateY(-1px);
+    }
+
+    &:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    &:focus {
+      outline: 2px solid var(--primary-color);
+      outline-offset: 2px;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  &__icon {
+    width: 24px;
+    height: 24px;
+
+    @media (max-width: 768px) {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  // Container du slider
+  &__slider-container {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    flex: 1;
+  }
+
+  // Slider de volume
+  &__slider {
+    flex: 1;
+    height: 6px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    outline: none;
+    cursor: pointer;
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+
+    // Track (barre de fond)
+    &::-webkit-slider-runnable-track {
+      width: 100%;
+      height: 6px;
+      background: linear-gradient(
+        to right,
+        var(--border-color) 0%,
+        var(--border-color) var(--volume-percentage, 50%),
+        var(--background-tertiary) var(--volume-percentage, 50%),
+        var(--background-tertiary) 100%
+      );
+      border-radius: 3px;
+      transition: background 0.2s;
+    }
+
+    &::-moz-range-track {
+      width: 100%;
+      height: 6px;
+      background: var(--background-tertiary);
+      border-radius: 3px;
+    }
+
+    // Thumb (curseur)
+    &::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      background: var(--primary-color);
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-top: -6px;
+
+      &:hover {
+        transform: scale(1.2);
+        box-shadow: 0 0 8px rgba(var(--primary-color-rgb, 59, 130, 246), 0.5);
+      }
+    }
+
+    &::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      background: var(--primary-color);
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &:hover {
+        transform: scale(1.2);
+        box-shadow: 0 0 8px rgba(var(--primary-color-rgb, 59, 130, 246), 0.5);
+      }
+    }
+
+    // Progression (Firefox)
+    &::-moz-range-progress {
+      background: var(--border-color);
+      height: 6px;
+      border-radius: 3px 0 0 3px;
+    }
+  }
+
+  // Valeur du volume
+  &__value {
+    min-width: 45px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    text-align: right;
+
+    @media (max-width: 768px) {
+      min-width: 40px;
+      font-size: 0.8125rem;
+    }
+  }
+}
+
+// Amélioration pour les zones tactiles
+@media (hover: none) and (pointer: coarse) {
+  .volume-control__mute-btn {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .volume-control__slider {
+    &::-webkit-slider-thumb {
+      width: 24px;
+      height: 24px;
+      margin-top: -9px;
+    }
+
+    &::-moz-range-thumb {
+      width: 24px;
+      height: 24px;
+    }
+  }
+}
