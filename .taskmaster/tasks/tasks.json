@@ -758,7 +758,7 @@
   "audio-looper": {
     "tasks": [
       {
-        "id": "1",
+        "id": 1,
         "title": "Mise en place de la navigation entre modules YouTube Looper et Audio Looper",
         "description": "Créer un système de navigation (onglets ou boutons) permettant de basculer entre les modules YouTube Looper existant et le nouveau module Audio Looper",
         "details": "Implémenter un composant de navigation avec deux onglets/boutons: 'YouTube Looper' et 'Audio Looper'. Utiliser Angular Router pour la navigation entre les modules. Créer les routes appropriées dans app.routes.ts. Ajouter les styles SCSS pour les onglets avec état actif/inactif. Assurer une navigation fluide sans rechargement de page. Positionner la navigation en haut de l'application selon le mockup fourni.",
@@ -770,7 +770,7 @@
         "updatedAt": "2025-10-12T07:05:42.042Z"
       },
       {
-        "id": "2",
+        "id": 2,
         "title": "Création de la structure de base du module Audio Looper",
         "description": "Créer l'architecture de base du module Audio Looper avec les composants principaux et la structure de dossiers recommandée",
         "details": "Créer la structure de dossiers selon l'architecture Angular suggérée dans src/app/features/audio-looper/. Générer les composants principaux: audio-looper-container, file-upload, audio-player, loop-controls, pitch-control, speed-control, volume-control. Chaque composant doit avoir son propre dossier avec fichiers .ts, .html, .scss et index.ts. Implémenter les barrel exports dans tous les index.ts. Créer les services de base: audio-player.service.ts, tone-engine.service.ts, waveform.service.ts. Utiliser strictement les standalone components Angular 19.2.",
@@ -784,7 +784,7 @@
         "updatedAt": "2025-10-12T09:43:29.007Z"
       },
       {
-        "id": "3",
+        "id": 3,
         "title": "Installation et configuration de Tone.js",
         "description": "Installer Tone.js et configurer l'environnement audio pour le traitement des fichiers audio",
         "details": "Installer les dépendances: npm install tone et npm install --save-dev @types/tone. Créer le service tone-engine.service.ts avec les méthodes de base pour initialiser le contexte audio Tone.js. Implémenter les méthodes pour charger un fichier audio, contrôler la lecture (play/pause), et gérer le volume. Configurer le service comme singleton avec inject() selon les conventions Angular. Ajouter la gestion d'erreurs pour les cas où l'audio n'est pas supporté par le navigateur.",
@@ -798,7 +798,7 @@
         "updatedAt": "2025-10-12T10:08:02.189Z"
       },
       {
-        "id": "4",
+        "id": 4,
         "title": "Implémentation du composant d'upload centré en mode vide",
         "description": "Créer le composant file-upload avec zone drag & drop centrée et validation des fichiers audio",
         "details": "Implémenter le composant file-upload avec zone de drag & drop et bouton 'Parcourir'. Centrer verticalement et horizontalement la zone d'upload quand aucun fichier n'est chargé (selon mockup). Valider les formats supportés: MP3, WAV, OGG, M4A. Limiter la taille à 10 Mo (10 485 760 octets). Afficher des messages d'erreur clairs pour formats non supportés ou fichiers trop volumineux. Utiliser les directives Angular pour le drag & drop (dragover, dragleave, drop). Implémenter les styles SCSS responsive pour mobile/desktop avec zone tactile suffisante.",
@@ -812,7 +812,7 @@
         "updatedAt": "2025-10-12T10:43:12.111Z"
       },
       {
-        "id": "5",
+        "id": 5,
         "title": "Création du composant waveform-display pour visualisation de l'onde audio",
         "description": "Développer le composant central de visualisation de la forme d'onde audio avec Canvas API",
         "details": "Créer le composant waveform-display comme élément graphique principal. Utiliser Canvas API ou wavesurfer.js pour générer et afficher la forme d'onde. Implémenter la méthode de génération de waveform à partir d'un fichier audio chargé via Tone.js. Dimensionner le canvas pour être responsive et touch-friendly (minimum 48px de hauteur sur mobile). Créer le service waveform.service.ts pour la logique de génération et de rendu. Optimiser les performances pour des fichiers jusqu'à 10 MB. Ajouter un loader pendant la génération de la waveform (moins d'1 seconde requis).",
@@ -826,7 +826,7 @@
         "updatedAt": "2025-10-12T11:27:55.525Z"
       },
       {
-        "id": "6",
+        "id": 6,
         "title": "Implémentation de la révélation progressive de l'interface",
         "description": "Créer le système de transition fluide entre l'état vide (upload centré) et l'état chargé (waveform + contrôles)",
         "details": "Implémenter la logique de révélation progressive dans audio-looper-container. En mode vide: afficher uniquement la zone d'upload centrée. Après chargement réussi: animation de transition pour faire apparaître la waveform au centre et les contrôles autour. Minimiser la zone d'upload vers le haut avec nom du fichier et bouton 'Change File'. Utiliser les animations CSS/Angular pour les transitions fluides. Gérer les états: vide, chargement, chargé, erreur. Appliquer les styles selon le mockup fourni avec layout adaptatif.",
@@ -840,7 +840,7 @@
         "updatedAt": "2025-10-12T13:43:01.161Z"
       },
       {
-        "id": "7",
+        "id": 7,
         "title": "Développement du lecteur audio de base avec curseur sur waveform",
         "description": "Implémenter les contrôles de lecture de base (play/pause) avec curseur de lecture animé sur la waveform",
         "details": "Créer le composant audio-player avec boutons Play/Pause. Implémenter l'affichage du temps courant et durée totale au format MM:SS. Développer le curseur de lecture comme ligne verticale se déplaçant sur la waveform en temps réel (60 FPS). Connecter le lecteur audio avec Tone.js Player. Synchroniser la position du curseur avec la position de lecture audio. Gérer les états play/pause avec feedback visuel immédiat. Optimiser les performances pour animation fluide du curseur.",
@@ -854,7 +854,7 @@
         "updatedAt": "2025-10-12T14:08:42.553Z"
       },
       {
-        "id": "8",
+        "id": 8,
         "title": "Implémentation de la navigation directe sur la waveform",
         "description": "Permettre à l'utilisateur de cliquer sur la waveform pour se positionner à un instant précis",
         "details": "Ajouter la gestion des événements de clic sur le canvas de la waveform. Calculer la position temporelle en fonction de la position X du clic. Implémenter la méthode pour déplacer la lecture à la position cliquée via Tone.js. Optimiser pour le tactile mobile avec zone de touch suffisamment large. Ajouter un feedback visuel lors du clic (highlight temporaire). Gérer les cas limites (clic en dehors de la durée audio). Assurer une réactivité immédiate pour une expérience utilisateur fluide.",
@@ -868,7 +868,7 @@
         "updatedAt": "2025-10-12T17:34:36.106Z"
       },
       {
-        "id": "9",
+        "id": 9,
         "title": "Création du système de boucle A/B avec marqueurs visuels",
         "description": "Implémenter les contrôles de boucle A/B avec marqueurs et zone colorée superposés sur la waveform",
         "details": "Développer le composant loop-controls avec boutons 'Set A', 'Set B', 'Loop ON/OFF', 'Reset Loop'. Implémenter les marqueurs visuels A et B comme lignes verticales colorées superposées sur la waveform. Créer la zone colorée entre A et B directement sur l'onde audio (overlay). Intégrer avec Tone.js pour la lecture en boucle automatique (setLoopPoints). Gérer les états de boucle active/inactive avec indicateur visuel 'Loop Active'. Assurer que la lecture saute automatiquement de B vers A pendant la boucle.",
@@ -946,7 +946,7 @@
         "updatedAt": "2025-10-19T21:08:59.173Z"
       },
       {
-        "id": "11",
+        "id": 11,
         "title": "Développement du contrôle de vitesse avec presets et stepper",
         "description": "Créer le composant de contrôle de vitesse avec boutons presets (0.5x, 0.75x, 1.0x) et stepper précis (0.4x-2.0x)",
         "status": "done",
@@ -1022,7 +1022,7 @@
         "updatedAt": "2025-10-20T05:38:53.934Z"
       },
       {
-        "id": "12",
+        "id": 12,
         "title": "Implémentation du contrôle de volume avec slider et mute",
         "description": "Créer le composant de contrôle du volume avec slider 0-100% et bouton mute/unmute",
         "details": "Développer le composant volume-control avec slider de volume (0% à 100%). Implémenter le bouton mute/unmute avec icônes 🔊/🔇 (seul composant avec icônes selon les spécifications). Intégrer avec Tone.Volume ou player.volume.value dans tone-engine.service. Gérer les états muet/actif avec changement d'icône. Appliquer les changements de volume en temps réel. Mémoriser le niveau de volume avant mute pour restauration. Utiliser les styles SCSS cohérents avec l'application.",
@@ -1036,7 +1036,7 @@
         "updatedAt": "2025-10-22T05:30:48.694Z"
       },
       {
-        "id": "13",
+        "id": 13,
         "title": "Optimisation responsive et interactions tactiles",
         "description": "Optimiser l'interface pour mobile et tablette avec interactions tactiles améliorées",
         "details": "Adapter tous les composants pour responsive design (desktop 1920×1080 à 1280×720, tablet 768×1024, mobile 375×667 à 414×896). Optimiser la waveform pour interaction tactile avec zone minimum 48px de hauteur. Améliorer les contrôles pour usage tactile (taille des boutons, espacement). Tester en mode portrait et paysage. Assurer que l'onde audio reste le composant central sur toutes les tailles d'écran. Ajuster les styles SCSS avec breakpoints appropriés. Optimiser les performances sur appareils mobiles.",
@@ -1049,7 +1049,7 @@
         "subtasks": []
       },
       {
-        "id": "14",
+        "id": 14,
         "title": "Finalisation des styles et cohérence visuelle",
         "description": "Finaliser les styles SCSS pour assurer la cohérence avec le module YouTube Looper et le design épuré",
         "details": "Harmoniser tous les styles SCSS avec ceux du module YouTube Looper existant. Appliquer le design minimaliste et épuré selon les spécifications. Implémenter les boutons textuels uniquement (sauf volume). Finaliser les états visuels (erreur, chargement, actif, inactif) pour qu'ils soient clairs. Optimiser la hiérarchie visuelle avec l'onde audio comme élément central. Ajuster les couleurs, typographie, espacement selon la charte graphique. Valider l'accessibilité et les contrastes.",
@@ -1062,7 +1062,7 @@
         "subtasks": []
       },
       {
-        "id": "15",
+        "id": 15,
         "title": "Tests manuels complets et optimisations finales",
         "description": "Effectuer les tests manuels complets de toutes les fonctionnalités et optimiser les performances",
         "details": "Effectuer des tests exhaustifs de tous les critères d'acceptation. Tester avec différents formats de fichiers audio (MP3, WAV, OGG, M4A). Valider les performances: chargement <2s pour 10MB, génération waveform <1s, effets temps réel sans latence, animation curseur 60 FPS. Vérifier la gestion d'erreurs avec fichiers corrompus ou non supportés. Tester la lecture en boucle fluide sans coupures. Optimiser le code pour les performances finales. Corriger les bugs identifiés lors des tests.",
@@ -1082,7 +1082,10 @@
       "completedCount": 11,
       "tags": [
         "audio-looper"
-      ]
+      ],
+      "created": "2025-10-23T20:22:25.066Z",
+      "description": "Tasks for audio-looper context",
+      "updated": "2025-10-23T20:22:25.066Z"
     }
   },
   "rubberband-wasm-pitch": {
@@ -1563,6 +1566,215 @@
       "created": "2025-10-19T20:58:13.296Z",
       "description": "Tasks for rubberband-wasm-pitch context",
       "updated": "2025-10-19T20:58:13.296Z"
+    }
+  },
+  "audio-favoris": {
+    "tasks": [
+      {
+        "id": 1,
+        "title": "Mise en place de l'architecture du système de favoris",
+        "description": "Créer la structure de base du module favoris avec les services, interfaces et modèles de données",
+        "details": "Créer un service FavoriteService avec les méthodes de base (add, remove, list, update), définir les interfaces TypeScript pour FavoriteModel et FavoriteSettings, créer les types pour le stockage localStorage et IndexedDB. Implémenter la structure de données JSON avec validation des limites (10 favoris max, 100MB total).",
+        "testStrategy": "Tests unitaires sur les interfaces et validation des limites de stockage",
+        "priority": "high",
+        "dependencies": [],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 2,
+        "title": "Implémentation du stockage localStorage pour métadonnées",
+        "description": "Développer la couche de persistance localStorage pour sauvegarder les métadonnées des favoris",
+        "details": "Créer LocalStorageService avec méthodes saveMetadata, loadMetadata, updateOrder. Implémenter la sérialisation/désérialisation JSON avec gestion des erreurs de quota. Structure clé: 'audioLooperFavorites' avec favorites[], order[] et totalSize.",
+        "testStrategy": "Tests unitaires avec mock localStorage et gestion des cas d'erreur de quota",
+        "priority": "high",
+        "dependencies": [
+          1
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 3,
+        "title": "Implémentation du stockage IndexedDB pour buffers audio",
+        "description": "Développer la couche IndexedDB pour stocker les buffers audio complets et waveform data",
+        "details": "Créer IndexedDBService avec méthodes saveAudioBuffer, loadAudioBuffer, deleteAudioBuffer. Utiliser clés 'favorite_${timestamp}'. Implémenter compression/décompression des buffers audio. Gestion des erreurs de corruption et nettoyage des entrées orphelines.",
+        "testStrategy": "Tests d'intégration avec vrais buffers audio et simulation d'erreurs de corruption",
+        "priority": "high",
+        "dependencies": [
+          1
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 4,
+        "title": "Création du bouton étoile dans la barre upload minimisée",
+        "description": "Ajouter le bouton étoile avec états visuels (vide/plein) dans la barre upload existante",
+        "details": "Modifier le composant upload-bar pour inclure un bouton étoile à côté du titre. États: étoile vide (outline) pour non-favori, étoile pleine dorée + badge 'Favori' pour favori actif. Gestion du clic avec vérification de la limite de 10 favoris.",
+        "testStrategy": "Tests visuels des états et tests d'interaction utilisateur",
+        "priority": "medium",
+        "dependencies": [
+          1,
+          2,
+          3
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 5,
+        "title": "Implémentation de l'ajout aux favoris avec validation des limites",
+        "description": "Développer la logique d'ajout d'un favori avec sauvegarde des réglages audio et validation des contraintes",
+        "details": "Créer addToFavorites() qui capture: pitch, playbackRate, currentTime, loopStart/End, loopEnabled. Validation limite 10 favoris et 100MB total. Sauvegarde timestamp comme ID unique. Gestion du feedback utilisateur avec toasts.",
+        "testStrategy": "Tests des cas limites (10 favoris, 100MB) et validation des données sauvegardées",
+        "priority": "high",
+        "dependencies": [
+          4
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 6,
+        "title": "Création de la modal de gestion des limites (10 favoris max)",
+        "description": "Développer la modal qui s'affiche quand l'utilisateur tente d'ajouter un 11ème favori",
+        "details": "Créer FavoriteQuotaModalComponent avec liste complète des favoris (titre, durée, date, taille, bouton supprimer). L'utilisateur doit supprimer un favori pour libérer l'espace avant d'ajouter le nouveau. Auto-ajout du nouveau favori après suppression.",
+        "testStrategy": "Tests d'interaction pour suppression et ajout automatique",
+        "priority": "medium",
+        "dependencies": [
+          5
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 7,
+        "title": "Création du composant sidebar des favoris",
+        "description": "Développer le sidebar coulissant latéral pour afficher la liste des favoris",
+        "details": "Créer FavoritesSidebarComponent avec drawer depuis la gauche, overlay semi-transparent. Header avec titre, compteur '7/10 favoris • 45 MB / 100 MB', boutons 'Modifier l'ordre' et 'Upload nouveau fichier'. Footer avec bouton fermer.",
+        "testStrategy": "Tests responsive mobile/desktop et animations d'ouverture/fermeture",
+        "priority": "medium",
+        "dependencies": [
+          1
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 8,
+        "title": "Création des cartes de favoris avec waveform miniature",
+        "description": "Développer les cartes individuelles pour chaque favori dans la liste sidebar",
+        "details": "Créer FavoriteCardComponent avec waveform miniature (40-60px), titre tronqué, badges des réglages actifs (pitch, vitesse, boucle A-B), durée/date, taille fichier, boutons Play/Pause et Supprimer. Design responsive touch-friendly.",
+        "testStrategy": "Tests d'affichage des différents états de réglages et interactions tactiles",
+        "priority": "medium",
+        "dependencies": [
+          7
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 9,
+        "title": "Implémentation du chargement d'un favori avec restauration complète",
+        "description": "Développer la logique de chargement d'un favori qui restaure tous les réglages et la position de lecture",
+        "details": "Créer loadFavorite() qui charge le buffer IndexedDB, applique pitch/vitesse/boucles A-B, positionne currentTime à la position sauvegardée. Volume par défaut à 100%. Ne lance PAS la lecture automatiquement. Fermeture auto du sidebar. Mise à jour du badge étoile.",
+        "testStrategy": "Tests de restauration précise des réglages et validation de la position de lecture",
+        "priority": "high",
+        "dependencies": [
+          8,
+          3
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 10,
+        "title": "Bouton 'Sauvegarder les modifications' pour favoris existants",
+        "description": "Ajouter un bouton pour mettre à jour un favori existant quand l'utilisateur modifie ses réglages",
+        "details": "Détecter les modifications (pitch, vitesse, boucles, position) d'un favori chargé. Afficher bouton 'Sauvegarder les modifications' dans la barre upload entre titre et badge. Mettre à jour les métadonnées et position de lecture actuelle. Toast de confirmation.",
+        "testStrategy": "Tests de détection des modifications et validation de la mise à jour",
+        "priority": "medium",
+        "dependencies": [
+          9
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 11,
+        "title": "Mode édition avec drag & drop pour réorganisation",
+        "description": "Implémenter le mode édition permettant de réorganiser l'ordre des favoris par glisser-déposer",
+        "details": "Utiliser Angular CDK Drag & Drop pour réorganisation touch-friendly. Mode édition activé par bouton 'Modifier l'ordre': afficher handles de drag (≡), masquer boutons Play/Supprimer, message d'aide. Sauvegarde automatique du nouvel ordre dans localStorage.",
+        "testStrategy": "Tests tactiles mobile et desktop, validation de la persistance de l'ordre",
+        "priority": "medium",
+        "dependencies": [
+          8
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 12,
+        "title": "Bouton d'accès au sidebar et logique d'affichage par défaut",
+        "description": "Créer le bouton fixe d'accès au sidebar et gérer l'affichage par défaut selon le nombre de favoris",
+        "details": "Bouton hamburger/bibliothèque en haut à gauche toujours visible. Logique: si 0 favori → afficher file-upload, si ≥1 favori → sidebar disponible (fermé par défaut). Gestion des états ouvert/fermé avec overlay.",
+        "testStrategy": "Tests de la logique d'affichage conditionnel et interactions d'ouverture/fermeture",
+        "priority": "medium",
+        "dependencies": [
+          7
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 13,
+        "title": "Gestion d'erreurs et cas limites",
+        "description": "Implémenter la gestion robuste des erreurs de stockage et corruption de données",
+        "details": "Try/catch sur IndexedDB avec messages 'Espace de stockage insuffisant'. Détection des buffers corrompus avec option 'Supprimer ce favori corrompu'. Nettoyage automatique des entrées orphelines au démarrage. Validation des doublons par nom+taille.",
+        "testStrategy": "Tests de simulation d'erreurs quota, corruption et validation du nettoyage automatique",
+        "priority": "medium",
+        "dependencies": [
+          3,
+          9
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 14,
+        "title": "Feedback utilisateur et toasts de notification",
+        "description": "Implémenter tous les messages de feedback utilisateur avec toasts et notifications",
+        "details": "Créer NotificationService pour toasts: 'Ajouté aux favoris', 'Favori supprimé', 'Modifications enregistrées', 'Ce fichier est déjà dans vos favoris'. États de chargement avec spinners pour gros fichiers. Skeleton loaders pour cartes favoris.",
+        "testStrategy": "Tests visuels des notifications et états de chargement",
+        "priority": "low",
+        "dependencies": [
+          5,
+          9,
+          10
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 15,
+        "title": "Optimisation responsive et design mobile",
+        "description": "Finaliser l'adaptation mobile et desktop avec design cohérent au module audio-looper existant",
+        "details": "Mobile (<768px): sidebar pleine largeur 90%, cartes pleine largeur, drag tactile optimisé. Desktop (≥768px): sidebar 320-400px, hover states. Reprendre styles audio-looper existant, boutons textuels, mode sombre compatible. Tests sur différentes tailles d'écran.",
+        "testStrategy": "Tests responsive sur mobiles/tablettes/desktop et validation de la cohérence visuelle",
+        "priority": "medium",
+        "dependencies": [
+          11,
+          12
+        ],
+        "status": "pending",
+        "subtasks": []
+      }
+    ],
+    "metadata": {
+      "created": "2025-10-23T20:22:25.070Z",
+      "updated": "2025-10-23T20:25:01.087Z",
+      "description": "Tasks for audio-favoris context"
     }
   }
 }
