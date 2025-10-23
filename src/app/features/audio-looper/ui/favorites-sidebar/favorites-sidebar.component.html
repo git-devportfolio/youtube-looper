@@ -1,0 +1,67 @@
+<!-- Overlay semi-transparent -->
+@if (isOpen()) {
+  <div class="sidebar-overlay" (click)="onOverlayClick()"></div>
+}
+
+<!-- Sidebar coulissant -->
+<aside class="favorites-sidebar" [class.open]="isOpen()">
+  <!-- Header -->
+  <header class="sidebar-header">
+    <h2 class="sidebar-title">Mes Favoris</h2>
+
+    <!-- Compteur de favoris et taille -->
+    <div class="sidebar-stats">
+      <span class="stats-text">
+        {{ favoritesCount() }}/{{ maxFavorites() }} favoris •
+        {{ sizeMB() }} MB / {{ maxSizeMB() }} MB
+      </span>
+      <div class="stats-bar">
+        <div class="stats-bar-fill" [style.width.%]="usagePercentage()"></div>
+      </div>
+    </div>
+
+    <!-- Boutons d'action -->
+    <div class="sidebar-actions">
+      <button
+        type="button"
+        class="btn-action btn-edit-order"
+        (click)="onEditOrder()"
+        [disabled]="favoritesCount() === 0">
+        Modifier l'ordre
+      </button>
+      <button
+        type="button"
+        class="btn-action btn-upload"
+        (click)="onUploadNewFile()"
+        [disabled]="favoritesCount() >= maxFavorites()">
+        Upload nouveau fichier
+      </button>
+    </div>
+  </header>
+
+  <!-- Contenu principal (liste des favoris) -->
+  <div class="sidebar-content">
+    <!-- Placeholder pour la liste des favoris (sera ajouté dans les prochaines tâches) -->
+    @if (favoritesCount() === 0) {
+      <div class="empty-state">
+        <p class="empty-state-text">Aucun favori enregistré</p>
+        <p class="empty-state-hint">Uploadez un fichier audio pour commencer</p>
+      </div>
+    } @else {
+      <div class="favorites-list">
+        <!-- La liste des favoris sera ajoutée dans une prochaine tâche -->
+        <p class="temp-message">Liste des favoris à implémenter</p>
+      </div>
+    }
+  </div>
+
+  <!-- Footer -->
+  <footer class="sidebar-footer">
+    <button
+      type="button"
+      class="btn-close"
+      (click)="onClose()">
+      Fermer
+    </button>
+  </footer>
+</aside>

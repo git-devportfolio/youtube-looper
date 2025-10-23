@@ -7,3 +7,4 @@ export * from './volume-control';
 export * from './waveform-display';
 export * from './audio-looper-container';
 export * from './audio-controls-modal';
+export * from './favorites-sidebar';

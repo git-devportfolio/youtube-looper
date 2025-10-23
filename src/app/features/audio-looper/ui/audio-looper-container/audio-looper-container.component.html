@@ -74,3 +74,13 @@
   }
 
 </div>
+
+<!-- Sidebar des favoris -->
+<app-favorites-sidebar
+  [isOpen]="sidebarOpen()"
+  [favoritesCount]="favorites().length"
+  [totalSize]="storageStats().totalSize"
+  (close)="closeSidebar()"
+  (uploadNewFile)="onUploadNewFileFromSidebar()"
+  (editOrder)="onEditOrder()">
+</app-favorites-sidebar>

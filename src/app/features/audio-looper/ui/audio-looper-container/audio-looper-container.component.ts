@@ -5,6 +5,7 @@ import { FileUploadComponent } from '../file-upload';
 import { WaveformDisplayComponent } from '../waveform-display';
 import { AudioPlayerComponent } from '../audio-player';
 import { VolumeControlComponent } from '../volume-control';
+import { FavoritesSidebarComponent } from '../favorites-sidebar';
 import { AudioPlayerService, ToneEngineService, WaveformService } from '../../services';
 import { FavoriteService } from '../../data';
 
@@ -12,7 +13,7 @@ type LoadingState = 'empty' | 'loading' | 'loaded' | 'error';
 
 @Component({
   selector: 'app-audio-looper-container',
-  imports: [CommonModule, FileUploadComponent, WaveformDisplayComponent, AudioPlayerComponent, VolumeControlComponent],
+  imports: [CommonModule, FileUploadComponent, WaveformDisplayComponent, AudioPlayerComponent, VolumeControlComponent, FavoritesSidebarComponent],
   templateUrl: './audio-looper-container.component.html',
   styleUrl: './audio-looper-container.component.scss',
   animations: [
@@ -57,6 +58,10 @@ export class AudioLooperContainerComponent {
   // Signals du service favoris (exposition publique)
   readonly favorites = this.favoriteService.favorites;
   readonly hasFavorites = this.favoriteService.hasFavorites;
+  readonly storageStats = this.favoriteService.storageStats;
+
+  // État du sidebar
+  readonly sidebarOpen = signal<boolean>(false);
 
   /**
    * Gère la sélection d'un fichier audio
@@ -107,5 +112,36 @@ export class AudioLooperContainerComponent {
     if (this.audioPlayerService.isPlaying()) {
       this.audioPlayerService.pause();
     }
+  }
+
+  /**
+   * Ouvre le sidebar des favoris
+   */
+  openSidebar(): void {
+    this.sidebarOpen.set(true);
+  }
+
+  /**
+   * Ferme le sidebar des favoris
+   */
+  closeSidebar(): void {
+    this.sidebarOpen.set(false);
+  }
+
+  /**
+   * Gère l'upload d'un nouveau fichier depuis le sidebar
+   */
+  onUploadNewFileFromSidebar(): void {
+    this.closeSidebar();
+    // TODO: Ouvrir un dialog d'upload ou revenir à l'écran d'upload
+    console.log('Upload nouveau fichier depuis sidebar');
+  }
+
+  /**
+   * Active le mode édition d'ordre des favoris
+   */
+  onEditOrder(): void {
+    console.log('Édition de l\'ordre des favoris');
+    // TODO: Implémenter le mode édition d'ordre
   }
 }
