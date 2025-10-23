@@ -6,6 +6,7 @@ import { WaveformDisplayComponent } from '../waveform-display';
 import { AudioPlayerComponent } from '../audio-player';
 import { VolumeControlComponent } from '../volume-control';
 import { AudioPlayerService, ToneEngineService, WaveformService } from '../../services';
+import { FavoriteService } from '../../data';
 
 type LoadingState = 'empty' | 'loading' | 'loaded' | 'error';
 
@@ -36,6 +37,7 @@ export class AudioLooperContainerComponent {
   private readonly audioPlayerService = inject(AudioPlayerService);
   private readonly toneEngineService = inject(ToneEngineService);
   private readonly waveformService = inject(WaveformService);
+  private readonly favoriteService = inject(FavoriteService);
 
   // Signals pour l'état de l'interface
   readonly loadingState = signal<LoadingState>('empty');
@@ -51,6 +53,10 @@ export class AudioLooperContainerComponent {
 
   // Signals du service audio
   readonly isReady = this.audioPlayerService.isReady;
+
+  // Signals du service favoris (exposition publique)
+  readonly favorites = this.favoriteService.favorites;
+  readonly hasFavorites = this.favoriteService.hasFavorites;
 
   /**
    * Gère la sélection d'un fichier audio
