@@ -1841,8 +1841,68 @@
         "dependencies": [
           "5"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Créer le composant FavoriteQuotaModalComponent",
+            "description": "Générer et structurer le composant modal de base pour la gestion des limites de favoris",
+            "dependencies": [],
+            "details": "Utiliser ng generate component pour créer features/audio-looper/ui/favorite-quota-modal avec template HTML séparé, styles SCSS et logique TypeScript. Configurer la structure de base avec inputs/outputs nécessaires pour recevoir la liste des favoris et émettre les événements de suppression.",
+            "status": "pending",
+            "testStrategy": null,
+            "parentId": "undefined"
+          },
+          {
+            "id": 2,
+            "title": "Développer l'interface utilisateur de la modal",
+            "description": "Créer le template HTML et les styles SCSS pour afficher la liste complète des favoris",
+            "dependencies": [
+              1
+            ],
+            "details": "Implémenter le template avec overlay modal, header explicatif 'Limite atteinte (10/10)', liste scrollable des favoris avec titre, durée, date d'ajout, taille du fichier pour chaque entrée. Styles responsive avec boutons de suppression clairement visibles et touch-friendly.",
+            "status": "pending",
+            "testStrategy": null,
+            "parentId": "undefined"
+          },
+          {
+            "id": 3,
+            "title": "Intégrer la fonctionnalité de suppression des favoris",
+            "description": "Implémenter la logique de suppression d'un favori depuis la modal",
+            "dependencies": [
+              2
+            ],
+            "details": "Connecter les boutons de suppression avec le FavoriteService pour supprimer un favori sélectionné. Gérer la confirmation de suppression avec feedback immédiat. Mettre à jour la liste en temps réel après suppression et recalculer l'espace disponible.",
+            "status": "pending",
+            "testStrategy": "Tests d'interaction pour la suppression avec vérification de la mise à jour de la liste",
+            "parentId": "undefined"
+          },
+          {
+            "id": 4,
+            "title": "Implémenter l'auto-ajout du nouveau favori",
+            "description": "Développer la logique d'ajout automatique du nouveau favori après suppression",
+            "dependencies": [
+              3
+            ],
+            "details": "Après suppression réussie d'un favori, déclencher automatiquement l'ajout du nouveau favori en attente. Gérer la séquence: suppression → validation de l'espace libre → ajout automatique → fermeture de la modal → feedback utilisateur avec toast de confirmation.",
+            "status": "pending",
+            "testStrategy": "Tests de la séquence complète suppression-ajout avec validation des états intermédiaires",
+            "parentId": "undefined"
+          },
+          {
+            "id": 5,
+            "title": "Intégrer la modal dans le système de favoris existant",
+            "description": "Connecter la modal avec le système de gestion des favoris et gérer son affichage",
+            "dependencies": [
+              4
+            ],
+            "details": "Intégrer l'appel de la modal dans FavoriteService quand la limite est atteinte. Gérer l'ouverture/fermeture de la modal, passer les données des favoris existants, et coordonner avec les autres composants. Implémenter la gestion des états de chargement et d'erreur.",
+            "status": "pending",
+            "testStrategy": "Tests d'intégration avec validation du déclenchement automatique de la modal et coordination avec les autres composants",
+            "parentId": "undefined"
+          }
+        ],
+        "updatedAt": "2025-10-24T16:10:18.572Z"
       },
       {
         "id": "7",
@@ -2035,9 +2095,9 @@
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2025-10-24T14:50:14.012Z",
+      "lastModified": "2025-10-24T16:10:18.575Z",
       "taskCount": 15,
-      "completedCount": 6,
+      "completedCount": 7,
       "tags": [
         "audio-favoris"
       ]

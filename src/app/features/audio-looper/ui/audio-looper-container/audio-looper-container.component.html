@@ -109,3 +109,10 @@
   (uploadNewFile)="onUploadNewFileFromSidebar()"
   (editOrder)="onEditOrder()">
 </app-favorites-sidebar>
+
+<!-- Modal de quota de favoris -->
+<app-favorite-quota-modal
+  [isOpen]="quotaModalOpen()"
+  (close)="closeQuotaModal()"
+  (favoriteDeleted)="onFavoriteDeleted()">
+</app-favorite-quota-modal>

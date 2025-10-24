@@ -6,15 +6,17 @@ import { WaveformDisplayComponent } from '../waveform-display';
 import { AudioPlayerComponent } from '../audio-player';
 import { VolumeControlComponent } from '../volume-control';
 import { FavoritesSidebarComponent } from '../favorites-sidebar';
+import { FavoriteQuotaModalComponent } from '../favorite-quota-modal';
 import { AudioPlayerService, ToneEngineService, WaveformService, RubberbandEngineService } from '../../services';
 import { FavoriteService } from '../../data';
+import { FavoriteSettings } from '../../data/interfaces';
 import { fileToBase64, getAudioDuration } from '../../utils';
 
 type LoadingState = 'empty' | 'loading' | 'loaded' | 'error';
 
 @Component({
   selector: 'app-audio-looper-container',
-  imports: [CommonModule, FileUploadComponent, WaveformDisplayComponent, AudioPlayerComponent, VolumeControlComponent, FavoritesSidebarComponent],
+  imports: [CommonModule, FileUploadComponent, WaveformDisplayComponent, AudioPlayerComponent, VolumeControlComponent, FavoritesSidebarComponent, FavoriteQuotaModalComponent],
   templateUrl: './audio-looper-container.component.html',
   styleUrl: './audio-looper-container.component.scss',
   animations: [
@@ -69,6 +71,19 @@ export class AudioLooperContainerComponent {
   // État du favori
   private readonly currentFavoriteId = signal<string | null>(null);
   readonly isSavingFavorite = signal<boolean>(false);
+
+  // État de la modal de quota
+  readonly quotaModalOpen = signal<boolean>(false);
+
+  // Données en attente d'ajout (après suppression)
+  private readonly pendingFavoriteData = signal<{
+    fileName: string;
+    mimeType: string;
+    audioData: string;
+    size: number;
+    duration: number;
+    settings: Partial<FavoriteSettings>;
+  } | null>(null);
 
   // Computed: vérifie si le fichier actuel est dans les favoris
   readonly isCurrentFileFavorite = computed(() => {
@@ -224,8 +239,19 @@ export class AudioLooperContainerComponent {
         const estimatedSize = audioData.length; // Taille approximative en bytes
 
         // Vérifier la limite de nombre de favoris (10)
+        // Vérifier la limite de nombre de favoris (10)
         if (currentCount >= 10) {
-          alert('Limite atteinte : vous ne pouvez sauvegarder que 10 favoris maximum.');
+          // Sauvegarder les données pour ajout après suppression
+          this.pendingFavoriteData.set({
+            fileName: fileName,
+            mimeType: file.type,
+            audioData: audioData,
+            size: file.size,
+            duration: duration,
+            settings: currentSettings
+          });
+          // Ouvrir la modal pour choisir un favori à supprimer
+          this.quotaModalOpen.set(true);
           return;
         }
 
@@ -263,6 +289,50 @@ export class AudioLooperContainerComponent {
       alert('Erreur lors de la sauvegarde du favori');
     } finally {
       this.isSavingFavorite.set(false);
+    }
+  }
+
+  /**
+   * Ferme la modal de quota
+   */
+  closeQuotaModal(): void {
+    this.quotaModalOpen.set(false);
+    this.pendingFavoriteData.set(null);
+  }
+
+  /**
+   * Gère l'auto-ajout du favori après suppression
+   */
+  async onFavoriteDeleted(): Promise<void> {
+    const pending = this.pendingFavoriteData();
+
+    if (!pending) {
+      console.warn('Aucune donnée en attente pour l\'ajout automatique');
+      return;
+    }
+
+    console.log('Ajout automatique du favori après suppression...');
+
+    try {
+      const result = await this.favoriteService.add(
+        pending.fileName,
+        pending.mimeType,
+        pending.audioData,
+        pending.size,
+        pending.duration,
+        pending.settings
+      );
+
+      if (result.isValid) {
+        console.log('Favori ajouté automatiquement avec succès');
+        this.pendingFavoriteData.set(null);
+      } else {
+        console.error('Erreur lors de l\'ajout automatique:', result.errorMessage);
+        alert(`Erreur lors de l'ajout du favori: ${result.errorMessage}`);
+      }
+    } catch (error) {
+      console.error('Erreur lors de l\'ajout automatique:', error);
+      alert('Erreur lors de l\'ajout du favori');
     }
   }
 }

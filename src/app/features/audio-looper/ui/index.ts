@@ -8,3 +8,4 @@ export * from './waveform-display';
 export * from './audio-looper-container';
 export * from './audio-controls-modal';
 export * from './favorites-sidebar';
+export * from './favorite-quota-modal';
