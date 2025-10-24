@@ -6,8 +6,9 @@ import { WaveformDisplayComponent } from '../waveform-display';
 import { AudioPlayerComponent } from '../audio-player';
 import { VolumeControlComponent } from '../volume-control';
 import { FavoritesSidebarComponent } from '../favorites-sidebar';
-import { AudioPlayerService, ToneEngineService, WaveformService } from '../../services';
+import { AudioPlayerService, ToneEngineService, WaveformService, RubberbandEngineService } from '../../services';
 import { FavoriteService } from '../../data';
+import { fileToBase64, getAudioDuration } from '../../utils';
 
 type LoadingState = 'empty' | 'loading' | 'loaded' | 'error';
 
@@ -39,10 +40,12 @@ export class AudioLooperContainerComponent {
   private readonly toneEngineService = inject(ToneEngineService);
   private readonly waveformService = inject(WaveformService);
   private readonly favoriteService = inject(FavoriteService);
+  private readonly rubberbandEngine = inject(RubberbandEngineService);
 
   // Signals pour l'état de l'interface
   readonly loadingState = signal<LoadingState>('empty');
   readonly currentFileName = signal<string>('');
+  readonly currentFile = signal<File | null>(null); // Stocker le fichier original
   readonly audioBuffer = signal<AudioBuffer | null>(null);
   readonly errorMessage = signal<string>('');
 
@@ -82,6 +85,7 @@ export class AudioLooperContainerComponent {
       // Mettre à jour l'état en chargement
       this.loadingState.set('loading');
       this.currentFileName.set(file.name);
+      this.currentFile.set(file); // Stocker le fichier original
       this.errorMessage.set('');
 
       console.log('Fichier sélectionné:', file.name);
@@ -116,6 +120,7 @@ export class AudioLooperContainerComponent {
     // Réinitialiser l'état
     this.loadingState.set('empty');
     this.currentFileName.set('');
+    this.currentFile.set(null);
     this.audioBuffer.set(null);
     this.errorMessage.set('');
 
@@ -164,6 +169,7 @@ export class AudioLooperContainerComponent {
 
     const fileName = this.currentFileName();
     const buffer = this.audioBuffer();
+    const file = this.currentFile();
 
     if (!fileName || !buffer) {
       console.warn('Aucun fichier chargé pour ajouter aux favoris');
@@ -185,10 +191,72 @@ export class AudioLooperContainerComponent {
         }
       } else {
         // Sinon, on ajoute aux favoris
-        // TODO: Récupérer le fichier original pour l'ajouter
-        // Pour l'instant, on log juste un message
-        console.log('Ajout aux favoris - À implémenter avec le fichier original');
-        alert('Fonctionnalité d\'ajout aux favoris à implémenter dans une prochaine tâche');
+        if (!file) {
+          console.error('Fichier original non disponible');
+          alert('Erreur : fichier original non disponible');
+          return;
+        }
+
+        // Capturer les réglages audio actuels
+        const currentSettings = {
+          pitch: this.rubberbandEngine.pitch(),
+          playbackRate: this.toneEngineService.playbackRate(),
+          currentTime: this.audioPlayerService.currentTime(),
+          loopStart: this.toneEngineService.loopStart(),
+          loopEnd: this.toneEngineService.loopEnd(),
+          loopEnabled: this.toneEngineService.isLooping(),
+          volume: this.audioPlayerService.volume()
+        };
+
+        console.log('Réglages audio capturés:', currentSettings);
+
+        // Convertir le fichier en Base64
+        const audioData = await fileToBase64(file);
+
+        // Obtenir la durée audio
+        const duration = await getAudioDuration(file);
+
+        console.log('Fichier converti, durée:', duration);
+
+        // Validation des limites avant ajout
+        const stats = this.favoriteService.storageStats();
+        const currentCount = this.favorites().length;
+        const estimatedSize = audioData.length; // Taille approximative en bytes
+
+        // Vérifier la limite de nombre de favoris (10)
+        if (currentCount >= 10) {
+          alert('Limite atteinte : vous ne pouvez sauvegarder que 10 favoris maximum.');
+          return;
+        }
+
+        // Vérifier la limite de stockage total (100 Mo)
+        const maxStorageSize = 100 * 1024 * 1024; // 100 Mo en bytes
+        if (stats.totalSize + estimatedSize > maxStorageSize) {
+          const sizeInMb = (estimatedSize / (1024 * 1024)).toFixed(2);
+          const remainingInMb = ((maxStorageSize - stats.totalSize) / (1024 * 1024)).toFixed(2);
+          alert(`Espace insuffisant : ce fichier nécessite ${sizeInMb} Mo mais il ne reste que ${remainingInMb} Mo disponibles.`);
+          return;
+        }
+
+        console.log('Validation des limites OK, ajout du favori...');
+
+        // Sauvegarder le favori avec l'API correcte du FavoriteService
+        const result = await this.favoriteService.add(
+          fileName,          // fileName: string
+          file.type,         // mimeType: string
+          audioData,         // audioData: string (Base64)
+          file.size,         // size: number
+          duration,          // duration: number
+          currentSettings    // settings: Partial<FavoriteSettings>
+        );
+
+        if (result.isValid) {
+          console.log('Favori ajouté avec succès');
+          // Le FavoriteService recharge automatiquement la liste, donc isCurrentFileFavorite() sera mis à jour
+        } else {
+          console.error('Erreur lors de l\'ajout du favori:', result.errorMessage);
+          alert(`Erreur lors de l'ajout du favori: ${result.errorMessage}`);
+        }
       }
     } catch (error) {
       console.error('Erreur lors du toggle du favori:', error);

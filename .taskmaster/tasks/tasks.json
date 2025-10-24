@@ -1765,8 +1765,71 @@
         "dependencies": [
           "4"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Implémentation de la méthode addToFavorites dans FavoriteService",
+            "description": "Créer la méthode addToFavorites() qui capture les réglages audio actuels et appelle le service de sauvegarde avec validation",
+            "dependencies": [],
+            "details": "Ajouter une méthode addToFavorites(file: File, audioBuffer: AudioBuffer) dans FavoriteService qui extrait mimeType, size, et duration du fichier/buffer, capture les réglages actuels depuis AudioPlayerService et ToneEngineService (pitch, playbackRate, currentTime, loopStart/End, loopEnabled), puis appelle la méthode add() existante avec génération automatique d'ID timestamp unique",
+            "status": "done",
+            "testStrategy": "Tests unitaires pour vérifier la capture correcte des réglages et l'appel à la méthode save avec les bonnes données",
+            "updatedAt": "2025-10-24T14:42:10.668Z",
+            "parentId": "undefined"
+          },
+          {
+            "id": 2,
+            "title": "Intégration des réglages audio actuels pour la capture d'état",
+            "description": "Développer la logique de capture des réglages audio depuis AudioPlayerService et ToneEngineService pour la sauvegarde en favoris",
+            "dependencies": [
+              1
+            ],
+            "details": "Créer des méthodes helper dans AudioLooperContainerComponent pour extraire les réglages actuels : getCurrentAudioSettings() qui récupère pitch/vitesse depuis ToneEngineService, volume/mute depuis AudioPlayerService, loopStart/End/Enabled depuis les contrôles de boucle, currentTime de la position de lecture. Ces réglages seront passés à FavoriteService.addToFavorites()",
+            "status": "in-progress",
+            "testStrategy": "Tests d'intégration pour vérifier que tous les réglages audio sont correctement capturés à l'instant T",
+            "parentId": "undefined",
+            "updatedAt": "2025-10-24T14:42:13.835Z"
+          },
+          {
+            "id": 3,
+            "title": "Implémentation de la validation des limites de stockage",
+            "description": "Ajouter la validation avant sauvegarde pour respecter la limite de 10 favoris et 100MB total avec gestion des erreurs appropriées",
+            "dependencies": [
+              1
+            ],
+            "details": "Améliorer la méthode addToFavorites() pour vérifier via FavoriteStorageService.canAddFavorite() les contraintes : nombre de favoris < 10, taille totale + nouveau fichier < 100MB. Retourner ValidationResult avec errorCode 'MAX_FAVORITES' ou 'MAX_SIZE' si limites dépassées. Utiliser les computed signals canAddMore et storageStats pour les vérifications",
+            "status": "pending",
+            "testStrategy": "Tests des cas limites : ajout du 10ème favori (succès), ajout du 11ème (échec), fichier dépassant 100MB total (échec)",
+            "parentId": "undefined"
+          },
+          {
+            "id": 4,
+            "title": "Implémentation du système de feedback utilisateur avec toasts",
+            "description": "Créer un système de notifications toast pour informer l'utilisateur du succès ou échec des opérations de favoris",
+            "dependencies": [
+              3
+            ],
+            "details": "Créer un service ToastService simple avec show(message, type: 'success'|'error'|'warning') et timeout auto. Intégrer dans AudioLooperContainerComponent.toggleFavorite() pour afficher : 'Favori ajouté avec succès', 'Limite de 10 favoris atteinte', 'Taille maximale de 100MB dépassée', 'Erreur lors de la sauvegarde'. Composant toast simple en position fixed top-right avec animations",
+            "status": "pending",
+            "testStrategy": "Tests d'affichage des différents types de toasts selon les résultats d'opération",
+            "parentId": "undefined"
+          },
+          {
+            "id": 5,
+            "title": "Finalisation de l'intégration complète dans toggleFavorite()",
+            "description": "Remplacer le placeholder dans toggleFavorite() par l'appel effectif à addToFavorites avec gestion complète des réglages et feedback",
+            "dependencies": [
+              2,
+              4
+            ],
+            "details": "Modifier AudioLooperContainerComponent.toggleFavorite() pour remplacer le TODO/alert par : récupération du File original (stocker référence lors onFileSelected), capture des réglages via getCurrentAudioSettings(), appel à favoriteService.addToFavorites(), gestion du ValidationResult avec affichage des toasts appropriés, mise à jour de l'état du composant. Supprimer les placeholders existants",
+            "status": "pending",
+            "testStrategy": "Tests end-to-end : chargement fichier, modification réglages, ajout favori, vérification sauvegarde et feedback utilisateur",
+            "parentId": "undefined"
+          }
+        ],
+        "updatedAt": "2025-10-24T14:50:14.010Z"
       },
       {
         "id": "6",
@@ -1972,9 +2035,9 @@
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2025-10-23T21:34:43.788Z",
+      "lastModified": "2025-10-24T14:50:14.012Z",
       "taskCount": 15,
-      "completedCount": 5,
+      "completedCount": 6,
       "tags": [
         "audio-favoris"
       ]
