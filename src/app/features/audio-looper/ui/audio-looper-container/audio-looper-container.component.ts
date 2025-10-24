@@ -63,6 +63,17 @@ export class AudioLooperContainerComponent {
   // État du sidebar
   readonly sidebarOpen = signal<boolean>(false);
 
+  // État du favori
+  private readonly currentFavoriteId = signal<string | null>(null);
+  readonly isSavingFavorite = signal<boolean>(false);
+
+  // Computed: vérifie si le fichier actuel est dans les favoris
+  readonly isCurrentFileFavorite = computed(() => {
+    const fileName = this.currentFileName();
+    if (!fileName) return false;
+    return this.favoriteService.hasFileByName(fileName);
+  });
+
   /**
    * Gère la sélection d'un fichier audio
    */
@@ -143,5 +154,47 @@ export class AudioLooperContainerComponent {
   onEditOrder(): void {
     console.log('Édition de l\'ordre des favoris');
     // TODO: Implémenter le mode édition d'ordre
+  }
+
+  /**
+   * Toggle l'état favori du fichier audio actuel
+   */
+  async toggleFavorite(): Promise<void> {
+    if (this.isSavingFavorite()) return;
+
+    const fileName = this.currentFileName();
+    const buffer = this.audioBuffer();
+
+    if (!fileName || !buffer) {
+      console.warn('Aucun fichier chargé pour ajouter aux favoris');
+      return;
+    }
+
+    this.isSavingFavorite.set(true);
+
+    try {
+      // Si déjà en favori, on retire
+      if (this.isCurrentFileFavorite()) {
+        const favorite = this.favorites().find(f => f.fileName === fileName);
+        if (favorite) {
+          const success = await this.favoriteService.remove(favorite.id);
+          if (success) {
+            console.log('Favori retiré avec succès');
+            this.currentFavoriteId.set(null);
+          }
+        }
+      } else {
+        // Sinon, on ajoute aux favoris
+        // TODO: Récupérer le fichier original pour l'ajouter
+        // Pour l'instant, on log juste un message
+        console.log('Ajout aux favoris - À implémenter avec le fichier original');
+        alert('Fonctionnalité d\'ajout aux favoris à implémenter dans une prochaine tâche');
+      }
+    } catch (error) {
+      console.error('Erreur lors du toggle du favori:', error);
+      alert('Erreur lors de la sauvegarde du favori');
+    } finally {
+      this.isSavingFavorite.set(false);
+    }
   }
 }

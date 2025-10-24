@@ -343,3 +343,100 @@
     }
   }
 }
+
+// Styles pour le bouton favori
+.minimized-upload__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  flex-shrink: 0;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    gap: var(--spacing-xs);
+  }
+}
+
+.minimized-upload__favorite-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background-color: transparent;
+  border: 2px solid var(--border-color);
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+
+  @media (max-width: 768px) {
+    flex: 1;
+  }
+
+  .favorite-icon {
+    width: 20px;
+    height: 20px;
+    transition: all 0.2s ease;
+  }
+
+  .favorite-badge {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  // État normal (non-favori)
+  &:not(.active):hover:not(:disabled) {
+    border-color: #fbbf24;
+    color: #fbbf24;
+    transform: translateY(-1px);
+
+    .favorite-icon {
+      transform: scale(1.1);
+    }
+  }
+
+  // État actif (favori)
+  &.active {
+    border-color: #fbbf24;
+    background-color: rgba(251, 191, 36, 0.1);
+    color: #fbbf24;
+
+    .favorite-icon {
+      fill: #fbbf24;
+      color: #fbbf24;
+    }
+
+    .favorite-badge {
+      color: #fbbf24;
+    }
+
+    &:hover:not(:disabled) {
+      background-color: rgba(251, 191, 36, 0.2);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(251, 191, 36, 0.3);
+
+      .favorite-icon {
+        transform: scale(1.1);
+      }
+    }
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &:focus {
+    outline: 2px solid #fbbf24;
+    outline-offset: 2px;
+  }
+}

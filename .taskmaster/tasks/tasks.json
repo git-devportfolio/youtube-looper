@@ -1687,8 +1687,73 @@
           "2",
           "3"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Ajout de la structure du bouton étoile dans le composant upload minimisé",
+            "description": "Créer la structure HTML du bouton étoile dans la barre upload minimisée du composant audio-looper-container",
+            "dependencies": [],
+            "details": "Modifier le template audio-looper-container.component.html section 'minimized-upload' pour ajouter un bouton étoile entre l'icône/nom de fichier et le bouton 'Change File'. Le bouton doit contenir l'icône SVG d'étoile et le badge 'Favori' conditionnel.",
+            "status": "done",
+            "testStrategy": "Vérification visuelle de l'affichage du bouton dans l'interface upload minimisée",
+            "updatedAt": "2025-10-23T21:34:27.516Z",
+            "parentId": "undefined"
+          },
+          {
+            "id": 2,
+            "title": "Implémentation de la logique d'état du bouton étoile",
+            "description": "Créer les signals et computed pour gérer l'état favori/non-favori du fichier actuel",
+            "dependencies": [
+              1
+            ],
+            "details": "Ajouter dans audio-looper-container.component.ts les signals pour détecter si le fichier actuel est un favori. Utiliser le FavoriteService.hasFileByName() pour vérifier si le fichier est déjà en favori. Créer un computed signal pour l'état du bouton (étoile vide/pleine).",
+            "status": "done",
+            "testStrategy": "Tests unitaires sur les computed signals et vérification de la détection d'état",
+            "parentId": "undefined",
+            "updatedAt": "2025-10-23T21:34:31.689Z"
+          },
+          {
+            "id": 3,
+            "title": "Création des styles SCSS pour les états du bouton étoile",
+            "description": "Définir les styles visuels pour les états vide, plein et survol du bouton étoile",
+            "dependencies": [
+              1
+            ],
+            "details": "Dans audio-looper-container.component.scss, créer les classes pour le bouton étoile : état normal (étoile outline), état actif (étoile dorée pleine), état hover, et le style du badge 'Favori'. Utiliser les couleurs dorées pour l'état actif et respecter le design system existant.",
+            "status": "done",
+            "testStrategy": "Tests visuels des différents états du bouton et vérification du badge",
+            "parentId": "undefined",
+            "updatedAt": "2025-10-23T21:34:35.753Z"
+          },
+          {
+            "id": 4,
+            "title": "Implémentation de la gestion du clic sur le bouton étoile",
+            "description": "Créer la logique de basculement favori/non-favori avec vérification des limites",
+            "dependencies": [
+              2
+            ],
+            "details": "Implémenter la méthode toggleFavorite() dans audio-looper-container.component.ts. Si non-favori : vérifier la limite de 10 favoris via FavoriteService.canAddMore(), puis ajouter avec FavoriteService.add(). Si favori : supprimer avec FavoriteService.remove(). Gérer les messages d'erreur et de confirmation.",
+            "status": "done",
+            "testStrategy": "Tests d'interaction utilisateur et vérification de la limite de 10 favoris",
+            "parentId": "undefined",
+            "updatedAt": "2025-10-23T21:34:39.841Z"
+          },
+          {
+            "id": 5,
+            "title": "Integration des messages de feedback utilisateur",
+            "description": "Ajouter les notifications toast/snackbar pour confirmer les actions sur les favoris",
+            "dependencies": [
+              4
+            ],
+            "details": "Intégrer un système de notifications pour afficher les messages de succès ('Ajouté aux favoris', 'Retiré des favoris') et d'erreur ('Limite de 10 favoris atteinte'). Utiliser un service de notification ou créer un composant toast simple. Afficher les messages pendant 3 secondes.",
+            "status": "done",
+            "testStrategy": "Tests d'affichage des notifications et validation des messages appropriés",
+            "parentId": "undefined",
+            "updatedAt": "2025-10-23T21:34:43.783Z"
+          }
+        ],
+        "updatedAt": "2025-10-23T21:34:43.783Z"
       },
       {
         "id": "5",
@@ -1907,9 +1972,9 @@
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2025-10-23T21:18:49.498Z",
+      "lastModified": "2025-10-23T21:34:43.788Z",
       "taskCount": 15,
-      "completedCount": 4,
+      "completedCount": 5,
       "tags": [
         "audio-favoris"
       ]
