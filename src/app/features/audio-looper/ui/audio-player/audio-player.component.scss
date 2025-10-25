@@ -136,107 +136,161 @@
   }
 }
 
-// Bouton Settings discret
-.audio-player__settings-button {
+// Bouton Réglages Audio (minimaliste)
+.audio-player__settings-btn {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: var(--spacing-xs);
+  justify-content: center;
+  width: 44px;
+  height: 44px;
   margin-left: auto;
-  padding: var(--spacing-sm) var(--spacing-md);
-  border: 1px solid var(--border-color);
-  border-radius: var(--border-radius);
+  padding: 0;
+  border: none;
+  border-radius: 50%;
   background: transparent;
   color: var(--text-secondary);
   cursor: pointer;
-  transition: all .2s;
-  font-size: .875rem;
-  font-weight: 500;
-  min-height: 40px;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 
   @media (max-width: 768px) {
-    padding: var(--spacing-xs) var(--spacing-sm);
-    min-height: 36px;
+    width: 40px;
+    height: 40px;
   }
 
   @media (max-width: 480px) {
-    padding: var(--spacing-xs);
-    min-height: 32px;
+    width: 36px;
+    height: 36px;
+  }
+
+  // Cercle de fond au hover
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: var(--background-tertiary);
+    opacity: 0;
+    transform: scale(0.8);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   &:hover:not(:disabled) {
-    background: var(--background-tertiary);
-    border-color: var(--primary-color);
     color: var(--text-primary);
-    transform: translateY(-1px);
+
+    &::before {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .audio-player__settings-icon {
+      transform: rotate(45deg) scale(1.05);
+    }
   }
 
   &:active:not(:disabled) {
-    transform: translateY(0);
+    &::before {
+      transform: scale(0.95);
+    }
+
+    .audio-player__settings-icon {
+      transform: rotate(45deg) scale(0.95);
+    }
   }
 
-  &:focus {
+  &:focus-visible {
     outline: 2px solid var(--primary-color);
     outline-offset: 2px;
   }
 
   &:disabled {
-    opacity: .5;
+    opacity: 0.4;
     cursor: not-allowed;
   }
 
-  &--active {
-    border-color: var(--primary-color);
-    background: rgba(255, 0, 0, .1);
+  // État modifié (avec réglages actifs)
+  &--modified {
     color: var(--primary-color);
 
+    &::before {
+      opacity: 0.15;
+      background: var(--primary-color);
+    }
+
     &:hover:not(:disabled) {
-      background: rgba(255, 0, 0, .15);
+      color: var(--primary-dark);
+
+      &::before {
+        opacity: 0.25;
+        background: var(--primary-color);
+      }
     }
   }
 }
 
 .audio-player__settings-icon {
-  width: 20px;
-  height: 20px;
+  position: relative;
+  width: 22px;
+  height: 22px;
   flex-shrink: 0;
-  transition: color .2s;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1;
 
   @media (max-width: 768px) {
+    width: 20px;
+    height: 20px;
+  }
+
+  @media (max-width: 480px) {
     width: 18px;
     height: 18px;
   }
-
-  @media (max-width: 480px) {
-    width: 16px;
-    height: 16px;
-  }
 }
 
-.audio-player__settings-badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 2px var(--spacing-xs);
+// Indicateur de modification (point lumineux)
+.audio-player__settings-indicator {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
   background: var(--primary-color);
-  color: white;
-  border-radius: 4px;
-  font-size: .75rem;
-  font-weight: 600;
-  line-height: 1;
-  white-space: nowrap;
+  box-shadow: 0 0 8px var(--primary-color), 0 0 4px rgba(220, 38, 38, 0.4);
+  animation: pulse-indicator 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  z-index: 2;
 
   @media (max-width: 768px) {
-    font-size: .6875rem;
-    padding: 2px 4px;
+    top: 6px;
+    right: 6px;
+    width: 7px;
+    height: 7px;
   }
 
   @media (max-width: 480px) {
-    display: none;
+    top: 5px;
+    right: 5px;
+    width: 6px;
+    height: 6px;
   }
 }
 
+// Animation de pulsation pour l'indicateur
+@keyframes pulse-indicator {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.15);
+  }
+}
+
+// Optimisation tactile
 @media (hover: none) and (pointer: coarse) {
-  .audio-player__settings-button {
-    min-width: 44px;
-    min-height: 44px;
+  .audio-player__settings-btn {
+    min-width: 48px;
+    min-height: 48px;
   }
 }
