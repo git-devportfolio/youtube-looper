@@ -15,6 +15,7 @@ export class FavoriteCardComponent {
 
   // Inputs
   readonly favorite = input.required<FavoriteModel>();
+  readonly isEditMode = input<boolean>(false); // Mode édition pour réorganisation
 
   // Outputs
   readonly load = output<FavoriteModel>(); // Charger le favori dans le lecteur
@@ -60,8 +61,10 @@ export class FavoriteCardComponent {
 
   /**
    * Émets l'événement pour charger ce favori (clic sur la card)
+   * Désactivé en mode édition
    */
   onCardClick(): void {
+    if (this.isEditMode()) return; // Désactiver le clic en mode édition
     this.load.emit(this.favorite());
   }
 

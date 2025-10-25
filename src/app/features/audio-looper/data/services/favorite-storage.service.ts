@@ -123,7 +123,7 @@ export class FavoriteStorageService {
   }
 
   /**
-   * Charge tous les favoris
+   * Charge tous les favoris en respectant l'ordre sauvegardé
    */
   async loadAll(): Promise<FavoriteModel[]> {
     try {
@@ -131,11 +131,39 @@ export class FavoriteStorageService {
       const transaction = db.transaction([this.STORE_NAME], 'readonly');
       const store = transaction.objectStore(this.STORE_NAME);
 
-      return new Promise((resolve, reject) => {
+      // Charger tous les favoris depuis IndexedDB
+      const favorites = await new Promise<FavoriteModel[]>((resolve, reject) => {
         const request = store.getAll();
         request.onsuccess = () => resolve(request.result || []);
         request.onerror = () => reject(request.error);
       });
+
+      // Charger les métadonnées pour obtenir l'ordre
+      const metadataStr = localStorage.getItem(this.STORAGE_KEY);
+      if (metadataStr) {
+        try {
+          const metadata = JSON.parse(metadataStr);
+          if (metadata.ids && Array.isArray(metadata.ids)) {
+            // Trier les favoris selon l'ordre des IDs dans les métadonnées
+            const orderedFavorites: FavoriteModel[] = [];
+            for (const id of metadata.ids) {
+              const favorite = favorites.find(f => f.id === id);
+              if (favorite) {
+                orderedFavorites.push(favorite);
+              }
+            }
+
+            // Ajouter les favoris non présents dans les métadonnées (cas d'erreur)
+            const missingFavorites = favorites.filter(f => !metadata.ids.includes(f.id));
+            return [...orderedFavorites, ...missingFavorites];
+          }
+        } catch (error) {
+          console.warn('Erreur lors de la lecture des métadonnées d\'ordre:', error);
+        }
+      }
+
+      // Pas de métadonnées d'ordre : retourner les favoris tels quels
+      return favorites;
     } catch (error) {
       console.error('Erreur lors du chargement des favoris:', error);
       return [];
@@ -277,6 +305,30 @@ export class FavoriteStorageService {
       return true;
     } catch (error) {
       console.error('Erreur lors de l\'effacement des favoris:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Réorganise tous les favoris selon un nouvel ordre
+   * @param orderedFavorites Tableau de favoris dans le nouvel ordre
+   * @returns Promise<boolean> True si la réorganisation a réussi
+   */
+  async reorderAll(orderedFavorites: FavoriteModel[]): Promise<boolean> {
+    try {
+      // Sauvegarder les métadonnées avec le nouvel ordre des IDs
+      const metadata = {
+        count: orderedFavorites.length,
+        lastUpdated: new Date().toISOString(),
+        ids: orderedFavorites.map(f => f.id), // L'ordre est important ici
+      };
+
+      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(metadata));
+
+      console.log('Ordre des favoris sauvegardé dans localStorage:', metadata.ids);
+      return true;
+    } catch (error) {
+      console.error('Erreur lors de la réorganisation des favoris:', error);
       return false;
     }
   }

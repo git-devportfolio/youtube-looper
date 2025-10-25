@@ -1,7 +1,9 @@
 import { Component, input, output, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { CdkDragDrop, moveItemInArray, DragDropModule } from '@angular/cdk/drag-drop';
 import { FavoriteCardComponent } from '../favorite-card';
 import { FavoriteService } from '../../data/services';
+import { FavoritesSidebarStateService } from '../../services';
 import { FavoriteModel } from '../../data/interfaces';
 
 /**
@@ -9,12 +11,13 @@ import { FavoriteModel } from '../../data/interfaces';
  */
 @Component({
   selector: 'app-favorites-sidebar',
-  imports: [CommonModule, FavoriteCardComponent],
+  imports: [CommonModule, FavoriteCardComponent, DragDropModule],
   templateUrl: './favorites-sidebar.component.html',
   styleUrl: './favorites-sidebar.component.scss'
 })
 export class FavoritesSidebarComponent {
   private readonly favoriteService = inject(FavoriteService);
+  private readonly sidebarStateService = inject(FavoritesSidebarStateService);
 
   // Inputs
   readonly isOpen = input<boolean>(false);
@@ -40,10 +43,14 @@ export class FavoritesSidebarComponent {
   // Accès aux favoris depuis le service
   readonly favorites = this.favoriteService.favorites;
 
+  // Accès au signal isEditMode depuis le service
+  readonly isEditMode = this.sidebarStateService.isEditMode;
+
   /**
-   * Ferme le sidebar
+   * Ferme le sidebar et désactive le mode édition
    */
   onClose(): void {
+    this.sidebarStateService.exitEditMode();
     this.close.emit();
   }
 
@@ -55,10 +62,10 @@ export class FavoritesSidebarComponent {
   }
 
   /**
-   * Active le mode édition d'ordre
+   * Bascule le mode édition d'ordre des favoris
    */
-  onEditOrder(): void {
-    this.editOrder.emit();
+  onToggleEditMode(): void {
+    this.sidebarStateService.toggleEditMode();
   }
 
   /**
@@ -96,5 +103,24 @@ export class FavoritesSidebarComponent {
     if (!success) {
       alert('Erreur lors de la suppression du favori.');
     }
+  }
+
+  /**
+   * Gère le drag & drop pour réorganiser les favoris
+   */
+  async onDrop(event: CdkDragDrop<FavoriteModel[]>): Promise<void> {
+    if (!this.isEditMode()) return;
+
+    const favoritesList = this.favorites();
+
+    // Calculer le nouvel ordre
+    const newOrder = [...favoritesList];
+    moveItemInArray(newOrder, event.previousIndex, event.currentIndex);
+
+    // Extraire les IDs dans le nouvel ordre
+    const newOrderIds = newOrder.map(f => f.id);
+
+    // Sauvegarder le nouvel ordre via le service
+    await this.favoriteService.reorder(newOrderIds);
   }
 }

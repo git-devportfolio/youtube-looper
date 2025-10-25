@@ -25,18 +25,30 @@
       <button
         type="button"
         class="btn-action btn-edit-order"
-        (click)="onEditOrder()"
+        [class.btn-edit-order--active]="isEditMode()"
+        (click)="onToggleEditMode()"
         [disabled]="favoritesCount() === 0">
-        Modifier l'ordre
+        {{ isEditMode() ? 'Terminer' : 'Modifier l\'ordre' }}
       </button>
-      <button
-        type="button"
-        class="btn-action btn-upload"
-        (click)="onUploadNewFile()"
-        [disabled]="favoritesCount() >= maxFavorites()">
-        Upload nouveau fichier
-      </button>
+      @if (!isEditMode()) {
+        <button
+          type="button"
+          class="btn-action btn-upload"
+          (click)="onUploadNewFile()"
+          [disabled]="favoritesCount() >= maxFavorites()">
+          Upload nouveau fichier
+        </button>
+      }
     </div>
+
+    <!-- Message d'aide en mode édition -->
+    @if (isEditMode()) {
+      <div class="edit-mode-help">
+        <p class="edit-mode-help-text">
+          Glissez-déposez les cartes pour réorganiser vos favoris
+        </p>
+      </div>
+    }
   </header>
 
   <!-- Contenu principal (liste des favoris) -->
@@ -47,14 +59,23 @@
         <p class="empty-state-hint">Uploadez un fichier audio pour commencer</p>
       </div>
     } @else {
-      <div class="favorites-list">
+      <div class="favorites-list"
+           cdkDropList
+           [cdkDropListDisabled]="!isEditMode()"
+           (cdkDropListDropped)="onDrop($event)">
         @for (favorite of favorites(); track favorite.id) {
           <app-favorite-card
+            cdkDrag
+            [cdkDragDisabled]="!isEditMode()"
             [favorite]="favorite"
+            [isEditMode]="isEditMode()"
             (load)="onLoadFavorite($event)"
             (play)="onPlayFavorite($event)"
-            (delete)="onDeleteFavorite($event)"
-          />
+            (delete)="onDeleteFavorite($event)">
+
+            <!-- Placeholder pendant le drag -->
+            <div class="drag-placeholder" *cdkDragPlaceholder></div>
+          </app-favorite-card>
         }
       </div>
     }

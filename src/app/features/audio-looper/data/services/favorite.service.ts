@@ -44,15 +44,13 @@ export class FavoriteService {
 
   /**
    * Charge tous les favoris depuis le stockage
+   * L'ordre est géré par le FavoriteStorageService qui respecte l'ordre personnalisé
    */
   async loadFavorites(): Promise<void> {
     this.loadingSignal.set(true);
     try {
       const favorites = await this.storageService.loadAll();
-      // Trier par timestamp décroissant (plus récent en premier)
-      favorites.sort((a, b) =>
-        new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
-      );
+      // Ne pas trier ici : l'ordre est géré par le storage (custom ou par timestamp)
       this.favoritesSignal.set(favorites);
       await this.updateStorageStats();
     } catch (error) {
@@ -74,8 +72,9 @@ export class FavoriteService {
     duration: number,
     settings: Partial<FavoriteSettings> = {}
   ): Promise<ValidationResult> {
+    const favoriteId = this.generateUniqueId();
     const favorite: FavoriteModel = {
-      id: this.generateUniqueId(),
+      id: favoriteId,
       fileName,
       mimeType,
       audioData,
@@ -89,6 +88,8 @@ export class FavoriteService {
 
     if (result.isValid) {
       await this.loadFavorites(); // Recharger la liste
+      // Retourner l'ID du favori créé dans le résultat
+      return { ...result, favoriteId };
     }
 
     return result;
@@ -133,6 +134,8 @@ export class FavoriteService {
         updated[index] = favorite;
         this.favoritesSignal.set(updated);
       }
+      // Retourner l'ID du favori mis à jour
+      return { ...result, favoriteId: id };
     }
 
     return result;
@@ -223,6 +226,48 @@ export class FavoriteService {
         errorMessage: 'Format JSON invalide',
         errorCode: 'INVALID_FORMAT',
       };
+    }
+  }
+
+  /**
+   * Réorganise les favoris selon un nouvel ordre
+   * @param orderedIds Tableau d'IDs dans le nouvel ordre souhaité
+   * @returns Promise<boolean> True si la réorganisation a réussi
+   */
+  async reorder(orderedIds: string[]): Promise<boolean> {
+    try {
+      const currentFavorites = this.favoritesSignal();
+
+      // Vérifier que tous les IDs sont valides
+      if (orderedIds.length !== currentFavorites.length) {
+        console.error('Nombre d\'IDs invalide pour la réorganisation');
+        return false;
+      }
+
+      // Créer le nouveau tableau ordonné
+      const reorderedFavorites: FavoriteModel[] = [];
+      for (const id of orderedIds) {
+        const favorite = currentFavorites.find(f => f.id === id);
+        if (!favorite) {
+          console.error(`Favori avec ID ${id} introuvable`);
+          return false;
+        }
+        reorderedFavorites.push(favorite);
+      }
+
+      // Sauvegarder le nouvel ordre dans le storage
+      const success = await this.storageService.reorderAll(reorderedFavorites);
+
+      if (success) {
+        // Mettre à jour le signal avec le nouvel ordre
+        this.favoritesSignal.set(reorderedFavorites);
+        console.log('Ordre des favoris mis à jour');
+      }
+
+      return success;
+    } catch (error) {
+      console.error('Erreur lors de la réorganisation des favoris:', error);
+      return false;
     }
   }
 }

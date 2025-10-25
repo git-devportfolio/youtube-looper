@@ -140,6 +140,49 @@ $transition-speed: 0.3s;
   }
 }
 
+.btn-edit-order {
+  &--active {
+    background: var(--primary-color, #4ade80);
+    color: #000;
+    border-color: var(--primary-color, #4ade80);
+    font-weight: 700;
+
+    &:hover:not(:disabled) {
+      background: var(--primary-color-hover, #22c55e);
+      border-color: var(--primary-color-hover, #22c55e);
+    }
+  }
+}
+
+// Message d'aide en mode édition
+.edit-mode-help {
+  margin-top: var(--spacing-sm);
+  padding: var(--spacing-sm);
+  background: rgba(74, 222, 128, 0.1);
+  border: 1px solid var(--primary-color, #4ade80);
+  border-radius: var(--border-radius);
+  animation: slideDown 0.3s ease-out;
+}
+
+.edit-mode-help-text {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--primary-color, #4ade80);
+  text-align: center;
+  font-weight: 500;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 // Contenu principal
 .sidebar-content {
   flex: 1;
@@ -190,6 +233,23 @@ $transition-speed: 0.3s;
   flex-direction: column;
   gap: 1rem;
   padding: 0;
+
+  // Styles Angular CDK drag & drop
+  &.cdk-drop-list-dragging {
+    app-favorite-card:not(.cdk-drag-placeholder) {
+      transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+    }
+  }
+}
+
+// Placeholder personnalisé pendant le drag
+.drag-placeholder {
+  min-height: 80px;
+  background: var(--background-secondary);
+  border: 2px dashed var(--primary-color, #4ade80);
+  border-radius: var(--border-radius);
+  opacity: 0.5;
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
 // Footer

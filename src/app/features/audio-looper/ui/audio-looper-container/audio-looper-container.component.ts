@@ -276,7 +276,8 @@ export class AudioLooperContainerComponent {
           loopStart: this.toneEngineService.loopStart(),
           loopEnd: this.toneEngineService.loopEnd(),
           loopEnabled: this.toneEngineService.isLooping(),
-          volume: this.audioPlayerService.volume()
+          volume: this.audioPlayerService.volume(),
+          isMuted: this.audioPlayerService.isMuted()
         };
 
         console.log('Réglages audio capturés:', currentSettings);
@@ -335,6 +336,14 @@ export class AudioLooperContainerComponent {
         if (result.isValid) {
           console.log('Favori ajouté avec succès');
           // Le FavoriteService recharge automatiquement la liste, donc isCurrentFileFavorite() sera mis à jour
+
+          // Stocker l'ID du favori créé et les réglages de référence
+          // pour permettre la détection des modifications futures
+          if (result.favoriteId) {
+            this.currentFavoriteId.set(result.favoriteId);
+            this.loadedFavoriteSettings.set({ ...currentSettings });
+            console.log('Favori ID stocké:', result.favoriteId);
+          }
         } else {
           console.error('Erreur lors de l\'ajout du favori:', result.errorMessage);
           alert(`Erreur lors de l'ajout du favori: ${result.errorMessage}`);

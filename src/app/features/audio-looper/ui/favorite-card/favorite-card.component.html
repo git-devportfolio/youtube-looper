@@ -1,22 +1,33 @@
-<div class="favorite-card" (click)="onCardClick()">
+<div class="favorite-card" [class.edit-mode]="isEditMode()" (click)="onCardClick()">
   <!-- Informations -->
   <div class="card-info">
     <div class="card-header">
+      <!-- Handle de drag (visible en mode édition uniquement) -->
+      @if (isEditMode()) {
+        <div class="drag-handle" title="Glisser pour réorganiser">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3 8h18M3 12h18M3 16h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+      }
+
       <h3 class="file-name" [title]="favorite().fileName">{{ favorite().fileName }}</h3>
 
-      <!-- Actions discrètes -->
-      <div class="card-actions">
-        <button type="button" class="btn-play" (click)="onPlay($event)" title="Lecture">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M8 5v14l11-7L8 5z" fill="currentColor"/>
-          </svg>
-        </button>
-        <button type="button" class="btn-delete" (click)="onDelete($event)" title="Supprimer">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-        </button>
-      </div>
+      <!-- Actions discrètes (masquées en mode édition) -->
+      @if (!isEditMode()) {
+        <div class="card-actions">
+          <button type="button" class="btn-play" (click)="onPlay($event)" title="Lecture">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M8 5v14l11-7L8 5z" fill="currentColor"/>
+            </svg>
+          </button>
+          <button type="button" class="btn-delete" (click)="onDelete($event)" title="Supprimer">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+      }
     </div>
 
     <!-- Métadonnées -->
