@@ -10,7 +10,7 @@
 .module-nav__container {
   max-width: var(--container-max-width, 1200px);
   margin: 0 auto;
-  padding: 0 var(--spacing-md);
+  // padding: 0 var(--spacing-md);
 }
 
 .module-nav__tabs {
@@ -54,7 +54,7 @@
     border-radius: var(--border-radius-sm);
   }
 
-  // État actif
+  // ï¿½tat actif
   &--active {
     color: var(--primary-color);
     border-bottom-color: var(--primary-color);
@@ -69,7 +69,7 @@
 // Responsive
 @media (max-width: 768px) {
   .module-nav {
-    top: 56px; // Header légèrement plus petit sur mobile
+    top: 56px; // Header lï¿½gï¿½rement plus petit sur mobile
   }
 
   .module-nav__container {

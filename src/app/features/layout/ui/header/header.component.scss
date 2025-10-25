@@ -9,12 +9,12 @@
   
   &__content {
     display: flex;
-    // align-items: center;
+    align-items: center;
     margin: auto;
     justify-content: space-between;
     padding: var(--spacing-lg);
     min-height: 70px;
-    max-width: 860px;
+    // max-width: 860px;
 
     @media (max-width: 768px) {
       padding: var(--spacing-sm);
