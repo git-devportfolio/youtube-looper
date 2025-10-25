@@ -41,7 +41,6 @@
 
   <!-- Contenu principal (liste des favoris) -->
   <div class="sidebar-content">
-    <!-- Placeholder pour la liste des favoris (sera ajouté dans les prochaines tâches) -->
     @if (favoritesCount() === 0) {
       <div class="empty-state">
         <p class="empty-state-text">Aucun favori enregistré</p>
@@ -49,8 +48,13 @@
       </div>
     } @else {
       <div class="favorites-list">
-        <!-- La liste des favoris sera ajoutée dans une prochaine tâche -->
-        <p class="temp-message">Liste des favoris à implémenter</p>
+        @for (favorite of favorites(); track favorite.id) {
+          <app-favorite-card
+            [favorite]="favorite"
+            (play)="onPlayFavorite($event)"
+            (delete)="onDeleteFavorite($event)"
+          />
+        }
       </div>
     }
   </div>

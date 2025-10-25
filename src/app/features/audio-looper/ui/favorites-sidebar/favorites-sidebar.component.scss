@@ -182,17 +182,12 @@ $transition-speed: 0.3s;
   color: var(--text-secondary, #aaaaaa);
 }
 
-// Liste des favoris (placeholder)
+// Liste des favoris
 .favorites-list {
-  padding: 1rem 0;
-}
-
-.temp-message {
-  text-align: center;
-  color: var(--text-secondary, #aaaaaa);
-  font-size: 0.875rem;
-  padding: 2rem 1rem;
-  font-style: italic;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 0;
 }
 
 // Footer

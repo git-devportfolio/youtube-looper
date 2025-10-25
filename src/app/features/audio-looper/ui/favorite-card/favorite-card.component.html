@@ -1,0 +1,51 @@
+<div class="favorite-card">
+  <!-- Waveform miniature -->
+  <div class="waveform-container">
+    <canvas #miniWaveform class="mini-waveform"></canvas>
+  </div>
+
+  <!-- Informations -->
+  <div class="card-info">
+    <h3 class="file-name" [title]="favorite().fileName">{{ favorite().fileName }}</h3>
+
+    <!-- Badges des réglages -->
+    @if (hasActivePitch() || hasActiveSpeed() || hasActiveLoop()) {
+      <div class="settings-badges">
+        @if (hasActivePitch()) {
+          <span class="badge badge-pitch">
+            Pitch: {{ favorite().settings.pitch > 0 ? '+' : '' }}{{ favorite().settings.pitch }}
+          </span>
+        }
+        @if (hasActiveSpeed()) {
+          <span class="badge badge-speed">
+            {{ favorite().settings.playbackRate }}x
+          </span>
+        }
+        @if (hasActiveLoop()) {
+          <span class="badge badge-loop">
+            Boucle A-B
+          </span>
+        }
+      </div>
+    }
+
+    <!-- Métadonnées -->
+    <div class="metadata">
+      <span class="duration">{{ formattedDuration() }}</span>
+      <span class="separator">•</span>
+      <span class="date">{{ formattedDate() }}</span>
+      <span class="separator">•</span>
+      <span class="size">{{ formattedSize() }}</span>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="card-actions">
+    <button type="button" class="btn-play" (click)="onPlay()">
+      Play
+    </button>
+    <button type="button" class="btn-delete" (click)="onDelete()">
+      Supprimer
+    </button>
+  </div>
+</div>

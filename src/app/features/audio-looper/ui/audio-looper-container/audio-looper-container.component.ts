@@ -9,7 +9,7 @@ import { FavoritesSidebarComponent } from '../favorites-sidebar';
 import { FavoriteQuotaModalComponent } from '../favorite-quota-modal';
 import { AudioPlayerService, ToneEngineService, WaveformService, RubberbandEngineService } from '../../services';
 import { FavoriteService } from '../../data';
-import { FavoriteSettings } from '../../data/interfaces';
+import { FavoriteSettings, FavoriteModel } from '../../data/interfaces';
 import { fileToBase64, getAudioDuration } from '../../utils';
 
 type LoadingState = 'empty' | 'loading' | 'loaded' | 'error';
@@ -333,6 +333,70 @@ export class AudioLooperContainerComponent {
     } catch (error) {
       console.error('Erreur lors de l\'ajout automatique:', error);
       alert('Erreur lors de l\'ajout du favori');
+    }
+  }
+
+  /**
+   * Gère la lecture d'un favori depuis la sidebar
+   */
+  async onPlayFavorite(favorite: FavoriteModel): Promise<void> {
+    try {
+      console.log('Chargement du favori:', favorite.fileName);
+
+      // Fermer le sidebar
+      this.closeSidebar();
+
+      // Convertir Base64 en Blob
+      const binaryString = atob(favorite.audioData);
+      const bytes = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+      const blob = new Blob([bytes], { type: favorite.mimeType });
+
+      // Créer un objet File virtuel
+      const file = new File([blob], favorite.fileName, { type: favorite.mimeType });
+
+      // Charger le fichier
+      await this.onFileSelected(file);
+
+      // Attendre que le fichier soit complètement chargé
+      // Utiliser un court délai pour s'assurer que tous les services sont prêts
+      await new Promise(resolve => setTimeout(resolve, 500));
+
+      // Appliquer les réglages sauvegardés
+      console.log('Application des réglages du favori:', favorite.settings);
+
+      this.rubberbandEngine.setPitch(favorite.settings.pitch);
+      this.toneEngineService.setPlaybackRate(favorite.settings.playbackRate);
+      this.audioPlayerService.setVolume(favorite.settings.volume);
+
+      if (favorite.settings.isMuted) {
+        this.audioPlayerService.toggleMute();
+      }
+
+      // Appliquer la boucle A/B si définie
+      if (favorite.settings.loopStart !== null && favorite.settings.loopEnd !== null) {
+        this.toneEngineService.setLoopPoints(
+          favorite.settings.loopStart,
+          favorite.settings.loopEnd
+        );
+
+        // Activer la boucle si elle était activée dans les réglages
+        if (favorite.settings.loopEnabled && !this.toneEngineService.isLooping()) {
+          this.toneEngineService.toggleLoop();
+        }
+      }
+
+      // Aller à la position de lecture sauvegardée
+      if (favorite.settings.currentTime > 0) {
+        this.audioPlayerService.seekTo(favorite.settings.currentTime);
+      }
+
+      console.log('Favori chargé avec succès avec tous ses réglages');
+    } catch (error) {
+      console.error('Erreur lors du chargement du favori:', error);
+      alert('Erreur lors du chargement du favori');
     }
   }
 }

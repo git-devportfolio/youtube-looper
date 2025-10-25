@@ -1993,8 +1993,9 @@
         "dependencies": [
           "7"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-10-24T17:52:33.167Z"
       },
       {
         "id": "9",
@@ -2095,9 +2096,9 @@
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2025-10-24T16:10:18.575Z",
+      "lastModified": "2025-10-24T17:52:33.174Z",
       "taskCount": 15,
-      "completedCount": 7,
+      "completedCount": 8,
       "tags": [
         "audio-favoris"
       ]
