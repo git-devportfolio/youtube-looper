@@ -7,7 +7,7 @@ import { AudioPlayerComponent } from '../audio-player';
 import { VolumeControlComponent } from '../volume-control';
 import { FavoritesSidebarComponent } from '../favorites-sidebar';
 import { FavoriteQuotaModalComponent } from '../favorite-quota-modal';
-import { AudioPlayerService, ToneEngineService, WaveformService, RubberbandEngineService } from '../../services';
+import { AudioPlayerService, ToneEngineService, WaveformService, RubberbandEngineService, FavoritesSidebarStateService } from '../../services';
 import { FavoriteService } from '../../data';
 import { FavoriteSettings, FavoriteModel } from '../../data/interfaces';
 import { fileToBase64, getAudioDuration } from '../../utils';
@@ -43,6 +43,7 @@ export class AudioLooperContainerComponent {
   private readonly waveformService = inject(WaveformService);
   private readonly favoriteService = inject(FavoriteService);
   private readonly rubberbandEngine = inject(RubberbandEngineService);
+  private readonly sidebarStateService = inject(FavoritesSidebarStateService);
 
   // Signals pour l'état de l'interface
   readonly loadingState = signal<LoadingState>('empty');
@@ -65,8 +66,8 @@ export class AudioLooperContainerComponent {
   readonly hasFavorites = this.favoriteService.hasFavorites;
   readonly storageStats = this.favoriteService.storageStats;
 
-  // État du sidebar
-  readonly sidebarOpen = signal<boolean>(false);
+  // État du sidebar (géré par le service partagé)
+  readonly sidebarOpen = this.sidebarStateService.isOpen;
 
   // État du favori
   private readonly currentFavoriteId = signal<string | null>(null);
@@ -149,14 +150,14 @@ export class AudioLooperContainerComponent {
    * Ouvre le sidebar des favoris
    */
   openSidebar(): void {
-    this.sidebarOpen.set(true);
+    this.sidebarStateService.open();
   }
 
   /**
    * Ferme le sidebar des favoris
    */
   closeSidebar(): void {
-    this.sidebarOpen.set(false);
+    this.sidebarStateService.close();
   }
 
   /**

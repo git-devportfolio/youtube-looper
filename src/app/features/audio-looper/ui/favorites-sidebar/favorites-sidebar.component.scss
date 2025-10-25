@@ -29,15 +29,15 @@ $transition-speed: 0.3s;
 .favorites-sidebar {
   position: fixed;
   top: 0;
-  left: 0;
+  right: 0; // Changé de left à right
   width: $sidebar-width;
   height: 100%;
   background-color: var(--bg-secondary, #1a1a1a);
-  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.3); // Shadow inversée pour la droite
   z-index: 1000;
   display: flex;
   flex-direction: column;
-  transform: translateX(-100%);
+  transform: translateX(100%); // Translation vers la droite au lieu de la gauche
   transition: transform $transition-speed ease-out;
 
   &.open {

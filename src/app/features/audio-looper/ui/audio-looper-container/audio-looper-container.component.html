@@ -1,18 +1,3 @@
-<!-- Bouton hamburger fixe pour ouvrir le sidebar des favoris -->
-<button
-  class="favorites-hamburger-btn"
-  type="button"
-  (click)="openSidebar()"
-  [title]="'Mes favoris (' + favorites().length + ')'"
-  aria-label="Ouvrir le menu des favoris">
-  <svg class="hamburger-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M3 12h18M3 6h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-  </svg>
-  @if (favorites().length > 0) {
-    <span class="favorites-badge">{{ favorites().length }}</span>
-  }
-</button>
-
 <div class="audio-looper-container" [attr.data-state]="loadingState()">
 
   <!-- État VIDE : Upload centré -->
