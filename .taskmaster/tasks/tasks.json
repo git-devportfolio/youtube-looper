@@ -2008,8 +2008,68 @@
           "8",
           "3"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "in-progress",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Créer la méthode loadFavorite dans AudioLooperContainerComponent",
+            "description": "Implémenter la méthode loadFavorite() qui sera appelée depuis la sidebar pour charger un favori",
+            "dependencies": [],
+            "details": "Ajouter une méthode publique loadFavorite(favoriteId: string) dans AudioLooperContainerComponent qui récupère le favori via this.favoriteService.getById(). Cette méthode servira de point d'entrée principal pour le chargement d'un favori. Elle devra gérer les erreurs et afficher un loading state approprié.",
+            "status": "pending",
+            "testStrategy": null,
+            "parentId": "undefined"
+          },
+          {
+            "id": 2,
+            "title": "Charger le buffer audio depuis IndexedDB et reconstituer le fichier",
+            "description": "Récupérer les données audio Base64 stockées et les convertir en fichier pour le chargement",
+            "dependencies": [
+              1
+            ],
+            "details": "Dans loadFavorite(), récupérer favorite.audioData (Base64), le décoder en Uint8Array, créer un Blob avec le mimeType correct, puis générer un objet File. Ensuite appeler this.onFileSelected(file) pour charger le fichier dans le système audio. Gérer les erreurs de décodage Base64 et de création de blob.",
+            "status": "pending",
+            "testStrategy": null,
+            "parentId": "undefined"
+          },
+          {
+            "id": 3,
+            "title": "Appliquer les réglages audio sauvegardés (pitch, vitesse, volume)",
+            "description": "Restaurer tous les paramètres audio du favori après le chargement du fichier",
+            "dependencies": [
+              2
+            ],
+            "details": "Après le chargement réussi du fichier, appliquer les réglages de favorite.settings : pitch via this.rubberbandEngine.setPitch(), playbackRate via this.toneEngineService.setPlaybackRate(), volume via this.audioPlayerService.setVolume(). Gérer l'état mute avec this.audioPlayerService.toggleMute() si isMuted est true. Volume par défaut à 1.0 (100%).",
+            "status": "pending",
+            "testStrategy": null,
+            "parentId": "undefined"
+          },
+          {
+            "id": 4,
+            "title": "Restaurer la boucle A-B et positionner le curseur de lecture",
+            "description": "Appliquer les points de boucle et la position courante de lecture sauvegardés",
+            "dependencies": [
+              3
+            ],
+            "details": "Si favorite.settings.loopStart et loopEnd ne sont pas null, appeler this.toneEngineService.setLoopPoints(). Si loopEnabled est true, activer la boucle avec this.toneEngineService.toggleLoop(). Positionner le curseur à favorite.settings.currentTime avec this.audioPlayerService.seekTo(). NE PAS démarrer la lecture automatiquement.",
+            "status": "pending",
+            "testStrategy": null,
+            "parentId": "undefined"
+          },
+          {
+            "id": 5,
+            "title": "Fermer le sidebar et mettre à jour le badge étoile",
+            "description": "Finaliser l'interface utilisateur après le chargement du favori",
+            "dependencies": [
+              4
+            ],
+            "details": "Appeler this.closeSidebar() pour fermer automatiquement la sidebar des favoris. Mettre à jour this.currentFavoriteId.set(favorite.id) pour synchroniser l'état du badge étoile. Le computed isCurrentFileFavorite() se mettra automatiquement à jour grâce au currentFileName(). Afficher un message de succès en console.",
+            "status": "pending",
+            "testStrategy": null,
+            "parentId": "undefined"
+          }
+        ],
+        "updatedAt": "2025-10-25T12:05:28.684Z"
       },
       {
         "id": "10",
@@ -2096,7 +2156,7 @@
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2025-10-24T17:52:33.174Z",
+      "lastModified": "2025-10-25T12:05:28.688Z",
       "taskCount": 15,
       "completedCount": 8,
       "tags": [
