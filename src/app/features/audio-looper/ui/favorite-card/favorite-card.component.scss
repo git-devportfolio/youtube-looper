@@ -4,10 +4,16 @@
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius);
   transition: all 0.2s ease;
+  cursor: pointer;
 
   &:hover {
     background: var(--background-primary);
     border-color: var(--border-dark, #444);
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
   }
 }
 

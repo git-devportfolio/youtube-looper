@@ -51,6 +51,7 @@
         @for (favorite of favorites(); track favorite.id) {
           <app-favorite-card
             [favorite]="favorite"
+            (load)="onLoadFavorite($event)"
             (play)="onPlayFavorite($event)"
             (delete)="onDeleteFavorite($event)"
           />

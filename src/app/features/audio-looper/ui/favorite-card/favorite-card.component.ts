@@ -17,7 +17,8 @@ export class FavoriteCardComponent {
   readonly favorite = input.required<FavoriteModel>();
 
   // Outputs
-  readonly play = output<FavoriteModel>();
+  readonly load = output<FavoriteModel>(); // Charger le favori dans le lecteur
+  readonly play = output<FavoriteModel>(); // Démarrer la lecture
   readonly delete = output<string>();
 
   // Computed properties
@@ -58,16 +59,25 @@ export class FavoriteCardComponent {
   });
 
   /**
+   * Émets l'événement pour charger ce favori (clic sur la card)
+   */
+  onCardClick(): void {
+    this.load.emit(this.favorite());
+  }
+
+  /**
    * Émets l'événement pour jouer ce favori
    */
-  onPlay(): void {
+  onPlay(event: Event): void {
+    event.stopPropagation(); // Empêche le clic sur la card
     this.play.emit(this.favorite());
   }
 
   /**
    * Émets l'événement pour supprimer ce favori
    */
-  onDelete(): void {
+  onDelete(event: Event): void {
+    event.stopPropagation(); // Empêche le clic sur la card
     this.delete.emit(this.favorite().id);
   }
 }

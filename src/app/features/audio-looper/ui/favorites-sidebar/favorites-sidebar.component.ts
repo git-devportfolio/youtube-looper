@@ -27,7 +27,8 @@ export class FavoritesSidebarComponent {
   readonly close = output<void>();
   readonly uploadNewFile = output<void>();
   readonly editOrder = output<void>();
-  readonly playFavorite = output<FavoriteModel>();
+  readonly loadFavorite = output<FavoriteModel>(); // Charger le favori
+  readonly playFavorite = output<FavoriteModel>(); // Jouer le favori
 
   // Computed values
   readonly sizeMB = computed(() => Math.round(this.totalSize() / (1024 * 1024)));
@@ -68,7 +69,14 @@ export class FavoritesSidebarComponent {
   }
 
   /**
-   * Gère la lecture d'un favori
+   * Gère le chargement d'un favori (clic sur la card)
+   */
+  onLoadFavorite(favorite: FavoriteModel): void {
+    this.loadFavorite.emit(favorite);
+  }
+
+  /**
+   * Gère la lecture d'un favori (bouton Play)
    */
   onPlayFavorite(favorite: FavoriteModel): void {
     this.playFavorite.emit(favorite);

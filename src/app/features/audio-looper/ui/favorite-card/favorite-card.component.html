@@ -1,4 +1,4 @@
-<div class="favorite-card">
+<div class="favorite-card" (click)="onCardClick()">
   <!-- Informations -->
   <div class="card-info">
     <div class="card-header">
@@ -6,12 +6,12 @@
 
       <!-- Actions discrètes -->
       <div class="card-actions">
-        <button type="button" class="btn-play" (click)="onPlay()" title="Lecture">
+        <button type="button" class="btn-play" (click)="onPlay($event)" title="Lecture">
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M8 5v14l11-7L8 5z" fill="currentColor"/>
           </svg>
         </button>
-        <button type="button" class="btn-delete" (click)="onDelete()" title="Supprimer">
+        <button type="button" class="btn-delete" (click)="onDelete($event)" title="Supprimer">
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
           </svg>

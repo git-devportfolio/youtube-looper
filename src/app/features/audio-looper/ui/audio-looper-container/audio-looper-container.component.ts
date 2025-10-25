@@ -338,9 +338,9 @@ export class AudioLooperContainerComponent {
   }
 
   /**
-   * Gère la lecture d'un favori depuis la sidebar
+   * Gère le chargement d'un favori depuis la sidebar (clic sur la card)
    */
-  async onPlayFavorite(favorite: FavoriteModel): Promise<void> {
+  async onLoadFavorite(favorite: FavoriteModel): Promise<void> {
     try {
       console.log('Chargement du favori:', favorite.fileName);
 
@@ -398,6 +398,19 @@ export class AudioLooperContainerComponent {
     } catch (error) {
       console.error('Erreur lors du chargement du favori:', error);
       alert('Erreur lors du chargement du favori');
+    }
+  }
+
+  /**
+   * Gère la lecture immédiate d'un favori (bouton Play)
+   */
+  async onPlayFavorite(favorite: FavoriteModel): Promise<void> {
+    // Charger le favori d'abord
+    await this.onLoadFavorite(favorite);
+
+    // Démarrer la lecture automatiquement
+    if (this.isReady() && !this.audioPlayerService.isPlaying()) {
+      this.audioPlayerService.play();
     }
   }
 }
