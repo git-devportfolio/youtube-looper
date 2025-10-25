@@ -71,6 +71,7 @@ export class AudioLooperContainerComponent {
 
   // État du favori
   private readonly currentFavoriteId = signal<string | null>(null);
+  private readonly loadedFavoriteSettings = signal<FavoriteSettings | null>(null); // Réglages initiaux du favori chargé
   readonly isSavingFavorite = signal<boolean>(false);
 
   // État de la modal de quota
@@ -93,11 +94,53 @@ export class AudioLooperContainerComponent {
     return this.favoriteService.hasFileByName(fileName);
   });
 
+  // Computed: retourne les réglages audio actuels
+  private readonly currentSettings = computed((): FavoriteSettings => {
+    return {
+      pitch: this.rubberbandEngine.pitch(),
+      playbackRate: this.toneEngineService.playbackRate(),
+      volume: this.audioPlayerService.volume(),
+      isMuted: this.audioPlayerService.isMuted(),
+      loopStart: this.toneEngineService.loopStart(),
+      loopEnd: this.toneEngineService.loopEnd(),
+      loopEnabled: this.toneEngineService.isLooping(),
+      currentTime: this.audioPlayerService.currentTime()
+    };
+  });
+
+  // Computed: détecte si le favori chargé a des modifications non sauvegardées
+  readonly hasUnsavedChanges = computed(() => {
+    const loadedSettings = this.loadedFavoriteSettings();
+    const favoriteId = this.currentFavoriteId();
+
+    // Pas de favori chargé
+    if (!loadedSettings || !favoriteId) return false;
+
+    const current = this.currentSettings();
+
+    // Comparer les réglages (tolérance pour les nombres flottants)
+    const tolerance = 0.01;
+    return (
+      Math.abs(current.pitch - loadedSettings.pitch) > tolerance ||
+      Math.abs(current.playbackRate - loadedSettings.playbackRate) > tolerance ||
+      Math.abs(current.volume - loadedSettings.volume) > tolerance ||
+      current.isMuted !== loadedSettings.isMuted ||
+      Math.abs((current.loopStart ?? 0) - (loadedSettings.loopStart ?? 0)) > tolerance ||
+      Math.abs((current.loopEnd ?? 0) - (loadedSettings.loopEnd ?? 0)) > tolerance ||
+      current.loopEnabled !== loadedSettings.loopEnabled
+      // Note: on ne compare pas currentTime car il change constamment pendant la lecture
+    );
+  });
+
   /**
    * Gère la sélection d'un fichier audio
    */
   async onFileSelected(file: File): Promise<void> {
     try {
+      // Réinitialiser l'état du favori
+      this.currentFavoriteId.set(null);
+      this.loadedFavoriteSettings.set(null);
+
       // Mettre à jour l'état en chargement
       this.loadingState.set('loading');
       this.currentFileName.set(file.name);
@@ -394,6 +437,10 @@ export class AudioLooperContainerComponent {
         this.audioPlayerService.seekTo(favorite.settings.currentTime);
       }
 
+      // Marquer le favori comme chargé et stocker ses réglages pour la détection des modifications
+      this.currentFavoriteId.set(favorite.id);
+      this.loadedFavoriteSettings.set({ ...favorite.settings });
+
       console.log('Favori chargé avec succès avec tous ses réglages');
     } catch (error) {
       console.error('Erreur lors du chargement du favori:', error);
@@ -411,6 +458,42 @@ export class AudioLooperContainerComponent {
     // Démarrer la lecture automatiquement
     if (this.isReady() && !this.audioPlayerService.isPlaying()) {
       this.audioPlayerService.play();
+    }
+  }
+
+  /**
+   * Met à jour le favori actuellement chargé avec les réglages modifiés
+   */
+  async updateCurrentFavorite(): Promise<void> {
+    const favoriteId = this.currentFavoriteId();
+
+    if (!favoriteId) {
+      console.warn('Aucun favori chargé à mettre à jour');
+      return;
+    }
+
+    try {
+      // Récupérer les réglages actuels
+      const updatedSettings = this.currentSettings();
+
+      console.log('Mise à jour du favori:', favoriteId, updatedSettings);
+
+      // Mettre à jour via le service
+      const result = await this.favoriteService.updateSettings(favoriteId, updatedSettings);
+
+      if (result.isValid) {
+        // Mettre à jour les réglages de référence pour refléter la sauvegarde
+        this.loadedFavoriteSettings.set({ ...updatedSettings });
+
+        console.log('✅ Favori mis à jour avec succès');
+        // TODO: Afficher un toast de confirmation
+      } else {
+        console.error('❌ Erreur lors de la mise à jour du favori:', result.errorMessage);
+        alert(`Erreur lors de la mise à jour: ${result.errorMessage}`);
+      }
+    } catch (error) {
+      console.error('❌ Erreur lors de la mise à jour du favori:', error);
+      alert('Erreur lors de la mise à jour du favori');
     }
   }
 }
