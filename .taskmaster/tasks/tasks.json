@@ -2154,8 +2154,9 @@
         "dependencies": [
           "8"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-10-25T17:57:00.287Z"
       },
       {
         "id": "12",
@@ -2167,8 +2168,9 @@
         "dependencies": [
           "7"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-10-25T17:59:32.182Z"
       },
       {
         "id": "13",
@@ -2216,9 +2218,9 @@
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2025-10-25T13:53:23.271Z",
+      "lastModified": "2025-10-25T17:59:32.189Z",
       "taskCount": 15,
-      "completedCount": 10,
+      "completedCount": 12,
       "tags": [
         "audio-favoris"
       ]
