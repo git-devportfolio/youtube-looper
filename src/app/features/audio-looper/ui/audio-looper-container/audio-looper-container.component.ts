@@ -141,6 +141,10 @@ export class AudioLooperContainerComponent {
       this.currentFavoriteId.set(null);
       this.loadedFavoriteSettings.set(null);
 
+      // Réinitialiser les paramètres audio à leurs valeurs par défaut
+      this.rubberbandEngine.setPitch(0);
+      this.toneEngineService.setPlaybackRate(1.0);
+
       // Mettre à jour l'état en chargement
       this.loadingState.set('loading');
       this.currentFileName.set(file.name);
@@ -176,6 +180,14 @@ export class AudioLooperContainerComponent {
    * Change le fichier audio (retour à l'upload)
    */
   changeFile(): void {
+    // Réinitialiser l'état du favori
+    this.currentFavoriteId.set(null);
+    this.loadedFavoriteSettings.set(null);
+
+    // Réinitialiser les paramètres audio à leurs valeurs par défaut
+    this.rubberbandEngine.setPitch(0);
+    this.toneEngineService.setPlaybackRate(1.0);
+
     // Réinitialiser l'état
     this.loadingState.set('empty');
     this.currentFileName.set('');
