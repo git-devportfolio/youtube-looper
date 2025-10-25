@@ -4,6 +4,7 @@ import { trigger, state, style, transition, animate, query, stagger } from '@ang
 import { FileUploadComponent } from '../file-upload';
 import { WaveformDisplayComponent } from '../waveform-display';
 import { AudioPlayerComponent } from '../audio-player';
+import { LoopControlsComponent } from '../loop-controls';
 import { VolumeControlComponent } from '../volume-control';
 import { FavoritesSidebarComponent } from '../favorites-sidebar';
 import { FavoriteQuotaModalComponent } from '../favorite-quota-modal';
@@ -16,7 +17,7 @@ type LoadingState = 'empty' | 'loading' | 'loaded' | 'error';
 
 @Component({
   selector: 'app-audio-looper-container',
-  imports: [CommonModule, FileUploadComponent, WaveformDisplayComponent, AudioPlayerComponent, VolumeControlComponent, FavoritesSidebarComponent, FavoriteQuotaModalComponent],
+  imports: [CommonModule, FileUploadComponent, WaveformDisplayComponent, AudioPlayerComponent, LoopControlsComponent, VolumeControlComponent, FavoritesSidebarComponent, FavoriteQuotaModalComponent],
   templateUrl: './audio-looper-container.component.html',
   styleUrl: './audio-looper-container.component.scss',
   animations: [

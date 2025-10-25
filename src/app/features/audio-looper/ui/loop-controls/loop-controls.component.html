@@ -1,55 +1,90 @@
 <div class="loop-controls">
+  <!-- En-tête avec titre et statut -->
   <div class="loop-controls__header">
-    <h3 class="loop-controls__title">A/B Loop</h3>
+    <h3 class="loop-controls__title">Gestion de boucle</h3>
     @if (isLooping()) {
-      <span class="loop-controls__status">Loop Active</span>
+      <span class="loop-controls__status loop-controls__status--active">
+        <svg class="loop-controls__status-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M17 2v4M17 2l-3 3M17 2l3 3M7 22v-4M7 22l-3-3M7 22l3-3M3 9h12a4 4 0 014 4v0M21 15H9a4 4 0 01-4-4v0"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Boucle active
+      </span>
     }
   </div>
 
+  <!-- Instructions pour l'utilisateur -->
+  @if (!hasLoopPoints()) {
+    <p class="loop-controls__hint">
+      Définissez les points A et B pendant la lecture pour créer une boucle
+    </p>
+  }
+
+  <!-- Boutons de contrôle -->
   <div class="loop-controls__buttons">
+    <!-- Bouton Set A (Point de début) -->
     <button
-      class="loop-controls__button loop-controls__button--set-a"
+      class="loop-controls__button loop-controls__button--point-a"
+      [class.loop-controls__button--set]="loopStart() !== null"
       (click)="setPointA()"
       type="button"
-      [attr.aria-label]="'Set loop start point at ' + currentTime() + ' seconds'"
-    >
-      Set A
+      [title]="loopStart() !== null ? 'Point A défini à ' + formatTime(loopStart()!) + ' - Cliquez pour redéfinir' : 'Cliquez pour définir le début de la boucle'"
+      [attr.aria-label]="'Définir point A' + (loopStart() !== null ? ' à ' + formatTime(loopStart()!) : '')">
+      <svg class="loop-controls__icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M11 5L6 9L11 13M6 9H14C16.2091 9 18 10.7909 18 13V19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span class="loop-controls__button-label">Point A</span>
       @if (loopStart() !== null) {
-        <span class="loop-controls__time">{{ loopStart()!.toFixed(2) }}s</span>
+        <span class="loop-controls__time">{{ formatTime(loopStart()!) }}</span>
       }
     </button>
 
+    <!-- Bouton Set B (Point de fin) -->
     <button
-      class="loop-controls__button loop-controls__button--set-b"
+      class="loop-controls__button loop-controls__button--point-b"
+      [class.loop-controls__button--set]="loopEnd() !== null"
       (click)="setPointB()"
       type="button"
-      [attr.aria-label]="'Set loop end point at ' + currentTime() + ' seconds'"
-    >
-      Set B
+      [title]="loopEnd() !== null ? 'Point B défini à ' + formatTime(loopEnd()!) + ' - Cliquez pour redéfinir' : 'Cliquez pour définir la fin de la boucle'"
+      [attr.aria-label]="'Définir point B' + (loopEnd() !== null ? ' à ' + formatTime(loopEnd()!) : '')">
+      <svg class="loop-controls__icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M13 19L18 15L13 11M18 15H10C7.79086 15 6 13.2091 6 11V5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span class="loop-controls__button-label">Point B</span>
       @if (loopEnd() !== null) {
-        <span class="loop-controls__time">{{ loopEnd()!.toFixed(2) }}s</span>
+        <span class="loop-controls__time">{{ formatTime(loopEnd()!) }}</span>
       }
     </button>
 
+    <!-- Bouton Activer/Désactiver la boucle -->
     <button
       class="loop-controls__button loop-controls__button--toggle"
       [class.loop-controls__button--active]="isLooping()"
-      (click)="toggleLoop()"
       [disabled]="!hasLoopPoints()"
+      (click)="toggleLoop()"
       type="button"
-      [attr.aria-label]="loopButtonLabel()"
-    >
-      {{ loopButtonLabel() }}
+      [title]="!hasLoopPoints() ? 'Définissez les points A et B pour activer la boucle' : (isLooping() ? 'Désactiver la boucle' : 'Activer la boucle')"
+      [attr.aria-label]="isLooping() ? 'Désactiver la boucle' : 'Activer la boucle'">
+      <svg class="loop-controls__icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M17 2v4M17 2l-3 3M17 2l3 3M7 22v-4M7 22l-3-3M7 22l3-3M3 9h12a4 4 0 014 4v0M21 15H9a4 4 0 01-4-4v0"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span class="loop-controls__button-label">{{ isLooping() ? 'Désactiver' : 'Activer' }}</span>
     </button>
 
+    <!-- Bouton Réinitialiser -->
     <button
       class="loop-controls__button loop-controls__button--reset"
-      (click)="resetLoop()"
       [disabled]="!hasLoopPoints()"
+      (click)="resetLoop()"
       type="button"
-      aria-label="Reset loop points"
-    >
-      Reset Loop
+      [title]="hasLoopPoints() ? 'Effacer les points A et B' : 'Aucun point de boucle défini'"
+      aria-label="Réinitialiser les points de boucle">
+      <svg class="loop-controls__icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M3 3v5h5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span class="loop-controls__button-label">Réinitialiser</span>
     </button>
   </div>
 </div>
