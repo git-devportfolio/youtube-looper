@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 import { MainLayoutComponent } from './features/layout';
+import { ToastContainerComponent } from './shared/ui';
 
 @Component({
   selector: 'app-root',
-  imports: [MainLayoutComponent],
+  imports: [MainLayoutComponent, ToastContainerComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })

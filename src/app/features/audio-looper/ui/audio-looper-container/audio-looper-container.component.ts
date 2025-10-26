@@ -12,6 +12,7 @@ import { AudioPlayerService, ToneEngineService, WaveformService, RubberbandEngin
 import { FavoriteService } from '../../data';
 import { FavoriteSettings, FavoriteModel } from '../../data/interfaces';
 import { fileToBase64, getAudioDuration } from '../../utils';
+import { NotificationService } from '../../../../core/services';
 
 type LoadingState = 'empty' | 'loading' | 'loaded' | 'error';
 
@@ -45,6 +46,7 @@ export class AudioLooperContainerComponent {
   private readonly favoriteService = inject(FavoriteService);
   private readonly rubberbandEngine = inject(RubberbandEngineService);
   private readonly sidebarStateService = inject(FavoritesSidebarStateService);
+  private readonly notificationService = inject(NotificationService);
 
   // Signals pour l'état de l'interface
   readonly loadingState = signal<LoadingState>('empty');
@@ -259,6 +261,9 @@ export class AudioLooperContainerComponent {
           if (success) {
             console.log('Favori retiré avec succès');
             this.currentFavoriteId.set(null);
+            this.notificationService.success('Favori supprimé');
+          } else {
+            this.notificationService.error('Erreur lors de la suppression du favori');
           }
         }
       } else {
@@ -345,8 +350,21 @@ export class AudioLooperContainerComponent {
             this.loadedFavoriteSettings.set({ ...currentSettings });
             console.log('Favori ID stocké:', result.favoriteId);
           }
+
+          this.notificationService.success('Ajouté aux favoris');
         } else {
           console.error('Erreur lors de l\'ajout du favori:', result.errorMessage);
+
+          // Afficher un message d'erreur spécifique selon le code d'erreur
+          if (result.errorCode === 'DUPLICATE_FILE') {
+            this.notificationService.warning('Ce fichier est déjà dans vos favoris');
+          } else if (result.errorCode === 'MAX_FAVORITES') {
+            this.notificationService.error(result.errorMessage || 'Limite de favoris atteinte');
+          } else if (result.errorCode === 'MAX_SIZE' || result.errorCode === 'QUOTA_EXCEEDED') {
+            this.notificationService.error(result.errorMessage || 'Espace de stockage insuffisant');
+          } else {
+            this.notificationService.error(result.errorMessage || 'Erreur lors de l\'ajout aux favoris');
+          }
           alert(`Erreur lors de l'ajout du favori: ${result.errorMessage}`);
         }
       }
@@ -392,12 +410,15 @@ export class AudioLooperContainerComponent {
       if (result.isValid) {
         console.log('Favori ajouté automatiquement avec succès');
         this.pendingFavoriteData.set(null);
+        this.notificationService.success('Ajouté aux favoris');
       } else {
         console.error('Erreur lors de l\'ajout automatique:', result.errorMessage);
+        this.notificationService.error(result.errorMessage || 'Erreur lors de l\'ajout du favori');
         alert(`Erreur lors de l'ajout du favori: ${result.errorMessage}`);
       }
     } catch (error) {
       console.error('Erreur lors de l\'ajout automatique:', error);
+      this.notificationService.error('Erreur lors de l\'ajout du favori');
       alert('Erreur lors de l\'ajout du favori');
     }
   }
@@ -508,13 +529,15 @@ export class AudioLooperContainerComponent {
         this.loadedFavoriteSettings.set({ ...updatedSettings });
 
         console.log('✅ Favori mis à jour avec succès');
-        // TODO: Afficher un toast de confirmation
+        this.notificationService.success('Modifications enregistrées');
       } else {
         console.error('❌ Erreur lors de la mise à jour du favori:', result.errorMessage);
+        this.notificationService.error(result.errorMessage || 'Erreur lors de la mise à jour');
         alert(`Erreur lors de la mise à jour: ${result.errorMessage}`);
       }
     } catch (error) {
       console.error('❌ Erreur lors de la mise à jour du favori:', error);
+      this.notificationService.error('Erreur lors de la mise à jour du favori');
       alert('Erreur lors de la mise à jour du favori');
     }
   }

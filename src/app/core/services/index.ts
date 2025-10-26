@@ -4,3 +4,4 @@ export { YouTubeApiLoaderService } from './youtube-api-loader.service';
 export { YouTubePlayerService } from './youtube-player.service';
 export { LoopService } from './loop.service';
 export type { LoopConfig } from './loop.service';
+export { NotificationService } from './notification.service';
