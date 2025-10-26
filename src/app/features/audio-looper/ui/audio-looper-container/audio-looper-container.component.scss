@@ -119,7 +119,7 @@
 .minimized-upload {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  // justify-content: space-between;
   gap: var(--spacing-md);
   padding: var(--spacing-md) var(--spacing-lg);
   background-color: var(--background-secondary);
@@ -129,7 +129,7 @@
 
   @media (max-width: 768px) {
     flex-direction: column;
-    gap: var(--spacing-lg);
+    gap: var(--spacing-md);
     padding: var(--spacing-sm) var(--spacing-md);
   }
 
@@ -160,9 +160,22 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    flex: 1;
 
     @media (max-width: 480px) {
       font-size: 0.875rem;
+    }
+  }
+
+  &__favorite-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    flex-shrink: 0;
+
+    @media (max-width: 768px) {
+      width: 100%;
+      justify-content: flex-start;
     }
   }
 
@@ -361,7 +374,6 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-xs);
-  margin-left: var(--spacing-sm);
   padding: var(--spacing-xs) var(--spacing-sm);
   font-size: 0.875rem;
   font-weight: 500;
@@ -372,9 +384,11 @@
   cursor: pointer;
   transition: all 0.2s ease;
   white-space: nowrap;
+  flex-shrink: 0;
 
   @media (max-width: 768px) {
-    flex: 1;
+    // flex: 1;
+    margin: auto;
   }
 
   .favorite-icon {
@@ -447,7 +461,6 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-xs);
-  margin-left: var(--spacing-xs);
   padding: var(--spacing-xs) var(--spacing-sm);
   font-size: 0.875rem;
   font-weight: 500;
@@ -458,6 +471,7 @@
   cursor: pointer;
   transition: all 0.2s ease;
   white-space: nowrap;
+  flex-shrink: 0;
   animation: slideIn 0.3s ease-out;
 
   @media (max-width: 768px) {
