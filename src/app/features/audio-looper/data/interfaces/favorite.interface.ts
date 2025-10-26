@@ -75,7 +75,7 @@ export interface ValidationResult {
   /** Message d'erreur si la validation échoue */
   errorMessage?: string;
   /** Code d'erreur pour identification programmatique */
-  errorCode?: 'MAX_FAVORITES' | 'MAX_SIZE' | 'INVALID_FORMAT' | 'DUPLICATE_FILE';
+  errorCode?: 'MAX_FAVORITES' | 'MAX_SIZE' | 'INVALID_FORMAT' | 'DUPLICATE_FILE' | 'QUOTA_EXCEEDED' | 'CORRUPTED_DATA' | 'STORAGE_ERROR';
   /** ID du favori créé/modifié (optionnel, disponible après add/update) */
   favoriteId?: string;
 }

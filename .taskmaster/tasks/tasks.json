@@ -2183,8 +2183,9 @@
           "3",
           "9"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-10-26T07:10:08.996Z"
       },
       {
         "id": "14",
@@ -2218,9 +2219,9 @@
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2025-10-25T17:59:32.189Z",
+      "lastModified": "2025-10-26T07:10:09.001Z",
       "taskCount": 15,
-      "completedCount": 12,
+      "completedCount": 13,
       "tags": [
         "audio-favoris"
       ]

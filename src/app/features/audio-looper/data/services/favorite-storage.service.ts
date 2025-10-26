@@ -37,8 +37,12 @@ export class FavoriteStorageService {
         reject(request.error);
       };
 
-      request.onsuccess = () => {
+      request.onsuccess = async () => {
         this.db = request.result;
+
+        // Nettoyer les entrées orphelines au démarrage
+        await this.cleanOrphanedEntries();
+
         resolve();
       };
 
@@ -67,6 +71,53 @@ export class FavoriteStorageService {
   }
 
   /**
+   * Valide l'intégrité d'un buffer audio encodé en Base64
+   */
+  private validateAudioBuffer(audioData: string): ValidationResult {
+    // Vérifier que les données existent et ne sont pas vides
+    if (!audioData || audioData.trim().length === 0) {
+      return {
+        isValid: false,
+        errorMessage: 'Données audio manquantes ou vides',
+        errorCode: 'CORRUPTED_DATA',
+      };
+    }
+
+    // Vérifier le format Base64 (regex simple)
+    const base64Regex = /^[A-Za-z0-9+/]+=*$/;
+    if (!base64Regex.test(audioData.trim())) {
+      return {
+        isValid: false,
+        errorMessage: 'Format des données audio invalide (Base64 corrompu)',
+        errorCode: 'CORRUPTED_DATA',
+      };
+    }
+
+    // Vérifier la longueur (doit être un multiple de 4 ou avec padding correct)
+    const cleanData = audioData.trim();
+    if (cleanData.length % 4 !== 0) {
+      return {
+        isValid: false,
+        errorMessage: 'Taille des données audio invalide',
+        errorCode: 'CORRUPTED_DATA',
+      };
+    }
+
+    // Tentative de décodage pour vérifier l'intégrité
+    try {
+      atob(cleanData.substring(0, Math.min(100, cleanData.length))); // Test sur les premiers caractères
+    } catch (error) {
+      return {
+        isValid: false,
+        errorMessage: 'Données audio corrompues (impossible de décoder)',
+        errorCode: 'CORRUPTED_DATA',
+      };
+    }
+
+    return { isValid: true };
+  }
+
+  /**
    * Sauvegarde un favori dans le stockage
    */
   async save(favorite: FavoriteModel): Promise<ValidationResult> {
@@ -75,6 +126,12 @@ export class FavoriteStorageService {
       const validation = await this.validateLimits(favorite);
       if (!validation.isValid) {
         return validation;
+      }
+
+      // Valider l'intégrité des données audio
+      const bufferValidation = this.validateAudioBuffer(favorite.audioData);
+      if (!bufferValidation.isValid) {
+        return bufferValidation;
       }
 
       // Sauvegarder dans IndexedDB
@@ -92,12 +149,24 @@ export class FavoriteStorageService {
       await this.updateMetadata();
 
       return { isValid: true };
-    } catch (error) {
+    } catch (error: any) {
       console.error('Erreur lors de la sauvegarde du favori:', error);
+
+      // Détection spécifique des erreurs de quota
+      if (error?.name === 'QuotaExceededError' ||
+          error?.message?.includes('quota') ||
+          error?.message?.includes('storage')) {
+        return {
+          isValid: false,
+          errorMessage: 'Espace de stockage insuffisant. Veuillez supprimer des favoris pour libérer de l\'espace.',
+          errorCode: 'QUOTA_EXCEEDED',
+        };
+      }
+
       return {
         isValid: false,
         errorMessage: 'Erreur lors de la sauvegarde du favori',
-        errorCode: 'INVALID_FORMAT',
+        errorCode: 'STORAGE_ERROR',
       };
     }
   }
@@ -240,13 +309,15 @@ export class FavoriteStorageService {
       };
     }
 
-    // Vérifier les doublons de nom de fichier (sauf pour les mises à jour)
+    // Vérifier les doublons de nom de fichier ET taille (sauf pour les mises à jour)
     if (!isUpdate) {
-      const duplicate = favorites.find(f => f.fileName === newFavorite.fileName);
+      const duplicate = favorites.find(
+        f => f.fileName === newFavorite.fileName && f.size === newFavorite.size
+      );
       if (duplicate) {
         return {
           isValid: false,
-          errorMessage: `Un favori avec le nom "${newFavorite.fileName}" existe déjà`,
+          errorMessage: `Un favori identique avec le nom "${newFavorite.fileName}" et la même taille existe déjà`,
           errorCode: 'DUPLICATE_FILE',
         };
       }
@@ -330,6 +401,86 @@ export class FavoriteStorageService {
     } catch (error) {
       console.error('Erreur lors de la réorganisation des favoris:', error);
       return false;
+    }
+  }
+
+  /**
+   * Nettoie les entrées orphelines au démarrage
+   * Supprime les favoris présents dans IndexedDB mais absents des métadonnées localStorage
+   * et vice-versa
+   */
+  async cleanOrphanedEntries(): Promise<void> {
+    try {
+      const db = await this.ensureDB();
+      const transaction = db.transaction([this.STORE_NAME], 'readwrite');
+      const store = transaction.objectStore(this.STORE_NAME);
+
+      // Charger tous les favoris depuis IndexedDB
+      const indexedDBFavorites = await new Promise<FavoriteModel[]>((resolve, reject) => {
+        const request = store.getAll();
+        request.onsuccess = () => resolve(request.result || []);
+        request.onerror = () => reject(request.error);
+      });
+
+      // Charger les métadonnées depuis localStorage
+      const metadataStr = localStorage.getItem(this.STORAGE_KEY);
+      let metadataIds: string[] = [];
+
+      if (metadataStr) {
+        try {
+          const metadata = JSON.parse(metadataStr);
+          metadataIds = metadata.ids || [];
+        } catch (error) {
+          console.warn('Métadonnées localStorage corrompues, réinitialisation');
+        }
+      }
+
+      // Identifier les entrées orphelines dans IndexedDB (pas dans localStorage)
+      const orphanedInDB = indexedDBFavorites.filter(
+        fav => !metadataIds.includes(fav.id)
+      );
+
+      // Supprimer les entrées orphelines d'IndexedDB
+      if (orphanedInDB.length > 0) {
+        console.log(`Nettoyage de ${orphanedInDB.length} entrée(s) orpheline(s) dans IndexedDB`);
+        const deleteTransaction = db.transaction([this.STORE_NAME], 'readwrite');
+        const deleteStore = deleteTransaction.objectStore(this.STORE_NAME);
+
+        for (const orphan of orphanedInDB) {
+          deleteStore.delete(orphan.id);
+        }
+
+        await new Promise<void>((resolve, reject) => {
+          deleteTransaction.oncomplete = () => resolve();
+          deleteTransaction.onerror = () => reject(deleteTransaction.error);
+        });
+      }
+
+      // Identifier les IDs orphelins dans localStorage (pas dans IndexedDB)
+      const indexedDBIds = indexedDBFavorites.map(f => f.id);
+      const orphanedInMetadata = metadataIds.filter(
+        id => !indexedDBIds.includes(id)
+      );
+
+      // Mettre à jour les métadonnées si nécessaire
+      if (orphanedInMetadata.length > 0 || orphanedInDB.length > 0) {
+        console.log(`Nettoyage de ${orphanedInMetadata.length} ID(s) orphelin(s) dans localStorage`);
+        const validIds = metadataIds.filter(id => indexedDBIds.includes(id));
+
+        const cleanedMetadata = {
+          count: validIds.length,
+          lastUpdated: new Date().toISOString(),
+          ids: validIds,
+        };
+
+        localStorage.setItem(this.STORAGE_KEY, JSON.stringify(cleanedMetadata));
+      }
+
+      if (orphanedInDB.length > 0 || orphanedInMetadata.length > 0) {
+        console.log('Nettoyage des entrées orphelines terminé');
+      }
+    } catch (error) {
+      console.error('Erreur lors du nettoyage des entrées orphelines:', error);
     }
   }
 }
