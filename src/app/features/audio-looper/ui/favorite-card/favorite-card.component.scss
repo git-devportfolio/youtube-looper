@@ -6,10 +6,13 @@
   transition: all 0.2s ease;
   cursor: pointer;
 
-  &:hover {
-    background: var(--background-primary);
-    border-color: var(--border-dark, #444);
-    transform: translateY(-1px);
+  // Hover uniquement sur desktop
+  @media (hover: hover) {
+    &:hover {
+      background: var(--background-primary);
+      border-color: var(--border-dark, #444);
+      transform: translateY(-1px);
+    }
   }
 
   &:active {
@@ -20,14 +23,23 @@
   &.edit-mode {
     cursor: grab;
 
-    &:hover {
-      border-color: var(--primary-color, #4ade80);
-      background: var(--background-primary);
+    // Hover uniquement sur desktop
+    @media (hover: hover) {
+      &:hover {
+        border-color: var(--primary-color, #4ade80);
+        background: var(--background-primary);
+      }
     }
 
     &:active {
       cursor: grabbing;
     }
+  }
+
+  // Touch targets optimisés pour mobile
+  @media (max-width: 768px) {
+    padding: var(--spacing-md) var(--spacing-lg);
+    min-height: 80px; // Touch target généreux
   }
 
   // États Angular CDK drag & drop
@@ -82,13 +94,27 @@
     stroke-width: 2.5;
   }
 
-  &:hover {
-    color: var(--primary-color, #4ade80);
+  // Hover uniquement sur desktop
+  @media (hover: hover) {
+    &:hover {
+      color: var(--primary-color, #4ade80);
+    }
   }
 
   &:active {
     cursor: grabbing;
     color: var(--primary-color-hover, #22c55e);
+  }
+
+  // Touch target plus grand pour mobile
+  @media (max-width: 768px) {
+    width: 32px;
+    height: 32px;
+
+    svg {
+      width: 24px;
+      height: 24px;
+    }
   }
 }
 
@@ -181,9 +207,12 @@
   color: var(--primary-color, #4ade80);
   border-color: var(--primary-color, #4ade80);
 
-  &:hover {
-    background: rgba(74, 222, 128, 0.1);
-    border-color: var(--primary-color-hover, #22c55e);
+  // Hover uniquement sur desktop
+  @media (hover: hover) {
+    &:hover {
+      background: rgba(74, 222, 128, 0.1);
+      border-color: var(--primary-color-hover, #22c55e);
+    }
   }
 }
 
@@ -196,8 +225,11 @@
     height: 12px;
   }
 
-  &:hover {
-    background: rgba(239, 68, 68, 0.1);
+  // Hover uniquement sur desktop
+  @media (hover: hover) {
+    &:hover {
+      background: rgba(239, 68, 68, 0.1);
+    }
   }
 }
 
