@@ -1571,7 +1571,7 @@
   "audio-favoris": {
     "tasks": [
       {
-        "id": "1",
+        "id": 1,
         "title": "Mise en place de l'architecture du système de favoris",
         "description": "Créer la structure de base du module favoris avec les services, interfaces et modèles de données",
         "details": "Créer un service FavoriteService avec les méthodes de base (add, remove, list, update), définir les interfaces TypeScript pour FavoriteModel et FavoriteSettings, créer les types pour le stockage localStorage et IndexedDB. Implémenter la structure de données JSON avec validation des limites (10 favoris max, 100MB total).",
@@ -1648,7 +1648,7 @@
         "updatedAt": "2025-10-23T20:48:51.304Z"
       },
       {
-        "id": "2",
+        "id": 2,
         "title": "Implémentation du stockage localStorage pour métadonnées",
         "description": "Cette tâche était prévue pour développer la couche de persistance localStorage, mais la fonctionnalité a déjà été implémentée dans FavoriteStorageService (tâche 1.2)",
         "status": "done",
@@ -1662,7 +1662,7 @@
         "updatedAt": "2025-10-23T21:08:44.136Z"
       },
       {
-        "id": "3",
+        "id": 3,
         "title": "Implémentation du stockage IndexedDB pour buffers audio",
         "description": "Cette tâche était prévue pour développer la couche IndexedDB pour stocker les buffers audio, mais la fonctionnalité a déjà été complètement implémentée dans FavoriteStorageService (tâche 1.2)",
         "status": "done",
@@ -1676,7 +1676,7 @@
         "updatedAt": "2025-10-23T21:10:27.182Z"
       },
       {
-        "id": "4",
+        "id": 4,
         "title": "Création du bouton étoile dans la barre upload minimisée",
         "description": "Ajouter le bouton étoile avec états visuels (vide/plein) dans la barre upload existante",
         "details": "Modifier le composant upload-bar pour inclure un bouton étoile à côté du titre. États: étoile vide (outline) pour non-favori, étoile pleine dorée + badge 'Favori' pour favori actif. Gestion du clic avec vérification de la limite de 10 favoris.",
@@ -1756,7 +1756,7 @@
         "updatedAt": "2025-10-23T21:34:43.783Z"
       },
       {
-        "id": "5",
+        "id": 5,
         "title": "Implémentation de l'ajout aux favoris avec validation des limites",
         "description": "Développer la logique d'ajout d'un favori avec sauvegarde des réglages audio et validation des contraintes",
         "details": "Créer addToFavorites() qui capture: pitch, playbackRate, currentTime, loopStart/End, loopEnabled. Validation limite 10 favoris et 100MB total. Sauvegarde timestamp comme ID unique. Gestion du feedback utilisateur avec toasts.",
@@ -1832,7 +1832,7 @@
         "updatedAt": "2025-10-24T14:50:14.010Z"
       },
       {
-        "id": "6",
+        "id": 6,
         "title": "Création de la modal de gestion des limites (10 favoris max)",
         "description": "Développer la modal qui s'affiche quand l'utilisateur tente d'ajouter un 11ème favori",
         "details": "Créer FavoriteQuotaModalComponent avec liste complète des favoris (titre, durée, date, taille, bouton supprimer). L'utilisateur doit supprimer un favori pour libérer l'espace avant d'ajouter le nouveau. Auto-ajout du nouveau favori après suppression.",
@@ -1905,7 +1905,7 @@
         "updatedAt": "2025-10-24T16:10:18.572Z"
       },
       {
-        "id": "7",
+        "id": 7,
         "title": "Création du composant sidebar des favoris",
         "description": "Développer le sidebar coulissant latéral pour afficher la liste des favoris",
         "details": "Créer FavoritesSidebarComponent avec drawer depuis la gauche, overlay semi-transparent. Header avec titre, compteur '7/10 favoris • 45 MB / 100 MB', boutons 'Modifier l'ordre' et 'Upload nouveau fichier'. Footer avec bouton fermer.",
@@ -1984,7 +1984,7 @@
         "updatedAt": "2025-10-23T21:18:49.492Z"
       },
       {
-        "id": "8",
+        "id": 8,
         "title": "Création des cartes de favoris avec waveform miniature",
         "description": "Développer les cartes individuelles pour chaque favori dans la liste sidebar",
         "details": "Créer FavoriteCardComponent avec waveform miniature (40-60px), titre tronqué, badges des réglages actifs (pitch, vitesse, boucle A-B), durée/date, taille fichier, boutons Play/Pause et Supprimer. Design responsive touch-friendly.",
@@ -1998,7 +1998,7 @@
         "updatedAt": "2025-10-24T17:52:33.167Z"
       },
       {
-        "id": "9",
+        "id": 9,
         "title": "Implémentation du chargement d'un favori avec restauration complète",
         "description": "Développer la logique de chargement d'un favori qui restaure tous les réglages et la position de lecture",
         "details": "Créer loadFavorite() qui charge le buffer IndexedDB, applique pitch/vitesse/boucles A-B, positionne currentTime à la position sauvegardée. Volume par défaut à 100%. Ne lance PAS la lecture automatiquement. Fermeture auto du sidebar. Mise à jour du badge étoile.",
@@ -2072,7 +2072,7 @@
         "updatedAt": "2025-10-25T13:12:30.228Z"
       },
       {
-        "id": "10",
+        "id": 10,
         "title": "Bouton 'Sauvegarder les modifications' pour favoris existants",
         "description": "Ajouter un bouton pour mettre à jour un favori existant quand l'utilisateur modifie ses réglages",
         "details": "Détecter les modifications (pitch, vitesse, boucles, position) d'un favori chargé. Afficher bouton 'Sauvegarder les modifications' dans la barre upload entre titre et badge. Mettre à jour les métadonnées et position de lecture actuelle. Toast de confirmation.",
@@ -2145,7 +2145,7 @@
         "updatedAt": "2025-10-25T13:53:23.268Z"
       },
       {
-        "id": "11",
+        "id": 11,
         "title": "Mode édition avec drag & drop pour réorganisation",
         "description": "Implémenter le mode édition permettant de réorganiser l'ordre des favoris par glisser-déposer",
         "details": "Utiliser Angular CDK Drag & Drop pour réorganisation touch-friendly. Mode édition activé par bouton 'Modifier l'ordre': afficher handles de drag (≡), masquer boutons Play/Supprimer, message d'aide. Sauvegarde automatique du nouvel ordre dans localStorage.",
@@ -2159,7 +2159,7 @@
         "updatedAt": "2025-10-25T17:57:00.287Z"
       },
       {
-        "id": "12",
+        "id": 12,
         "title": "Bouton d'accès au sidebar et logique d'affichage par défaut",
         "description": "Créer le bouton fixe d'accès au sidebar et gérer l'affichage par défaut selon le nombre de favoris",
         "details": "Bouton hamburger/bibliothèque en haut à gauche toujours visible. Logique: si 0 favori → afficher file-upload, si ≥1 favori → sidebar disponible (fermé par défaut). Gestion des états ouvert/fermé avec overlay.",
@@ -2173,7 +2173,7 @@
         "updatedAt": "2025-10-25T17:59:32.182Z"
       },
       {
-        "id": "13",
+        "id": 13,
         "title": "Gestion d'erreurs et cas limites",
         "description": "Implémenter la gestion robuste des erreurs de stockage et corruption de données",
         "details": "Try/catch sur IndexedDB avec messages 'Espace de stockage insuffisant'. Détection des buffers corrompus avec option 'Supprimer ce favori corrompu'. Nettoyage automatique des entrées orphelines au démarrage. Validation des doublons par nom+taille.",
@@ -2188,7 +2188,7 @@
         "updatedAt": "2025-10-26T07:10:08.996Z"
       },
       {
-        "id": "14",
+        "id": 14,
         "title": "Feedback utilisateur et toasts de notification",
         "description": "Implémenter tous les messages de feedback utilisateur avec toasts et notifications",
         "details": "Créer NotificationService pour toasts: 'Ajouté aux favoris', 'Favori supprimé', 'Modifications enregistrées', 'Ce fichier est déjà dans vos favoris'. États de chargement avec spinners pour gros fichiers. Skeleton loaders pour cartes favoris.",
@@ -2204,7 +2204,7 @@
         "updatedAt": "2025-10-26T07:51:40.733Z"
       },
       {
-        "id": "15",
+        "id": 15,
         "title": "Optimisation responsive et design mobile",
         "description": "Finaliser l'adaptation mobile et desktop avec design cohérent au module audio-looper existant",
         "details": "Mobile (<768px): sidebar pleine largeur 90%, cartes pleine largeur, drag tactile optimisé. Desktop (≥768px): sidebar 320-400px, hover states. Reprendre styles audio-looper existant, boutons textuels, mode sombre compatible. Tests sur différentes tailles d'écran.",
@@ -2226,7 +2226,10 @@
       "completedCount": 15,
       "tags": [
         "audio-favoris"
-      ]
+      ],
+      "created": "2025-10-26T07:54:38.449Z",
+      "description": "Tasks for audio-favoris context",
+      "updated": "2025-10-26T07:54:38.449Z"
     }
   }
 }

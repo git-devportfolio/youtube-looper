@@ -64,7 +64,7 @@ export class FileUploadComponent {
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     const files = input.files;
-
+    
     if (files && files.length > 0) {
       this.handleFile(files[0]);
     }
