@@ -4,10 +4,7 @@
     <div class="modal" (click)="$event.stopPropagation()">
       <!-- Header -->
       <div class="modal-header">
-        <h2 class="modal-title">
-          <span class="modal-icon">🎵</span>
-          Contrôles Audio
-        </h2>
+        <h2 class="modal-title">Contrôles Audio</h2>
         <button class="modal-close" (click)="close()" aria-label="Fermer">
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
@@ -22,14 +19,14 @@
           [class.tab--active]="activeTab() === 'pitch'"
           (click)="setActiveTab('pitch')"
           type="button">
-          🎼 Tonalité
+          Tonalité
         </button>
         <button
           class="tab"
           [class.tab--active]="activeTab() === 'speed'"
           (click)="setActiveTab('speed')"
           type="button">
-          ⚡ Vitesse
+          Vitesse
         </button>
       </div>
 
@@ -40,8 +37,7 @@
           <div class="tab-content">
             <!-- Description -->
             <p class="description">
-              Ajustez la tonalité de -6 à +6 demi-tons sans modifier la vitesse.
-              Parfait pour transposer dans votre tessiture.
+              Ajustez la tonalité de -6 à +6 demi-tons sans modifier la vitesse
             </p>
 
             <!-- Stepper -->
@@ -95,22 +91,12 @@
               <div class="progress-indicator" [style.left.%]="((_tempPitch() + 6) / 12) * 100"></div>
             </div>
 
-            <!-- Conseils -->
-            <div class="tips">
-              <h4 class="tips-title">💡 Conseils :</h4>
-              <ul class="tips-list">
-                <li>Descendez de 2-3 demi-tons pour les chansons trop aiguës</li>
-                <li>Le timbre est préservé grâce à Rubberband</li>
-                <li>Combinez avec le ralentissement pour mieux apprendre</li>
-              </ul>
-            </div>
-
             <!-- Reset pitch -->
             <button
               class="reset-btn"
               (click)="resetTempPitch()"
               [disabled]="_tempPitch() === 0">
-              Réinitialiser la tonalité
+              Réinitialiser
             </button>
           </div>
         }
@@ -120,8 +106,7 @@
           <div class="tab-content">
             <!-- Description -->
             <p class="description">
-              Ajustez la vitesse de lecture pour faciliter l'apprentissage.
-              La tonalité reste inchangée.
+              Ajustez la vitesse de lecture sans modifier la tonalité
             </p>
 
             <!-- Stepper -->
@@ -162,39 +147,12 @@
               </button>
             </div>
 
-            <!-- Barre de progression -->
-            <!-- <div class="progress-track">
-              <div class="progress-markers">
-                @for (marker of [0.5, 0.75, 0.95, 1.0, 1.5, 2.0]; track marker) {
-                  <div
-                    class="progress-marker"
-                    [class.active]="_tempSpeed() === marker"
-                    [class.zero]="marker === 1.0"
-                    [style.left.%]="((marker - 0.5) / (2.0 - 0.5)) * 100">
-                    <span class="progress-marker-label">{{ marker }}x</span>
-                  </div>
-                }
-              </div>
-              <div class="progress-indicator" [style.left.%]="((_tempSpeed() - 0.5) / (2.0 - 0.5)) * 100"></div>
-            </div> -->
-
-            <!-- Conseils -->
-            <div class="tips">
-              <h4 class="tips-title">💡 Conseils :</h4>
-              <ul class="tips-list">
-                <li>Ralentissez (0.5x - 0.75x) pour les passages difficiles</li>
-                <li>Utilisez 0.95x pour jouer presque au tempo réel</li>
-                <li>Utilisez la vitesse normale (1.0x) pour le tempo réel</li>
-                <li>Accélérez (1.5x - 2.0x) pour réviser rapidement</li>
-              </ul>
-            </div>
-
             <!-- Reset speed -->
             <button
               class="reset-btn"
               (click)="resetTempSpeed()"
               [disabled]="_tempSpeed() === 1.0">
-              Réinitialiser la vitesse
+              Réinitialiser
             </button>
           </div>
         }
