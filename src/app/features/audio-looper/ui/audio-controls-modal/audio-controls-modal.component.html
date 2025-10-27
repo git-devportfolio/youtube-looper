@@ -76,21 +76,6 @@
               </button>
             </div>
 
-            <!-- Barre de progression -->
-            <div class="progress-track">
-              <div class="progress-markers">
-                @for (marker of [-6, -3, 0, 3, 6]; track marker) {
-                  <div
-                    class="progress-marker"
-                    [class.active]="_tempPitch() === marker"
-                    [class.zero]="marker === 0">
-                    <span class="progress-marker-label">{{ marker > 0 ? '+' + marker : marker }}</span>
-                  </div>
-                }
-              </div>
-              <div class="progress-indicator" [style.left.%]="((_tempPitch() + 6) / 12) * 100"></div>
-            </div>
-
             <!-- Reset pitch -->
             <button
               class="reset-btn"

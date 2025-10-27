@@ -41,14 +41,53 @@ declare const self: WorkerGlobalScope & {
 let rbApi: RubberbandAPI | null = null;
 
 /**
+ * Calcule le base path de l'application à partir de l'URL du worker
+ * Supporte les environnements de dev et de production (y compris gh-pages avec base-href)
+ */
+function getBasePath(): string {
+  const url = new URL(self.location.href);
+  let pathname = url.pathname;
+
+  // Retirer le dernier segment (le fichier .js du worker)
+  const lastSlashIndex = pathname.lastIndexOf('/');
+  if (lastSlashIndex !== -1) {
+    pathname = pathname.substring(0, lastSlashIndex);
+  }
+
+  // Retirer '/browser' si présent (structure de build Angular)
+  if (pathname.endsWith('/browser')) {
+    pathname = pathname.substring(0, pathname.length - '/browser'.length);
+  }
+
+  // Assurer qu'il n'y a pas de slash de fin
+  if (pathname.endsWith('/')) {
+    pathname = pathname.substring(0, pathname.length - 1);
+  }
+
+  return pathname || '';
+}
+
+/**
  * Initialisation asynchrone du module rubberband-wasm
  */
 (async () => {
   try {
     console.time('[RubberbandWorker] WASM compile');
 
+    // Calculer le base path dynamiquement
+    const basePath = getBasePath();
+    const scriptUrl = `${basePath}/assets/rubberband/rubberband.umd.min.js`;
+    const wasmUrl = `${basePath}/assets/rubberband/rubberband.wasm`;
+
+    console.log('[RubberbandWorker] Base path:', basePath);
+    console.log('[RubberbandWorker] Loading script from:', scriptUrl);
+    console.log('[RubberbandWorker] Loading WASM from:', wasmUrl);
+
     // Charger le fichier JavaScript UMD de rubberband via fetch (compatible module workers)
-    const scriptResponse = await fetch('/assets/rubberband/rubberband.umd.min.js');
+    const scriptResponse = await fetch(scriptUrl);
+    if (!scriptResponse.ok) {
+      throw new Error(`Failed to fetch rubberband script: ${scriptResponse.status} ${scriptResponse.statusText}`);
+    }
     const scriptText = await scriptResponse.text();
 
     // Évaluer le script dans le contexte global du worker
@@ -61,9 +100,11 @@ let rbApi: RubberbandAPI | null = null;
     }
 
     // Compiler le module WASM
-    const wasm = await WebAssembly.compileStreaming(
-      fetch('/assets/rubberband/rubberband.wasm')
-    );
+    const wasmResponse = await fetch(wasmUrl);
+    if (!wasmResponse.ok) {
+      throw new Error(`Failed to fetch rubberband WASM: ${wasmResponse.status} ${wasmResponse.statusText}`);
+    }
+    const wasm = await WebAssembly.compileStreaming(wasmResponse);
 
     // Initialiser l'API Rubberband
     rbApi = await self.rubberband.RubberBandInterface.initialize(wasm);

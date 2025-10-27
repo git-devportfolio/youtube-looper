@@ -4,7 +4,6 @@
 :host {
   --btn-size: 48px;
   --modal-width: 480px;
-  --marker: 28px;
 }
 
 // Modal overlay
@@ -265,82 +264,6 @@
   @include mobile-only {
     font-size: .8125rem;
   }
-}
-
-// Progress track - Design épuré
-.progress-track {
-  position: relative;
-  // margin: var(--spacing-xl) 0 var(--spacing-lg);
-  // padding: var(--spacing-md) 0;
-}
-
-.progress-markers {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  position: relative;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: var(--border-color);
-    transform: translateY(-50%);
-  }
-}
-
-.progress-marker {
-  position: relative;
-  width: var(--marker);
-  height: var(--marker);
-  border-radius: 50%;
-  background: var(--background-secondary);
-  border: 2px solid var(--border-color);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1;
-  transition: all .2s;
-
-  &.zero {
-    background: var(--background-tertiary);
-    border-color: var(--text-secondary);
-  }
-
-  &.active {
-    background: var(--primary-color);
-    border-color: var(--primary-color);
-    transform: scale(1.15);
-    box-shadow: 0 0 0 4px rgba(74, 222, 128, 0.15);
-
-    .progress-marker-label {
-      color: white;
-      font-weight: 700;
-    }
-  }
-}
-
-.progress-marker-label {
-  font-size: .6875rem;
-  font-weight: 600;
-  color: var(--text-secondary);
-}
-
-.progress-indicator {
-  position: absolute;
-  top: 50%;
-  width: 10px;
-  height: 10px;
-  background: var(--primary-color);
-  border-radius: 50%;
-  transform: translate(-50%,-50%);
-  z-index: 2;
-  box-shadow: 0 0 10px rgba(74, 222, 128, 0.5);
-  transition: left .3s cubic-bezier(0.4, 0, 0.2, 1);
-  pointer-events: none;
 }
 
 // Reset button
