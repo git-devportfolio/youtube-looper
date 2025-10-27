@@ -7,7 +7,17 @@
 <aside class="favorites-sidebar" [class.open]="isOpen()">
   <!-- Header -->
   <header class="sidebar-header">
-    <h2 class="sidebar-title">Mes Favoris</h2>
+    <!-- Titre et bouton fermer -->
+    <div class="header-top">
+      <h2 class="sidebar-title">Mes Favoris</h2>
+      <button
+        type="button"
+        class="btn-close-header"
+        (click)="onClose()"
+        aria-label="Fermer">
+        ×
+      </button>
+    </div>
 
     <!-- Compteur de favoris et taille -->
     <div class="sidebar-stats">
@@ -19,36 +29,6 @@
         <div class="stats-bar-fill" [style.width.%]="usagePercentage()"></div>
       </div>
     </div>
-
-    <!-- Boutons d'action -->
-    <div class="sidebar-actions">
-      <button
-        type="button"
-        class="btn-action btn-edit-order"
-        [class.btn-edit-order--active]="isEditMode()"
-        (click)="onToggleEditMode()"
-        [disabled]="favoritesCount() === 0">
-        {{ isEditMode() ? 'Terminer' : 'Modifier l\'ordre' }}
-      </button>
-      @if (!isEditMode()) {
-        <button
-          type="button"
-          class="btn-action btn-upload"
-          (click)="onUploadNewFile()"
-          [disabled]="favoritesCount() >= maxFavorites()">
-          Upload nouveau fichier
-        </button>
-      }
-    </div>
-
-    <!-- Message d'aide en mode édition -->
-    @if (isEditMode()) {
-      <div class="edit-mode-help">
-        <p class="edit-mode-help-text">
-          Glissez-déposez les cartes pour réorganiser vos favoris
-        </p>
-      </div>
-    }
   </header>
 
   <!-- Contenu principal (liste des favoris) -->
@@ -83,11 +63,45 @@
 
   <!-- Footer -->
   <footer class="sidebar-footer">
-    <button
-      type="button"
-      class="btn-close"
-      (click)="onClose()">
-      Fermer
-    </button>
+    <!-- Mode normal : Bouton édition + Upload -->
+    @if (!isEditMode()) {
+      <div class="sidebar-actions">
+        <!-- Bouton icône "Modifier l'ordre" -->
+        <button
+          type="button"
+          class="btn-icon btn-edit-order"
+          (click)="onToggleEditMode()"
+          [disabled]="favoritesCount() === 0"
+          aria-label="Modifier l'ordre">
+          ≡
+        </button>
+
+        <!-- Bouton textuel "Upload nouveau fichier" -->
+        <button
+          type="button"
+          class="btn-action btn-upload"
+          (click)="onUploadNewFile()"
+          [disabled]="favoritesCount() >= maxFavorites()">
+          Upload nouveau fichier
+        </button>
+      </div>
+    }
+
+    <!-- Mode édition : Message + Bouton valider -->
+    @if (isEditMode()) {
+      <div class="edit-mode-bar">
+        <div class="edit-mode-message">
+          <span class="edit-mode-icon">≡</span>
+          <span class="edit-mode-text">Glissez pour réorganiser</span>
+        </div>
+        <button
+          type="button"
+          class="btn-validate"
+          (click)="onToggleEditMode()"
+          aria-label="Terminer l'édition">
+          ✓ Terminer
+        </button>
+      </div>
+    }
   </footer>
 </aside>
