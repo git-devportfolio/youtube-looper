@@ -433,6 +433,11 @@ export class AudioLooperContainerComponent {
       // Fermer le sidebar
       this.closeSidebar();
 
+      // Mettre à jour l'état en chargement
+      this.loadingState.set('loading');
+      this.currentFileName.set(favorite.fileName);
+      this.errorMessage.set('');
+
       // Convertir Base64 en Blob
       const binaryString = atob(favorite.audioData);
       const bytes = new Uint8Array(binaryString.length);
@@ -443,13 +448,27 @@ export class AudioLooperContainerComponent {
 
       // Créer un objet File virtuel
       const file = new File([blob], favorite.fileName, { type: favorite.mimeType });
+      this.currentFile.set(file);
 
-      // Charger le fichier
-      await this.onFileSelected(file);
+      // Charger le fichier audio directement sans passer par onFileSelected
+      // pour éviter la réinitialisation des IDs et paramètres
+      await this.audioPlayerService.loadAudioFile(file);
+      console.log('Fichier favori chargé avec succès !');
+
+      // Récupérer l'AudioBuffer de Tone.js pour la waveform
+      const player = (this.toneEngineService as any).player;
+      if (player && player.buffer) {
+        const buffer = player.buffer.get() as AudioBuffer;
+        this.audioBuffer.set(buffer);
+        console.log('AudioBuffer récupéré pour la waveform');
+
+        // Marquer comme chargé
+        this.loadingState.set('loaded');
+      }
 
       // Attendre que le fichier soit complètement chargé
       // Utiliser un court délai pour s'assurer que tous les services sont prêts
-      await new Promise(resolve => setTimeout(resolve, 500));
+      await new Promise(resolve => setTimeout(resolve, 300));
 
       // Appliquer les réglages sauvegardés
       console.log('Application des réglages du favori:', favorite.settings);
@@ -487,7 +506,10 @@ export class AudioLooperContainerComponent {
       console.log('Favori chargé avec succès avec tous ses réglages');
     } catch (error) {
       console.error('Erreur lors du chargement du favori:', error);
-      alert('Erreur lors du chargement du favori');
+      this.loadingState.set('error');
+      this.errorMessage.set(
+        error instanceof Error ? error.message : 'Une erreur est survenue lors du chargement du favori'
+      );
     }
   }
 
