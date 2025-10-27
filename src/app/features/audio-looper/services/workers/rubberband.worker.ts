@@ -152,9 +152,19 @@ onmessage = async function (e: MessageEvent<RubberbandWorkerInput>) {
       throw new Error('Invalid tempo value');
     }
 
-    // Calculer la taille du buffer de sortie en fonction du tempo
-    const outputSamples = Math.ceil(channelBuffers[0].length * tempo);
+    // Convertir le playbackRate en timeRatio pour Rubberband
+    // playbackRate : 0.5 = plus lent, 1.0 = normal, 2.0 = plus rapide
+    // timeRatio (Rubberband) : > 1 = étiré (plus lent), < 1 = compressé (plus rapide)
+    // Formule : timeRatio = 1 / playbackRate
+    const timeRatio = 1 / tempo;
+
+    // Calculer la taille du buffer de sortie en fonction du timeRatio
+    // timeRatio > 1 = audio plus long (plus d'échantillons)
+    // timeRatio < 1 = audio plus court (moins d'échantillons)
+    const outputSamples = Math.ceil(channelBuffers[0].length * timeRatio);
     const outputBuffers = channelBuffers.map(() => new Float32Array(outputSamples));
+
+    console.log(`[RubberbandWorker] playbackRate=${tempo}, timeRatio=${timeRatio.toFixed(3)}, inputSamples=${channelBuffers[0].length}, outputSamples=${outputSamples}`);
 
     // Créer l'état Rubberband
     // rubberband_new(sampleRate, channels, options, initialTimeRatio, initialPitchScale)
@@ -163,7 +173,7 @@ onmessage = async function (e: MessageEvent<RubberbandWorkerInput>) {
     // Convertir le pitch de demi-tons en échelle (2^(pitch/12))
     const pitchScale = Math.pow(2, pitch / 12);
     rbApi.rubberband_set_pitch_scale(rbState, pitchScale);
-    rbApi.rubberband_set_time_ratio(rbState, tempo);
+    rbApi.rubberband_set_time_ratio(rbState, timeRatio);
 
     const samplesRequired = rbApi.rubberband_get_samples_required(rbState);
 

@@ -165,6 +165,7 @@ export class AudioControlsModalComponent {
       return;
     }
 
+    debugger;
     // Appliquer les changements via ToneEngineService
     // qui déclenchera le reprocessing Rubberband si nécessaire
     if (this._tempPitch() !== this.currentPitch()) {

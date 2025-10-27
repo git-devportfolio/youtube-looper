@@ -503,18 +503,15 @@ export class RubberbandEngineService {
 
   /**
    * Définit la vitesse de lecture (playback rate)
-   * @param rate Vitesse de lecture (0.5, 0.75, ou 1.0)
+   * @param rate Vitesse de lecture (0.25 à 2.0)
    */
   setPlaybackRate(rate: number): void {
-    // Valider les valeurs supportées
-    const validRates = [0.5, 0.75, 1.0];
-    const closestRate = validRates.reduce((prev, curr) =>
-      Math.abs(curr - rate) < Math.abs(prev - rate) ? curr : prev
-    );
+    // Valider la plage raisonnable (0.25x à 2.0x)
+    const clampedRate = Math.max(0.25, Math.min(2.0, rate));
 
-    if (closestRate !== this.playbackRate()) {
-      this.playbackRate.set(closestRate);
-      console.log('[RubberbandEngineService] Playback rate set to', closestRate);
+    if (clampedRate !== this.playbackRate()) {
+      this.playbackRate.set(clampedRate);
+      console.log('[RubberbandEngineService] Playback rate set to', clampedRate);
       this.triggerProcessing();
     }
   }
