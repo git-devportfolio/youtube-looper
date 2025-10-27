@@ -222,9 +222,11 @@ export class AudioLooperContainerComponent {
    * Gère l'upload d'un nouveau fichier depuis le sidebar
    */
   onUploadNewFileFromSidebar(): void {
+    // Fermer la sidebar
     this.closeSidebar();
-    // TODO: Ouvrir un dialog d'upload ou revenir à l'écran d'upload
-    console.log('Upload nouveau fichier depuis sidebar');
+
+    // Revenir à l'écran d'upload en réutilisant la logique de changeFile()
+    this.changeFile();
   }
 
   /**
