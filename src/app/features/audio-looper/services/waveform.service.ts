@@ -52,8 +52,10 @@ export class WaveformService {
       return;
     }
 
-    const width = canvas.width;
-    const height = canvas.height;
+    // Utiliser les dimensions CSS (logiques) car le contexte est déjà mis à l'échelle
+    const dpr = window.devicePixelRatio || 1;
+    const width = canvas.width / dpr;
+    const height = canvas.height / dpr;
     const halfHeight = height / 2;
 
     // Effacer le canvas
@@ -76,7 +78,7 @@ export class WaveformService {
       ctx.fillRect(x, halfHeight - barHeight, barWidth, barHeight * 2);
     });
 
-    // Mettre à jour les dimensions
+    // Mettre à jour les dimensions (en pixels logiques)
     this.canvasWidth.set(width);
     this.canvasHeight.set(height);
   }
@@ -114,8 +116,10 @@ export class WaveformService {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    const width = canvas.width;
-    const height = canvas.height;
+    // Utiliser les dimensions CSS (logiques) car le contexte est déjà mis à l'échelle
+    const dpr = window.devicePixelRatio || 1;
+    const width = canvas.width / dpr;
+    const height = canvas.height / dpr;
     const halfHeight = height / 2;
 
     // Effacer le canvas

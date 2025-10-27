@@ -108,25 +108,31 @@ export class WaveformDisplayComponent implements AfterViewInit, OnDestroy {
     const canvas = this.canvasRef.nativeElement;
     const container = canvas.parentElement;
 
-    if (container) {
-      // Définir les dimensions du canvas
-      canvas.width = container.clientWidth;
-      canvas.height = container.clientHeight;
+    if (!container) return;
 
-      // Adapter pour les écrans haute résolution
-      const dpr = window.devicePixelRatio || 1;
-      canvas.width = container.clientWidth * dpr;
-      canvas.height = container.clientHeight * dpr;
+    // Récupérer les dimensions réelles du conteneur
+    const rect = container.getBoundingClientRect();
+    const containerWidth = Math.floor(rect.width);
+    const containerHeight = Math.floor(rect.height);
 
-      const ctx = canvas.getContext('2d');
-      if (ctx) {
-        ctx.scale(dpr, dpr);
-      }
+    // Adapter pour les écrans haute résolution
+    const dpr = window.devicePixelRatio || 1;
 
-      // Appliquer les dimensions CSS
-      canvas.style.width = container.clientWidth + 'px';
-      canvas.style.height = container.clientHeight + 'px';
+    // Définir les dimensions du canvas avec DPR
+    canvas.width = containerWidth * dpr;
+    canvas.height = containerHeight * dpr;
+
+    // Appliquer les dimensions CSS (taille d'affichage)
+    canvas.style.width = containerWidth + 'px';
+    canvas.style.height = containerHeight + 'px';
+
+    // Mettre à l'échelle le contexte pour compenser le DPR
+    const ctx = canvas.getContext('2d');
+    if (ctx) {
+      ctx.scale(dpr, dpr);
     }
+
+    console.log(`[WaveformDisplay] Canvas initialized: ${containerWidth}x${containerHeight} (DPR: ${dpr}, Canvas: ${canvas.width}x${canvas.height})`);
   }
 
   /**
@@ -151,7 +157,18 @@ export class WaveformDisplayComponent implements AfterViewInit, OnDestroy {
   private async generateAndDrawWaveform(audioBuffer: AudioBuffer): Promise<void> {
     try {
       const canvas = this.canvasRef.nativeElement;
-      const targetWidth = Math.floor(canvas.width / (window.devicePixelRatio || 1));
+      const container = canvas.parentElement;
+
+      if (!container) {
+        console.error('[WaveformDisplay] No container found');
+        return;
+      }
+
+      // Utiliser la largeur réelle du conteneur (en pixels CSS)
+      const rect = container.getBoundingClientRect();
+      const targetWidth = Math.floor(rect.width);
+
+      console.log(`[WaveformDisplay] Generating waveform for width: ${targetWidth}px`);
 
       await this.waveformService.generateWaveform(audioBuffer, targetWidth);
       this.redrawWaveform();
