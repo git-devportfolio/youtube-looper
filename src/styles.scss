@@ -475,3 +475,51 @@ button {
   @include extended-touch-area(12px);
   @include touch-target(var(--touch-target-recommended));
 }
+
+// ============ ORIENTATION LOCK ============
+
+// Overlay pour bloquer le mode paysage sur mobile
+// Utilise max-height car en mode paysage c'est la hauteur qui devient petite
+@media (max-height: 600px) and (orientation: landscape) {
+  html, body {
+    overflow: hidden !important;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--background-primary);
+    z-index: 99999;
+  }
+
+  body::after {
+    content: '📱 Veuillez tourner votre appareil en mode portrait pour une meilleure expérience';
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80vw;
+    max-width: 500px;
+    padding: var(--spacing-lg);
+    background-color: var(--background-secondary);
+    color: var(--text-primary);
+    border: 2px solid var(--primary-color);
+    border-radius: var(--border-radius-lg);
+    text-align: center;
+    font-size: 1.2rem;
+    line-height: 1.6;
+    z-index: 100000;
+    box-shadow: var(--shadow-lg);
+    white-space: normal;
+    word-wrap: break-word;
+  }
+
+  // Masquer le contenu de l'application
+  app-root {
+    display: none !important;
+  }
+}
