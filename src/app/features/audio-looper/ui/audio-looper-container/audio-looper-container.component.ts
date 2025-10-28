@@ -1,4 +1,4 @@
-import { Component, inject, signal, computed, effect } from '@angular/core';
+import { Component, inject, signal, computed, effect, untracked, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { trigger, state, style, transition, animate, query, stagger } from '@angular/animations';
 import { FileUploadComponent } from '../file-upload';
@@ -39,7 +39,7 @@ type LoadingState = 'empty' | 'loading' | 'loaded' | 'error';
     ])
   ]
 })
-export class AudioLooperContainerComponent {
+export class AudioLooperContainerComponent implements OnDestroy {
   private readonly audioPlayerService = inject(AudioPlayerService);
   private readonly toneEngineService = inject(ToneEngineService);
   private readonly waveformService = inject(WaveformService);
@@ -48,18 +48,40 @@ export class AudioLooperContainerComponent {
   private readonly sidebarStateService = inject(FavoritesSidebarStateService);
   private readonly notificationService = inject(NotificationService);
 
+  // Timer pour le debounce de l'auto-save
+  private autoSaveTimer: ReturnType<typeof setTimeout> | null = null;
+
   constructor() {
-    // Auto-save des modifications du favori chargé
+    // Auto-save des modifications du favori chargé avec debounce
     effect(() => {
       const hasChanges = this.hasUnsavedChanges();
       const favoriteId = this.currentFavoriteId();
 
+      // Annuler le timer précédent
+      if (this.autoSaveTimer) {
+        clearTimeout(this.autoSaveTimer);
+      }
+
       // Sauvegarder automatiquement si un favori est chargé et qu'il y a des modifications
       if (hasChanges && favoriteId) {
-        console.log('🔄 Auto-save des modifications du favori...');
-        this.updateCurrentFavorite();
+        // Debounce de 500ms pour éviter les sauvegardes trop fréquentes
+        this.autoSaveTimer = setTimeout(() => {
+          // Utiliser untracked pour éviter de déclencher l'effet pendant la sauvegarde
+          untracked(() => {
+            console.log('🔄 Auto-save des modifications du favori...');
+            this.updateCurrentFavorite();
+          });
+        }, 500);
       }
-    });
+    }, { allowSignalWrites: true });
+  }
+
+  ngOnDestroy(): void {
+    // Nettoyer le timer lors de la destruction du composant
+    if (this.autoSaveTimer) {
+      clearTimeout(this.autoSaveTimer);
+      this.autoSaveTimer = null;
+    }
   }
 
   // Signals pour l'état de l'interface
@@ -90,6 +112,7 @@ export class AudioLooperContainerComponent {
   private readonly currentFavoriteId = signal<string | null>(null);
   private readonly loadedFavoriteSettings = signal<FavoriteSettings | null>(null); // Réglages initiaux du favori chargé
   readonly isSavingFavorite = signal<boolean>(false);
+  private readonly isAutoSaving = signal<boolean>(false); // Protection contre les appels simultanés d'auto-save
 
   // État de la modal de quota
   readonly quotaModalOpen = signal<boolean>(false);
@@ -553,7 +576,15 @@ export class AudioLooperContainerComponent {
       return;
     }
 
+    // Éviter les appels simultanés
+    if (this.isAutoSaving()) {
+      console.log('⏭️ Auto-save déjà en cours, ignorer cette demande');
+      return;
+    }
+
     try {
+      this.isAutoSaving.set(true);
+
       // Récupérer les réglages actuels
       const updatedSettings = this.currentSettings();
 
@@ -577,6 +608,8 @@ export class AudioLooperContainerComponent {
       console.error('❌ Erreur lors de la mise à jour du favori:', error);
       this.notificationService.error('Erreur lors de la mise à jour du favori');
       alert('Erreur lors de la mise à jour du favori');
+    } finally {
+      this.isAutoSaving.set(false);
     }
   }
 }
