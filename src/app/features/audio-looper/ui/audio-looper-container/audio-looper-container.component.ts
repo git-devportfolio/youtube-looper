@@ -1,4 +1,4 @@
-import { Component, inject, signal, computed } from '@angular/core';
+import { Component, inject, signal, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { trigger, state, style, transition, animate, query, stagger } from '@angular/animations';
 import { FileUploadComponent } from '../file-upload';
@@ -47,6 +47,20 @@ export class AudioLooperContainerComponent {
   private readonly rubberbandEngine = inject(RubberbandEngineService);
   private readonly sidebarStateService = inject(FavoritesSidebarStateService);
   private readonly notificationService = inject(NotificationService);
+
+  constructor() {
+    // Auto-save des modifications du favori chargé
+    effect(() => {
+      const hasChanges = this.hasUnsavedChanges();
+      const favoriteId = this.currentFavoriteId();
+
+      // Sauvegarder automatiquement si un favori est chargé et qu'il y a des modifications
+      if (hasChanges && favoriteId) {
+        console.log('🔄 Auto-save des modifications du favori...');
+        this.updateCurrentFavorite();
+      }
+    });
+  }
 
   // Signals pour l'état de l'interface
   readonly loadingState = signal<LoadingState>('empty');
