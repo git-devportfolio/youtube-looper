@@ -31,6 +31,22 @@
     <span class="audio-player__duration">{{ formattedDuration() }}</span>
   </div>
 
+  <!-- Badges Pitch et Speed (discrets) -->
+  @if (hasActivePitch() || hasActiveSpeed()) {
+    <div class="audio-player__badges">
+      @if (hasActivePitch()) {
+        <span class="audio-player__badge audio-player__badge--pitch">
+          Pitch {{ pitchLabel() }}
+        </span>
+      }
+      @if (hasActiveSpeed()) {
+        <span class="audio-player__badge audio-player__badge--speed">
+          {{ speedLabel() }}
+        </span>
+      }
+    </div>
+  }
+
   <!-- Bouton Réglages Audio (minimaliste) -->
   <button
     class="audio-player__settings-btn"

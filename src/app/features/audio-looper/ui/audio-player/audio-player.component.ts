@@ -49,6 +49,19 @@ export class AudioPlayerComponent {
     return parts.join(' • ') || '';
   });
 
+  // Computed pour les badges individuels
+  readonly hasActivePitch = computed(() => this.currentPitch() !== 0);
+  readonly hasActiveSpeed = computed(() => this.currentSpeed() !== 1.0);
+
+  readonly pitchLabel = computed(() => {
+    const pitch = this.currentPitch();
+    return pitch > 0 ? `+${pitch}` : `${pitch}`;
+  });
+
+  readonly speedLabel = computed(() => {
+    return `${this.currentSpeed().toFixed(2)}x`;
+  });
+
   /**
    * Toggle play/pause
    */
