@@ -120,18 +120,36 @@
   padding: 0;
 }
 
+// Root de l'application Angular
+app-root {
+  display: block;
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
 html {
   height: 100%;
   font-size: 16px;
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100vw;
 }
 
 body {
   height: 100%;
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+  overflow-y: auto;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   line-height: 1.6;
   background-color: var(--background-primary);
   color: var(--text-primary);
   transition: background-color 0.3s ease, color 0.3s ease;
+  position: relative;
+  -webkit-overflow-scrolling: touch;
 }
 
 // Utilitaires pour le responsive design
