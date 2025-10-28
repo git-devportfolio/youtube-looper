@@ -5,7 +5,6 @@ import { FileUploadComponent } from '../file-upload';
 import { WaveformDisplayComponent } from '../waveform-display';
 import { AudioPlayerComponent } from '../audio-player';
 import { LoopControlsComponent } from '../loop-controls';
-import { VolumeControlComponent } from '../volume-control';
 import { FavoritesSidebarComponent } from '../favorites-sidebar';
 import { FavoriteQuotaModalComponent } from '../favorite-quota-modal';
 import { AudioPlayerService, ToneEngineService, WaveformService, RubberbandEngineService, FavoritesSidebarStateService } from '../../services';
@@ -18,7 +17,7 @@ type LoadingState = 'empty' | 'loading' | 'loaded' | 'error';
 
 @Component({
   selector: 'app-audio-looper-container',
-  imports: [CommonModule, FileUploadComponent, WaveformDisplayComponent, AudioPlayerComponent, LoopControlsComponent, VolumeControlComponent, FavoritesSidebarComponent, FavoriteQuotaModalComponent],
+  imports: [CommonModule, FileUploadComponent, WaveformDisplayComponent, AudioPlayerComponent, LoopControlsComponent, FavoritesSidebarComponent, FavoriteQuotaModalComponent],
   templateUrl: './audio-looper-container.component.html',
   styleUrl: './audio-looper-container.component.scss',
   animations: [
@@ -184,6 +183,7 @@ export class AudioLooperContainerComponent implements OnDestroy {
       // Réinitialiser les paramètres audio à leurs valeurs par défaut
       this.rubberbandEngine.setPitch(0);
       this.toneEngineService.setPlaybackRate(1.0);
+      this.toneEngineService.resetLoop(); // Réinitialiser la boucle A/B
 
       // Mettre à jour l'état en chargement
       this.loadingState.set('loading');
@@ -227,6 +227,7 @@ export class AudioLooperContainerComponent implements OnDestroy {
     // Réinitialiser les paramètres audio à leurs valeurs par défaut
     this.rubberbandEngine.setPitch(0);
     this.toneEngineService.setPlaybackRate(1.0);
+    this.toneEngineService.resetLoop(); // Réinitialiser la boucle A/B
 
     // Réinitialiser l'état
     this.loadingState.set('empty');
@@ -471,6 +472,10 @@ export class AudioLooperContainerComponent implements OnDestroy {
 
       // Fermer le sidebar
       this.closeSidebar();
+
+      // Réinitialiser la boucle avant de charger le nouveau fichier
+      // Elle sera reconfigurée après si le favori a des réglages de boucle
+      this.toneEngineService.resetLoop();
 
       // Mettre à jour l'état en chargement
       this.loadingState.set('loading');
