@@ -39,25 +39,23 @@
       <span class="size">{{ formattedSize() }}</span>
     </div>
 
-    <!-- Badges des réglages -->
-    @if (hasActivePitch() || hasActiveSpeed() || hasActiveLoop()) {
-      <div class="settings-badges">
-        @if (hasActivePitch()) {
-          <span class="badge badge-pitch">
-            Pitch {{ favorite().settings.pitch > 0 ? '+' : '' }}{{ favorite().settings.pitch }}
-          </span>
-        }
-        @if (hasActiveSpeed()) {
-          <span class="badge badge-speed">
-            {{ favorite().settings.playbackRate }}x
-          </span>
-        }
-        @if (hasActiveLoop()) {
-          <span class="badge badge-loop">
-            Loop
-          </span>
-        }
-      </div>
-    }
+    <!-- Badges des réglages (toujours présent pour garantir hauteur uniforme) -->
+    <div class="settings-badges">
+      @if (hasActivePitch()) {
+        <span class="badge badge-pitch">
+          Pitch {{ favorite().settings.pitch > 0 ? '+' : '' }}{{ favorite().settings.pitch }}
+        </span>
+      }
+      @if (hasActiveSpeed()) {
+        <span class="badge badge-speed">
+          {{ favorite().settings.playbackRate }}x
+        </span>
+      }
+      @if (hasActiveLoop()) {
+        <span class="badge badge-loop">
+          Loop
+        </span>
+      }
+    </div>
   </div>
 </div>
