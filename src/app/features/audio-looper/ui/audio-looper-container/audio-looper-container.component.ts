@@ -120,7 +120,7 @@ export class AudioLooperContainerComponent {
       loopStart: this.toneEngineService.loopStart(),
       loopEnd: this.toneEngineService.loopEnd(),
       loopEnabled: this.toneEngineService.isLooping(),
-      currentTime: this.audioPlayerService.currentTime()
+      currentTime: 0 // Non utilisé actuellement, gardé pour compatibilité du modèle
     };
   });
 
@@ -174,6 +174,9 @@ export class AudioLooperContainerComponent {
       await this.audioPlayerService.loadAudioFile(file);
       console.log('Fichier chargé avec succès !');
 
+      // Réinitialiser la position de lecture à 0
+      this.audioPlayerService.seekTo(0);
+
       // Récupérer l'AudioBuffer de Tone.js pour la waveform
       const player = (this.toneEngineService as any).player;
       if (player && player.buffer) {
@@ -213,10 +216,11 @@ export class AudioLooperContainerComponent {
     this.audioBuffer.set(null);
     this.errorMessage.set('');
 
-    // Arrêter la lecture si en cours
+    // Arrêter la lecture si en cours et réinitialiser la position
     if (this.audioPlayerService.isPlaying()) {
       this.audioPlayerService.pause();
     }
+    this.audioPlayerService.seekTo(0);
   }
 
   /**
@@ -295,7 +299,7 @@ export class AudioLooperContainerComponent {
         const currentSettings = {
           pitch: this.rubberbandEngine.pitch(),
           playbackRate: this.toneEngineService.playbackRate(),
-          currentTime: this.audioPlayerService.currentTime(),
+          currentTime: 0, // Non utilisé actuellement, gardé pour compatibilité du modèle
           loopStart: this.toneEngineService.loopStart(),
           loopEnd: this.toneEngineService.loopEnd(),
           loopEnabled: this.toneEngineService.isLooping(),
@@ -476,6 +480,9 @@ export class AudioLooperContainerComponent {
       await this.audioPlayerService.loadAudioFile(file);
       console.log('Fichier favori chargé avec succès !');
 
+      // Réinitialiser la position de lecture à 0
+      this.audioPlayerService.seekTo(0);
+
       // Récupérer l'AudioBuffer de Tone.js pour la waveform
       const player = (this.toneEngineService as any).player;
       if (player && player.buffer) {
@@ -515,10 +522,7 @@ export class AudioLooperContainerComponent {
         }
       }
 
-      // Aller à la position de lecture sauvegardée
-      if (favorite.settings.currentTime > 0) {
-        this.audioPlayerService.seekTo(favorite.settings.currentTime);
-      }
+      // Note: currentTime n'est plus restauré - le fichier démarre toujours à 0
 
       // Marquer le favori comme chargé et stocker ses réglages pour la détection des modifications
       this.currentFavoriteId.set(favorite.id);
