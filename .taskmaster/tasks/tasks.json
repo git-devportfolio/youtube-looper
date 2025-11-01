@@ -2235,70 +2235,71 @@
   "audio-share": {
     "tasks": [
       {
-        "id": 1,
+        "id": "1",
         "title": "Installation et configuration de la bibliothèque lamejs",
         "description": "Installer et configurer lamejs pour l'encodage MP3 côté client",
         "details": "Installer lamejs via npm install lamejs. Créer les types TypeScript nécessaires si non disponibles. Vérifier la compatibilité avec Angular et configurer les imports appropriés. Tester l'installation de base avec un simple exemple d'encodage.",
         "testStrategy": "Vérifier que lamejs s'importe correctement, qu'aucune erreur de build n'est générée, et qu'un encodage MP3 basique fonctionne",
         "priority": "high",
         "dependencies": [],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-11-01T18:59:31.667Z"
       },
       {
-        "id": 2,
+        "id": "2",
         "title": "Création du Web Worker pour l'encodage MP3",
         "description": "Développer un Web Worker dédié à l'encodage MP3 avec feedback de progression",
         "details": "Créer mp3-encoder.worker.ts dans src/app/shared/workers/. Implémenter l'encodage AudioBuffer vers MP3 avec lamejs. Gérer la conversion Float32Array vers Int16Array. Envoyer des événements de progression (0-100%). Gérer les erreurs d'encodage et la gestion mémoire pour gros fichiers.",
         "testStrategy": "Tester l'encodage de différents types d'AudioBuffer (mono/stéréo, différentes durées). Vérifier que les événements de progression sont émis correctement",
         "priority": "high",
         "dependencies": [
-          1
+          "1"
         ],
         "status": "pending",
         "subtasks": []
       },
       {
-        "id": 3,
+        "id": "3",
         "title": "Création du service AudioShareService",
         "description": "Développer le service principal pour gérer le partage audio",
         "details": "Créer AudioShareService dans src/app/shared/services/. Implémenter la méthode shareAudio(buffer, fileName, pitch, tempo). Vérifier la compatibilité Web Share API avec navigator.share et navigator.canShare. Gérer l'orchestration entre Web Worker et API de partage. Implémenter la gestion des erreurs (AbortError, échecs techniques).",
         "testStrategy": "Tester la détection de compatibilité Web Share API sur différents navigateurs. Vérifier que le service gère correctement les cas d'erreur",
         "priority": "high",
         "dependencies": [
-          2
+          "2"
         ],
         "status": "pending",
         "subtasks": []
       },
       {
-        "id": 4,
+        "id": "4",
         "title": "Intégration du Web Worker dans AudioShareService",
         "description": "Connecter le Web Worker d'encodage MP3 au service de partage",
         "details": "Intégrer le Web Worker dans AudioShareService. Gérer la communication bidirectionnelle (envoi AudioBuffer, réception MP3 + progression). Implémenter la création et destruction du worker. Gérer le pooling des workers si nécessaire pour éviter les fuites mémoire. Convertir le résultat en Blob MP3 partageable.",
         "testStrategy": "Tester l'encodage complet via le service. Vérifier que le worker se termine correctement et qu'aucune fuite mémoire n'apparaît",
         "priority": "medium",
         "dependencies": [
-          3
+          "3"
         ],
         "status": "pending",
         "subtasks": []
       },
       {
-        "id": 5,
+        "id": "5",
         "title": "Implémentation de la génération de noms de fichiers",
         "description": "Créer la logique de génération de noms descriptifs pour les fichiers partagés",
         "details": "Implémenter une fonction generateShareFileName(originalName, pitch, tempo) dans AudioShareService. Format: {nom-original}_pitch{valeur}_tempo{valeur}_shared.mp3. Gérer les cas sans modifications (audio_shared.mp3). Nettoyer les caractères spéciaux pour compatibilité système de fichiers. Gérer l'extension MP3 automatique.",
         "testStrategy": "Tester avec différentes combinaisons de pitch/tempo. Vérifier que les noms générés sont valides sur différents OS",
         "priority": "medium",
         "dependencies": [
-          3
+          "3"
         ],
         "status": "pending",
         "subtasks": []
       },
       {
-        "id": 6,
+        "id": "6",
         "title": "Récupération du buffer traité depuis RubberbandEngineService",
         "description": "Modifier RubberbandEngineService pour exposer le buffer audio traité",
         "details": "Ajouter une méthode getCurrentProcessedBuffer() dans RubberbandEngineService qui retourne l'AudioBuffer avec les modifications appliquées (pitch et tempo). Si aucune modification n'est appliquée, retourner le buffer original. Gérer les cas où le buffer n'est pas disponible ou en cours de traitement.",
@@ -2309,7 +2310,7 @@
         "subtasks": []
       },
       {
-        "id": 7,
+        "id": "7",
         "title": "Ajout du bouton de partage dans le template audio-player",
         "description": "Intégrer le bouton de partage dans l'interface utilisateur de l'audio player",
         "details": "Ajouter le bouton 'Partager' dans audio-player.component.html entre les badges Pitch/Speed et le bouton Réglages. Utiliser une icône de partage universelle (flèche sortant d'une boîte). Appliquer le style cohérent avec les autres boutons (cercle, icône centrée). Gérer les états désactivé, normal, loading et hover.",
@@ -2320,142 +2321,146 @@
         "subtasks": []
       },
       {
-        "id": 8,
+        "id": "8",
         "title": "Gestion de l'état du bouton de partage",
         "description": "Implémenter la logique d'activation/désactivation du bouton selon le contexte",
         "details": "Créer des signaux pour gérer l'état du bouton: isShareSupported, isAudioLoaded, isEncoding. Désactiver si Web Share API non supporté ou aucun audio chargé. Afficher un spinner pendant l'encodage. Implémenter la vérification de compatibilité au chargement du composant.",
         "testStrategy": "Tester l'état du bouton dans différents scénarios: avant chargement audio, après chargement, pendant encodage, navigateur incompatible",
         "priority": "medium",
         "dependencies": [
-          7
+          "7"
         ],
         "status": "pending",
         "subtasks": []
       },
       {
-        "id": 9,
+        "id": "9",
         "title": "Injection d'AudioShareService dans AudioPlayerComponent",
         "description": "Intégrer le service de partage dans le composant audio player",
         "details": "Injecter AudioShareService dans audio-player.component.ts via inject(). Créer la méthode shareAudio() qui orchestre le processus de partage. Récupérer le nom du fichier courant via un signal currentFileName. Gérer la récupération du buffer traité depuis RubberbandEngine.",
         "testStrategy": "Vérifier que l'injection fonctionne correctement et que la méthode shareAudio() est accessible depuis le template",
         "priority": "medium",
         "dependencies": [
-          3,
-          6
+          "3",
+          "6"
         ],
         "status": "pending",
         "subtasks": []
       },
       {
-        "id": 10,
+        "id": "10",
         "title": "Implémentation de la méthode shareAudio() dans le composant",
         "description": "Développer la logique de partage dans le composant audio player",
         "details": "Implémenter shareAudio() qui: 1) Récupère le buffer traité via RubberbandEngine, 2) Obtient les valeurs actuelles de pitch et tempo, 3) Génère le nom de fichier approprié, 4) Appelle AudioShareService.shareAudio(), 5) Gère les états de loading et les erreurs. Afficher les feedbacks appropriés.",
         "testStrategy": "Tester le flux complet de partage avec différentes modifications audio. Vérifier la gestion des erreurs et du feedback utilisateur",
         "priority": "medium",
         "dependencies": [
-          9
+          "9"
         ],
         "status": "pending",
         "subtasks": []
       },
       {
-        "id": 11,
+        "id": "11",
         "title": "Gestion du feedback visuel pendant l'encodage",
         "description": "Implémenter les indicateurs de progression pour l'utilisateur",
         "details": "Créer un signal shareProgress pour afficher la progression d'encodage (0-100%). Afficher un spinner dans le bouton pendant l'encodage. Si l'encodage prend plus de 2 secondes, afficher une barre de progression avec pourcentage. Gérer les animations de transition smooth.",
         "testStrategy": "Tester avec des fichiers de différentes tailles pour vérifier que la progression s'affiche correctement. Vérifier les transitions visuelles",
         "priority": "medium",
         "dependencies": [
-          10
+          "10"
         ],
         "status": "pending",
         "subtasks": []
       },
       {
-        "id": 12,
+        "id": "12",
         "title": "Gestion des erreurs et messages utilisateur",
         "description": "Implémenter un système complet de gestion d'erreurs pour le partage",
         "details": "Gérer les différents types d'erreurs: navigateur non compatible, encodage échoué, partage annulé (AbortError), fichier trop volumineux. Afficher des messages d'erreur appropriés via un système de toast ou notification. Logger les erreurs techniques dans la console pour debug. Gérer silencieusement l'annulation volontaire du partage.",
         "testStrategy": "Tester tous les cas d'erreur possibles. Vérifier que les messages sont clairs et que l'UI récupère correctement après une erreur",
         "priority": "medium",
         "dependencies": [
-          11
+          "11"
         ],
         "status": "pending",
         "subtasks": []
       },
       {
-        "id": 13,
+        "id": "13",
         "title": "Gestion du signal currentFileName dans le composant",
         "description": "Implémenter la gestion du nom de fichier audio courant",
         "details": "Créer un signal currentFileName dans audio-player.component.ts. Récupérer le nom depuis le composant parent ou via ViewChild/Input. Extraire le nom de base sans extension pour la génération du nom de partage. Gérer les cas où le nom n'est pas disponible (nom par défaut 'audio').",
         "testStrategy": "Vérifier que le nom de fichier est correctement récupéré et transmis au service de partage. Tester avec différents types de noms de fichiers",
         "priority": "low",
         "dependencies": [
-          9
+          "9"
         ],
         "status": "pending",
         "subtasks": []
       },
       {
-        "id": 14,
+        "id": "14",
         "title": "Optimisation des performances d'encodage MP3",
         "description": "Optimiser le Web Worker pour améliorer les performances d'encodage",
         "details": "Optimiser l'encodage MP3 dans le Web Worker: ajuster la qualité à 192 kbps fixe, optimiser la conversion Float32Array vers Int16Array, implémenter un système de chunks pour gros fichiers, gérer la mémoire efficacement. Ajouter la possibilité d'annuler l'encodage en cours.",
         "testStrategy": "Tester les performances avec des fichiers de différentes tailles (1-10 minutes). Mesurer les temps d'encodage et l'utilisation mémoire",
         "priority": "low",
         "dependencies": [
-          4
+          "4"
         ],
         "status": "pending",
         "subtasks": []
       },
       {
-        "id": 15,
+        "id": "15",
         "title": "Tests d'intégration du système de partage complet",
         "description": "Effectuer des tests complets du flux de partage sur différents navigateurs",
         "details": "Tester le flux complet de partage: chargement audio, application modifications, partage réussi. Vérifier la compatibilité sur Chrome/Edge, Safari iOS, Firefox Android. Tester avec différents formats d'entrée (MP3, WAV, OGG). Vérifier que le fichier partagé contient bien les modifications appliquées.",
         "testStrategy": "Tests manuels sur mobile et desktop. Vérifier l'intégration avec WhatsApp, Gmail, Google Drive. Contrôler l'audio final avec un lecteur externe",
         "priority": "medium",
         "dependencies": [
-          12
+          "12"
         ],
         "status": "pending",
         "subtasks": []
       },
       {
-        "id": 16,
+        "id": "16",
         "title": "Gestion des fichiers volumineux et avertissements",
         "description": "Implémenter la gestion des fichiers de grande taille",
         "details": "Détecter les fichiers sources > 10 Mo et afficher un avertissement approprié. Estimer la taille du fichier MP3 final avant encodage. Permettre à l'utilisateur de continuer malgré l'avertissement. Optimiser l'encodage pour les gros fichiers (traitement par chunks, libération mémoire).",
         "testStrategy": "Tester avec des fichiers de différentes tailles. Vérifier que les avertissements s'affichent correctement et que l'encodage fonctionne même pour les gros fichiers",
         "priority": "low",
         "dependencies": [
-          14
+          "14"
         ],
         "status": "pending",
         "subtasks": []
       },
       {
-        "id": 17,
+        "id": "17",
         "title": "Documentation et finalisation du système de partage",
         "description": "Finaliser la documentation et les ajustements finaux",
         "details": "Documenter toutes les méthodes créées dans AudioShareService et le Web Worker. Ajouter des commentaires JSDoc appropriés. Effectuer une revue de code complète. Optimiser les imports et nettoyer le code. Vérifier que tous les critères de succès du PRD sont remplis.",
         "testStrategy": "Revue complète du code. Vérification de tous les critères de succès: bouton visible, partage en moins de 3 clics, encodage < 10s, fichier contient modifications, nom descriptif, compatibilité apps",
         "priority": "low",
         "dependencies": [
-          15,
-          16
+          "15",
+          "16"
         ],
         "status": "pending",
         "subtasks": []
       }
     ],
     "metadata": {
-      "created": "2025-11-01T18:44:37.553Z",
-      "updated": "2025-11-01T18:47:06.523Z",
-      "description": "Tasks for audio-share context"
+      "version": "1.0.0",
+      "lastModified": "2025-11-01T18:59:31.672Z",
+      "taskCount": 17,
+      "completedCount": 1,
+      "tags": [
+        "audio-share"
+      ]
     }
   }
 }
