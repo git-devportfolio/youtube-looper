@@ -68,7 +68,7 @@ export class RubberbandEngineService {
 
   /**
    * Cache des AudioBuffer traités
-   * Clé : combinaison pitch-tempo (ex: 'p2_t0.75')
+   * Clé : combinaison fileId-pitch-tempo (ex: 'file_123456_abc_p2_t0.75')
    * Valeur : AudioBuffer traité
    */
   private audioCache = new Map<string, AudioBuffer>();
@@ -77,6 +77,12 @@ export class RubberbandEngineService {
    * Buffer audio original (non traité)
    */
   private originalBuffer: AudioBuffer | null = null;
+
+  /**
+   * Identifiant unique du fichier audio actuellement chargé
+   * Utilisé pour différencier les fichiers dans le cache
+   */
+  private currentFileId: string = '';
 
   /**
    * Web Worker Rubberband pour le traitement audio
@@ -131,13 +137,14 @@ export class RubberbandEngineService {
   // ==================== MÉTHODES PRIVÉES ====================
 
   /**
-   * Génère une clé de cache unique basée sur pitch et tempo
+   * Génère une clé de cache unique basée sur l'ID du fichier, pitch et tempo
    * @param pitch Modification de tonalité en demi-tons
    * @param tempo Vitesse de lecture (playbackRate)
-   * @returns Clé de cache unique (ex: 'p2_t0.75')
+   * @returns Clé de cache unique (ex: 'file_123456_abc_p2_t0.75')
    */
   private getCacheKey(pitch: number, tempo: number): string {
-    return `p${pitch}_t${tempo}`;
+    // Inclure l'ID du fichier pour éviter les collisions entre fichiers différents
+    return `${this.currentFileId}_p${pitch}_t${tempo}`;
   }
 
   /**
@@ -472,6 +479,13 @@ export class RubberbandEngineService {
    * @param buffer AudioBuffer original (non traité)
    */
   loadOriginalBuffer(buffer: AudioBuffer): void {
+    // Vider le cache du fichier précédent pour éviter l'accumulation mémoire
+    this.clearCache();
+
+    // Générer un nouvel ID unique pour ce fichier
+    // Basé sur timestamp + random pour éviter les collisions
+    this.currentFileId = `file_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+
     this.originalBuffer = buffer;
 
     // Mettre le buffer original en cache avec pitch=0 et tempo=1.0
@@ -479,6 +493,7 @@ export class RubberbandEngineService {
     this.setCache(0, 1.0, buffer);
 
     console.log('[RubberbandEngineService] Original buffer loaded and cached', {
+      fileId: this.currentFileId,
       duration: buffer.duration,
       sampleRate: buffer.sampleRate,
       channels: buffer.numberOfChannels,
