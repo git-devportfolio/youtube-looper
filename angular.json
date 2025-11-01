@@ -34,7 +34,9 @@
             "styles": [
               "src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/lamejs/lame.all.js"
+            ]
           },
           "configurations": {
             "production": {
@@ -93,7 +95,9 @@
             "styles": [
               "src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/lamejs/lame.all.js"
+            ]
           }
         }
       }
