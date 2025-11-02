@@ -2256,8 +2256,9 @@
         "dependencies": [
           "1"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-11-01T21:56:15.877Z"
       },
       {
         "id": "3",
@@ -2455,9 +2456,9 @@
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2025-11-01T18:59:31.672Z",
+      "lastModified": "2025-11-01T21:56:15.883Z",
       "taskCount": 17,
-      "completedCount": 1,
+      "completedCount": 2,
       "tags": [
         "audio-share"
       ]
