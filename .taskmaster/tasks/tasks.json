@@ -2320,8 +2320,9 @@
         "testStrategy": "Vérifier que le bouton s'affiche correctement sur mobile et desktop. Tester les différents états visuels",
         "priority": "medium",
         "dependencies": [],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-11-02T16:15:49.932Z"
       },
       {
         "id": "8",
@@ -2458,9 +2459,9 @@
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2025-11-02T15:33:11.673Z",
+      "lastModified": "2025-11-02T16:15:49.936Z",
       "taskCount": 17,
-      "completedCount": 4,
+      "completedCount": 5,
       "tags": [
         "audio-share"
       ]

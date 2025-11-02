@@ -81,6 +81,14 @@ export class AudioPlayerComponent {
   }
 
   /**
+   * Partager l'audio
+   * TODO: Implémenter la logique de partage dans une tâche ultérieure
+   */
+  shareAudio(): void {
+    console.log('[AudioPlayerComponent] Share button clicked - to be implemented');
+  }
+
+  /**
    * Formate le temps en MM:SS
    */
   formatTime(seconds: number): string {

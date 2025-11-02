@@ -136,6 +136,124 @@
   }
 }
 
+// Bouton Partager (minimaliste)
+.audio-player__share-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+
+  @media (max-width: 768px) {
+    width: 40px;
+    height: 40px;
+  }
+
+  @media (max-width: 480px) {
+    width: 36px;
+    height: 36px;
+  }
+
+  // Cercle de fond au hover
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: var(--background-tertiary);
+    opacity: 0;
+    transform: scale(0.8);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  &:hover:not(:disabled) {
+    color: var(--primary-color);
+
+    &::before {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .audio-player__share-icon {
+      transform: translateX(2px) scale(1.05);
+    }
+  }
+
+  &:active:not(:disabled) {
+    &::before {
+      transform: scale(0.95);
+    }
+
+    .audio-player__share-icon {
+      transform: translateX(2px) scale(0.95);
+    }
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  // État de chargement (optionnel pour future implémentation)
+  &--loading {
+    pointer-events: none;
+
+    .audio-player__share-icon {
+      animation: spin 1s linear infinite;
+    }
+  }
+}
+
+.audio-player__share-icon {
+  position: relative;
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1;
+
+  @media (max-width: 768px) {
+    width: 20px;
+    height: 20px;
+  }
+
+  @media (max-width: 480px) {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+// Animation spin pour état loading
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// Optimisation tactile pour bouton partager
+@media (hover: none) and (pointer: coarse) {
+  .audio-player__share-btn {
+    min-width: 48px;
+    min-height: 48px;
+  }
+}
+
 // Bouton Réglages Audio (minimaliste)
 .audio-player__settings-btn {
   position: relative;
