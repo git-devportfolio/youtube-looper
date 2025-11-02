@@ -540,6 +540,60 @@ export class RubberbandEngineService {
   }
 
   /**
+   * Retourne le buffer audio actuellement traité avec les paramètres pitch et tempo appliqués
+   *
+   * Comportement :
+   * - Si le buffer avec les paramètres actuels est en cache, le retourner
+   * - Si aucune modification n'est appliquée (pitch=0, tempo=1.0), retourner le buffer original
+   * - Si le buffer est en cours de traitement, retourner null
+   * - Si le buffer n'est pas disponible, retourner null
+   *
+   * @returns AudioBuffer traité ou null si indisponible ou en cours de traitement
+   */
+  getCurrentProcessedBuffer(): AudioBuffer | null {
+    // Vérifier qu'un buffer original est chargé
+    if (!this.originalBuffer) {
+      console.warn('[RubberbandEngineService] No audio buffer loaded');
+      return null;
+    }
+
+    const currentPitch = this.pitch();
+    const currentTempo = this.playbackRate();
+
+    // Vérifier le cache pour les paramètres actuels
+    if (this.hasCache(currentPitch, currentTempo)) {
+      const cachedBuffer = this.getFromCache(currentPitch, currentTempo);
+      if (cachedBuffer) {
+        console.log('[RubberbandEngineService] Returning cached processed buffer', {
+          pitch: currentPitch,
+          tempo: currentTempo
+        });
+        return cachedBuffer;
+      }
+    }
+
+    // Si un traitement est en cours, le buffer n'est pas encore disponible
+    if (this.isProcessing()) {
+      console.warn('[RubberbandEngineService] Buffer is currently being processed, not available yet');
+      return null;
+    }
+
+    // Si aucune modification n'est appliquée (pitch=0, tempo=1.0), retourner le buffer original
+    if (currentPitch === 0 && currentTempo === 1.0) {
+      console.log('[RubberbandEngineService] Returning original buffer (no modifications)');
+      return this.originalBuffer;
+    }
+
+    // Si on arrive ici, le buffer n'est pas en cache et pas en traitement
+    // Cela pourrait arriver si les paramètres ont changé mais que le traitement n'a pas encore commencé
+    console.warn('[RubberbandEngineService] Processed buffer not available for current parameters', {
+      pitch: currentPitch,
+      tempo: currentTempo
+    });
+    return null;
+  }
+
+  /**
    * Vide complètement le cache des AudioBuffer traités
    */
   clearCache(): void {

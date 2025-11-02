@@ -2307,8 +2307,9 @@
         "testStrategy": "Vérifier que le buffer retourné contient bien les modifications appliquées. Tester avec différentes valeurs de pitch et tempo",
         "priority": "high",
         "dependencies": [],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-11-02T15:21:31.719Z"
       },
       {
         "id": "7",
@@ -2456,9 +2457,9 @@
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2025-11-01T21:56:15.883Z",
+      "lastModified": "2025-11-02T15:21:31.722Z",
       "taskCount": 17,
-      "completedCount": 2,
+      "completedCount": 3,
       "tags": [
         "audio-share"
       ]
