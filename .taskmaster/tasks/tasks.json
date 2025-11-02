@@ -2284,8 +2284,9 @@
         "dependencies": [
           "3"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-11-02T20:46:50.470Z"
       },
       {
         "id": "5",
@@ -2297,8 +2298,9 @@
         "dependencies": [
           "3"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-11-02T20:49:14.109Z"
       },
       {
         "id": "6",
@@ -2334,8 +2336,9 @@
         "dependencies": [
           "7"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-11-02T20:55:20.964Z"
       },
       {
         "id": "9",
@@ -2348,8 +2351,9 @@
           "3",
           "6"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-11-02T20:55:40.872Z"
       },
       {
         "id": "10",
@@ -2361,8 +2365,9 @@
         "dependencies": [
           "9"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-11-02T20:55:45.260Z"
       },
       {
         "id": "11",
@@ -2374,8 +2379,9 @@
         "dependencies": [
           "10"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-11-02T20:55:49.501Z"
       },
       {
         "id": "12",
@@ -2387,8 +2393,9 @@
         "dependencies": [
           "11"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-11-02T20:58:27.501Z"
       },
       {
         "id": "13",
@@ -2400,8 +2407,9 @@
         "dependencies": [
           "9"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-11-02T21:03:14.758Z"
       },
       {
         "id": "14",
@@ -2459,9 +2467,9 @@
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2025-11-02T16:15:49.936Z",
+      "lastModified": "2025-11-02T21:03:14.766Z",
       "taskCount": 17,
-      "completedCount": 5,
+      "completedCount": 13,
       "tags": [
         "audio-share"
       ]

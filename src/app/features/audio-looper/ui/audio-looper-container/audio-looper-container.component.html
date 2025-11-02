@@ -71,7 +71,7 @@
       <!-- Zone des contrôles -->
       <div class="controls-section">
         <!-- Lecteur audio avec Play/Pause, temps et bouton settings -->
-        <app-audio-player></app-audio-player>
+        <app-audio-player [fileName]="currentFileName()"></app-audio-player>
 
         <!-- Contrôles de boucle A/B -->
         <app-loop-controls></app-loop-controls>

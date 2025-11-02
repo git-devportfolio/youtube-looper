@@ -207,11 +207,17 @@
     cursor: not-allowed;
   }
 
-  // État de chargement (optionnel pour future implémentation)
+  // État de chargement pendant l'encodage MP3
   &--loading {
     pointer-events: none;
+    opacity: 1;
 
-    .audio-player__share-icon {
+    &::before {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .audio-player__share-icon--spinner {
       animation: spin 1s linear infinite;
     }
   }
