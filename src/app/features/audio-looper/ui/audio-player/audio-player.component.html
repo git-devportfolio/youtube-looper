@@ -31,22 +31,6 @@
     <span class="audio-player__duration">{{ formattedDuration() }}</span>
   </div>
 
-  <!-- Badges Pitch et Speed (discrets) -->
-  @if (hasActivePitch() || hasActiveSpeed()) {
-    <div class="audio-player__badges">
-      @if (hasActivePitch()) {
-        <span class="audio-player__badge audio-player__badge--pitch">
-          Pitch {{ pitchLabel() }}
-        </span>
-      }
-      @if (hasActiveSpeed()) {
-        <span class="audio-player__badge audio-player__badge--speed">
-          {{ speedLabel() }}
-        </span>
-      }
-    </div>
-  }
-
   <!-- Bouton Partager ou Télécharger (minimaliste) -->
   <button
     class="audio-player__share-btn"
@@ -63,21 +47,37 @@
         <path d="M12 2 A10 10 0 0 1 22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/>
       </svg>
     } @else if (useDownloadFallback()) {
-      <!-- Icône de téléchargement (flèche vers le bas dans un plateau) -->
+      <!-- Icône de téléchargement (flèche vers le bas) -->
       <svg class="audio-player__share-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M12 3V16M12 16L7 11M12 16L17 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         <path d="M3 17V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
       </svg>
     } @else {
-      <!-- Icône de partage (flèche sortant d'une boîte) -->
+      <!-- Icône de partage standard (flèche vers le haut sortant d'un carré) -->
       <svg class="audio-player__share-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M8.59 16.59L13.17 12L8.59 7.41L10 6L16 12L10 18L8.59 16.59Z" fill="currentColor"/>
-        <path d="M3 3H14V5H5V19H19V10H21V21H3V3Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
-        <path d="M21 3L21 9M21 3L15 3M21 3L13 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <polyline points="16 6 12 2 8 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <line x1="12" y1="2" x2="12" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
       </svg>
     }
   </button>
 
+  <!-- Badges Pitch et Speed (discrets) -->
+  @if (hasActivePitch() || hasActiveSpeed()) {
+    <div class="audio-player__badges">
+      @if (hasActivePitch()) {
+        <span class="audio-player__badge audio-player__badge--pitch">
+          Pitch {{ pitchLabel() }}
+        </span>
+      }
+      @if (hasActiveSpeed()) {
+        <span class="audio-player__badge audio-player__badge--speed">
+          {{ speedLabel() }}
+        </span>
+      }
+    </div>
+  }
+  
   <!-- Bouton Réglages Audio (minimaliste) -->
   <button
     class="audio-player__settings-btn"
