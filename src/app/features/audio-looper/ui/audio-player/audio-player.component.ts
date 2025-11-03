@@ -69,22 +69,12 @@ export class AudioPlayerComponent {
     return `${this.currentSpeed().toFixed(2)}x`;
   });
 
-  // Signals du service de partage
-  readonly isSharing = this.audioShareService.isProcessing;
-  readonly sharingProgress = this.audioShareService.encodingProgress;
-  readonly sharingStatus = this.audioShareService.processingStatus;
-  readonly sharingError = this.audioShareService.hasError;
-  readonly sharingErrorMessage = this.audioShareService.errorMessage;
-
-  // Computed pour vérifier si le partage est disponible
-  readonly isShareAvailable = computed(() => {
-    return this.audioShareService.isShareAvailable() && this.isReady();
-  });
-
-  // Computed pour déterminer si on utilise download (fallback) ou share
-  readonly useDownloadFallback = computed(() => {
-    return !this.audioShareService.isShareAvailable() && this.isReady();
-  });
+  // Signals du service de téléchargement
+  readonly isDownloading = this.audioShareService.isProcessing;
+  readonly downloadingProgress = this.audioShareService.encodingProgress;
+  readonly downloadingStatus = this.audioShareService.processingStatus;
+  readonly downloadingError = this.audioShareService.hasError;
+  readonly downloadingErrorMessage = this.audioShareService.errorMessage;
 
   /**
    * Toggle play/pause
@@ -105,22 +95,16 @@ export class AudioPlayerComponent {
   }
 
   /**
-   * Partager ou télécharger l'audio avec les modifications appliquées (pitch, tempo)
+   * Télécharge l'audio avec les modifications appliquées (pitch, tempo)
    *
    * Processus :
-   * 1. Vérifie la disponibilité de Web Share API
-   * 2. Si Web Share API disponible → partage, sinon → téléchargement
-   * 3. Récupère le buffer audio traité (avec pitch et tempo)
-   * 4. Génère un nom de fichier avec métadonnées
-   * 5. Encode en MP3 via Web Worker
-   * 6. Partage via Web Share API OU télécharge directement
+   * 1. Récupère le buffer audio traité (avec pitch et tempo)
+   * 2. Génère un nom de fichier avec métadonnées
+   * 3. Encode en MP3 via Web Worker
+   * 4. Télécharge directement le fichier
    */
-  async shareAudio(): Promise<void> {
-    debugger
-    const isShareAvailable = this.audioShareService.isShareAvailable();
-    const actionName = isShareAvailable ? 'Share' : 'Download';
-
-    console.log(`[AudioPlayerComponent] ${actionName} button clicked`);
+  async downloadAudio(): Promise<void> {
+    console.log('[AudioPlayerComponent] Download button clicked');
 
     // Vérifier qu'un audio est chargé
     if (!this.isReady()) {
@@ -164,7 +148,7 @@ export class AudioPlayerComponent {
       const timestamp = new Date().getTime();
       const fileName = `${sanitizedBaseName}${pitchStr}${speedStr}_${timestamp}.mp3`;
 
-      console.log(`[AudioPlayerComponent] Starting ${actionName} process`, {
+      console.log('[AudioPlayerComponent] Starting download process', {
         fileName,
         pitch: currentPitch,
         speed: currentSpeed,
@@ -176,43 +160,27 @@ export class AudioPlayerComponent {
       // Afficher une notification d'information au démarrage
       this.notificationService.info('Encodage MP3 en cours...', 2000);
 
-      // Partager ou télécharger selon la disponibilité de Web Share API
-      // if (isShareAvailable) {
-      //   await this.audioShareService.shareAudio(
-      //     processedBuffer,
-      //     fileName,
-      //     currentPitch,
-      //     currentSpeed
-      //   );
-      //   console.log('[AudioPlayerComponent] Share completed successfully');
-      //   this.notificationService.success('Audio partagé avec succès !', 3000);
-      // } else {
-        await this.audioShareService.downloadAudio(
-          processedBuffer,
-          fileName,
-          currentPitch,
-          currentSpeed
-        );
-        console.log('[AudioPlayerComponent] Download started successfully');
-        this.notificationService.success('Téléchargement lancé !', 3000);
-      // }
+      // Télécharger l'audio
+      await this.audioShareService.downloadAudio(
+        processedBuffer,
+        fileName,
+        currentPitch,
+        currentSpeed
+      );
+
+      console.log('[AudioPlayerComponent] Download started successfully');
+      this.notificationService.success('Téléchargement lancé !', 3000);
 
     } catch (error) {
-      const errorMsg = error instanceof Error ? error.message : 'Erreur inconnue lors du partage';
-      console.error('[AudioPlayerComponent] Share error:', errorMsg);
+      const errorMsg = error instanceof Error ? error.message : 'Erreur inconnue lors du téléchargement';
+      console.error('[AudioPlayerComponent] Download error:', errorMsg);
 
       // Gérer les différents types d'erreurs
       if (error instanceof Error) {
-        // Annulation utilisateur - pas de notification (silencieux)
-        if (error.name === 'AbortError') {
-          console.log('[AudioPlayerComponent] Share cancelled by user');
-          return;
-        }
-
         // Erreur de quota/taille de fichier
         if (errorMsg.includes('quota') || errorMsg.includes('size')) {
           this.notificationService.error(
-            'Le fichier est trop volumineux pour être partagé.',
+            'Le fichier est trop volumineux pour être téléchargé.',
             5000
           );
           return;
@@ -230,7 +198,7 @@ export class AudioPlayerComponent {
 
       // Erreur générique
       this.notificationService.error(
-        `Erreur lors du partage : ${errorMsg}`,
+        `Erreur lors du téléchargement : ${errorMsg}`,
         5000
       );
     }

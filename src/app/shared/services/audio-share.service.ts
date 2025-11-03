@@ -41,12 +41,11 @@ interface ErrorMessage {
 type WorkerMessage = ProgressMessage | CompleteMessage | ErrorMessage;
 
 /**
- * Service Angular pour gérer le partage audio via Web Share API
+ * Service Angular pour gérer le téléchargement d'audio encodé en MP3
  *
  * Fonctionnalités principales :
- * - Vérification de la compatibilité Web Share API
  * - Encodage AudioBuffer vers MP3 via Web Worker
- * - Partage de fichier audio avec métadonnées (pitch, tempo)
+ * - Téléchargement de fichier audio avec métadonnées (pitch, tempo)
  * - Gestion des erreurs et feedback de progression
  */
 @Injectable({
@@ -56,7 +55,7 @@ export class AudioShareService {
   // ==================== SIGNALS D'ÉTAT ====================
 
   /**
-   * Signal indiquant si un encodage/partage est en cours
+   * Signal indiquant si un encodage/téléchargement est en cours
    */
   readonly isProcessing = signal<boolean>(false);
 
@@ -68,7 +67,7 @@ export class AudioShareService {
 
   /**
    * Signal pour le statut textuel du traitement
-   * Exemples : 'Encoding...', 'Sharing...', 'Complete', ''
+   * Exemples : 'Encoding...', 'Downloading...', 'Complete', ''
    */
   readonly processingStatus = signal<string>('');
 
@@ -90,55 +89,21 @@ export class AudioShareService {
   private worker: Worker | null = null;
 
   /**
-   * Subject pour émettre les événements de partage réussi
+   * Subject pour émettre les événements de téléchargement réussi
    */
-  private shareSuccessSubject = new Subject<void>();
-
-  // ==================== MÉTHODES PRIVÉES ====================
+  private downloadSuccessSubject = new Subject<void>();
 
   /**
-   * Vérifie si Web Share API est disponible et supporte les fichiers
-   * @returns true si Web Share API est compatible
+   * Blob MP3 temporaire stocké pendant le traitement
    */
-  private isWebShareApiAvailable(): boolean {
-    // Vérifier que navigator.share existe
-    if (!navigator.share) {
-      console.warn('[AudioShareService] Web Share API not available - navigator.share missing');
-      return false;
-    }
+  private pendingMp3Blob: Blob | null = null;
 
-    // Vérifier si le contexte est sécurisé (HTTPS ou localhost)
-    if (!window.isSecureContext) {
-      console.warn('[AudioShareService] Web Share API requires secure context (HTTPS)');
-      return false;
-    }
+  /**
+   * Nom du fichier temporaire
+   */
+  private pendingFileName: string = '';
 
-    // Tester le support du partage de fichiers
-    if (navigator.canShare) {
-      try {
-        // Créer un fichier de test minimal pour vérifier le support
-        const testFile = new File(['test'], 'test.mp3', { type: 'audio/mp3' });
-        const canShareFiles = navigator.canShare({ files: [testFile] });
-
-        if (!canShareFiles) {
-          console.warn('[AudioShareService] Web Share API available but does not support file sharing');
-          return false;
-        }
-
-        console.log('[AudioShareService] Web Share API fully supported (files + secure context)');
-        return true;
-      } catch (error) {
-        console.error('[AudioShareService] Error testing file share support:', error);
-        // En cas d'erreur, on autorise quand même (fallback optimiste)
-        return true;
-      }
-    }
-
-    // Si navigator.canShare n'existe pas, on suppose que c'est supporté
-    // (certains navigateurs comme Safari iOS < 14 n'ont pas canShare mais supportent share)
-    console.log('[AudioShareService] navigator.canShare not available, assuming file share is supported');
-    return true;
-  }
+  // ==================== MÉTHODES PRIVÉES ====================
 
   /**
    * Crée le Web Worker pour l'encodage MP3
@@ -209,21 +174,6 @@ export class AudioShareService {
   }
 
   /**
-   * Blob MP3 temporaire stocké pendant le traitement
-   */
-  private pendingMp3Blob: Blob | null = null;
-
-  /**
-   * Nom du fichier temporaire
-   */
-  private pendingFileName: string = '';
-
-  /**
-   * Mode de traitement : 'share' ou 'download'
-   */
-  private processingMode: 'share' | 'download' = 'share';
-
-  /**
    * Gère la completion de l'encodage MP3
    * @param mp3Data Tableau de chunks MP3 encodés
    */
@@ -239,79 +189,10 @@ export class AudioShareService {
     // Stocker temporairement
     this.pendingMp3Blob = mp3Blob;
 
-    // Mettre à jour le statut et effectuer l'action selon le mode
+    // Mettre à jour le statut et effectuer le téléchargement
     this.encodingProgress.set(100);
-
-    if (this.processingMode === 'download') {
-      this.processingStatus.set('Downloading...');
-      this.performDownload();
-    } else {
-      this.processingStatus.set('Sharing...');
-      this.performShare();
-    }
-  }
-
-  /**
-   * Effectue le partage via Web Share API
-   */
-  private async performShare(): Promise<void> {
-    if (!this.pendingMp3Blob || !this.pendingFileName) {
-      this.handleProcessingError('No MP3 data available for sharing');
-      return;
-    }
-
-    try {
-      // Créer un File à partir du Blob
-      const file = new File([this.pendingMp3Blob], this.pendingFileName, {
-        type: 'audio/mp3'
-      });
-
-      // Vérifier si on peut partager ce fichier (si canShare existe)
-      if (navigator.canShare && !navigator.canShare({ files: [file] })) {
-        this.handleProcessingError('Cannot share this type of file');
-        return;
-      }
-
-      // Partager via Web Share API
-      await navigator.share({
-        files: [file],
-        title: 'Audio file',
-        text: 'Check out this audio file!'
-      });
-
-      // Partage réussi
-      console.log('[AudioShareService] Share successful');
-      this.isProcessing.set(false);
-      this.processingStatus.set('Shared successfully');
-      this.shareSuccessSubject.next();
-
-      // Nettoyer les données temporaires
-      this.pendingMp3Blob = null;
-      this.pendingFileName = '';
-
-      // Détruire le worker
-      this.destroyWorker();
-
-    } catch (error) {
-      // L'utilisateur a annulé le partage (AbortError)
-      if (error instanceof Error && error.name === 'AbortError') {
-        console.log('[AudioShareService] Share cancelled by user');
-        this.isProcessing.set(false);
-        this.processingStatus.set('Cancelled');
-        this.encodingProgress.set(0);
-
-        // Nettoyer les données temporaires
-        this.pendingMp3Blob = null;
-        this.pendingFileName = '';
-
-        // Détruire le worker
-        this.destroyWorker();
-      } else {
-        // Erreur technique
-        const errorMsg = error instanceof Error ? error.message : 'Unknown error during sharing';
-        this.handleProcessingError(errorMsg);
-      }
-    }
+    this.processingStatus.set('Downloading...');
+    this.performDownload();
   }
 
   /**
@@ -347,7 +228,7 @@ export class AudioShareService {
       console.log('[AudioShareService] Download started successfully');
       this.isProcessing.set(false);
       this.processingStatus.set('Downloaded successfully');
-      this.shareSuccessSubject.next();
+      this.downloadSuccessSubject.next();
 
       // Nettoyer les données temporaires
       this.pendingMp3Blob = null;
@@ -407,77 +288,6 @@ export class AudioShareService {
   // ==================== API PUBLIQUE ====================
 
   /**
-   * Vérifie si le navigateur supporte Web Share API
-   * @returns true si Web Share API est disponible
-   */
-  isShareAvailable(): boolean {
-    return this.isWebShareApiAvailable();
-  }
-
-  /**
-   * Partage un fichier audio avec les modifications appliquées
-   *
-   * @param buffer AudioBuffer à partager
-   * @param fileName Nom du fichier (ex: 'audio_pitch+2_tempo0.75.mp3')
-   * @param pitch Modification de tonalité en demi-tons (pour info, déjà appliquée dans buffer)
-   * @param tempo Vitesse de lecture (pour info, déjà appliquée dans buffer)
-   * @returns Promise qui se résout quand le partage est terminé ou annulé
-   */
-  async shareAudio(
-    buffer: AudioBuffer,
-    fileName: string,
-    pitch?: number,
-    tempo?: number
-  ): Promise<void> {
-    // Vérifier la compatibilité Web Share API
-    if (!this.isWebShareApiAvailable()) {
-      throw new Error('Web Share API not available in this browser');
-    }
-
-    // Vérifier que le buffer est valide
-    if (!buffer || buffer.length === 0) {
-      throw new Error('Invalid audio buffer');
-    }
-
-    // Générer un nom de fichier avec métadonnées si non fourni
-    if (!fileName) {
-      const pitchStr = pitch !== undefined ? `_pitch${pitch >= 0 ? '+' : ''}${pitch}` : '';
-      const tempoStr = tempo !== undefined ? `_tempo${tempo}` : '';
-      fileName = `audio${pitchStr}${tempoStr}.mp3`;
-    }
-
-    // Stocker le nom de fichier
-    this.pendingFileName = fileName;
-
-    // Définir le mode de traitement
-    this.processingMode = 'share';
-
-    console.log('[AudioShareService] Starting share process', {
-      fileName,
-      pitch,
-      tempo,
-      duration: buffer.duration,
-      sampleRate: buffer.sampleRate,
-      channels: buffer.numberOfChannels
-    });
-
-    // Encoder le buffer en MP3
-    // Le reste du processus (partage) sera géré par handleEncodingComplete()
-    this.encodeAudioBuffer(buffer);
-
-    // Retourner une Promise qui se résout quand le partage est terminé
-    return new Promise((resolve, reject) => {
-      const subscription = this.shareSuccessSubject.subscribe(() => {
-        subscription.unsubscribe();
-        resolve();
-      });
-
-      // En cas d'erreur, rejeter la Promise
-      // Note: On surveille le signal hasError pour détecter les erreurs
-    });
-  }
-
-  /**
    * Télécharge un fichier audio avec les modifications appliquées
    *
    * @param buffer AudioBuffer à télécharger
@@ -507,9 +317,6 @@ export class AudioShareService {
     // Stocker le nom de fichier
     this.pendingFileName = fileName;
 
-    // Définir le mode de traitement
-    this.processingMode = 'download';
-
     console.log('[AudioShareService] Starting download process', {
       fileName,
       pitch,
@@ -525,7 +332,7 @@ export class AudioShareService {
 
     // Retourner une Promise qui se résout quand le téléchargement est lancé
     return new Promise((resolve, reject) => {
-      const subscription = this.shareSuccessSubject.subscribe(() => {
+      const subscription = this.downloadSuccessSubject.subscribe(() => {
         subscription.unsubscribe();
         resolve();
       });
@@ -536,11 +343,11 @@ export class AudioShareService {
   }
 
   /**
-   * Retourne un Observable émettant les événements de partage réussi
-   * @returns Observable émettant void quand le partage est réussi
+   * Retourne un Observable émettant les événements de téléchargement réussi
+   * @returns Observable émettant void quand le téléchargement est réussi
    */
-  getShareSuccess(): Observable<void> {
-    return this.shareSuccessSubject.asObservable();
+  getDownloadSuccess(): Observable<void> {
+    return this.downloadSuccessSubject.asObservable();
   }
 
   /**
@@ -548,7 +355,7 @@ export class AudioShareService {
    */
   destroy(): void {
     this.destroyWorker();
-    this.shareSuccessSubject.complete();
+    this.downloadSuccessSubject.complete();
     this.pendingMp3Blob = null;
     this.pendingFileName = '';
 
